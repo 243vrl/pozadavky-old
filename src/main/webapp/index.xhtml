@@ -10,11 +10,13 @@
     <h:body>
         Hello from Facelets
         <br />
-        <h:link outcome="/faces/welcomePrimefaces" value="Primefaces welcome page" />
+        <h:link outcome="/welcomePrimefaces" value="Primefaces welcome page" />
         <br />
-        <h:link outcome="/faces/openfaceOkno" value="Openfaces okno" />
+        <h:link outcome="/openfaceOkno" value="Openfaces okno" />
         <br />
         <h:link outcome="/admin/index" value="K adminu" />
+        <br />
+        <h:link outcome="/users/index" value="K userovi" />
         <br />
         <h:form>
                 <h:commandLink action="#{logoutBean.logout}" value="Logout"/>
