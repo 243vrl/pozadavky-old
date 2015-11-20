@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>VYVOJ</title>
         <h:outputStylesheet name="css/jsfcrud.css"/>
@@ -22,6 +23,10 @@
         <h:link outcome="/admin/index" value="K adminu" />
         <br />
         <h:link outcome="/users/users/List" value="Show All Users Items"/>
+        <br />
+        <h:form>
+                <h:commandLink action="#{logoutBean.logout}" value="Logout"/>
+        </h:form>
     </h:body>
 
 </html>
