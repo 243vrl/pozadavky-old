@@ -10,7 +10,14 @@
         <title>Openfaces</title>
     </h:head>
     <h:body>
-        <o:graphicText value="Example text" direction="315"/>
+        <o:window id="window" modal="true" visible="true">
+    <f:facet name="caption">
+      <h:outputText value="Window Caption"/>
+    </f:facet>
+   <o:graphicText value="Example text" direction="315"/>
+    <h:outputText value="Window Content"/>
+  </o:window>
+       
     </h:body>
 </html>
 

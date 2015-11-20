@@ -1,0 +1,241 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.2.13
+-- Dumped by pg_dump version 9.2.14
+-- Started on 2015-11-18 13:13:19
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 173 (class 3079 OID 12648)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2892 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 171 (class 1259 OID 16568)
+-- Name: letajici_sluzby; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE letajici_sluzby (
+    letajici character varying NOT NULL,
+    poradi integer,
+    lk boolean DEFAULT false NOT NULL,
+    ld boolean DEFAULT false NOT NULL,
+    lp boolean DEFAULT false NOT NULL,
+    sk boolean DEFAULT false NOT NULL,
+    sd boolean DEFAULT false NOT NULL,
+    sp boolean DEFAULT false NOT NULL,
+    pocet_sluzeb integer DEFAULT 0 NOT NULL,
+    pocet_vsednich_svatku integer DEFAULT 0 NOT NULL,
+    pocet_sobot integer DEFAULT 0 NOT NULL,
+    pocet_nedeli integer DEFAULT 0 NOT NULL,
+    pocet_patku integer DEFAULT 0 NOT NULL,
+    dojizdeni character varying,
+    do_lini_svozem boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- TOC entry 169 (class 1259 OID 16454)
+-- Name: roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE roles (
+    username character varying NOT NULL,
+    role character varying NOT NULL
+);
+
+
+--
+-- TOC entry 172 (class 1259 OID 16603)
+-- Name: schemata_dojizdeni; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE schemata_dojizdeni (
+    dojizdeni character varying NOT NULL
+);
+
+
+--
+-- TOC entry 170 (class 1259 OID 16467)
+-- Name: typ_pozadavku; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE typ_pozadavku (
+    pozadavek character(2) NOT NULL,
+    popis character varying
+);
+
+
+--
+-- TOC entry 168 (class 1259 OID 16420)
+-- Name: users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE users (
+    username character varying(260) NOT NULL,
+    passwd character varying(260)
+);
+
+
+--
+-- TOC entry 2884 (class 0 OID 16568)
+-- Dependencies: 171
+-- Data for Name: letajici_sluzby; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+
+
+--
+-- TOC entry 2882 (class 0 OID 16454)
+-- Dependencies: 169
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+INSERT INTO roles VALUES ('SMI', 'BFU');
+INSERT INTO roles VALUES ('SMI', 'HEAD');
+INSERT INTO roles VALUES ('JAN', 'BFU');
+INSERT INTO roles VALUES ('JAN', 'SCHEDULER');
+INSERT INTO roles VALUES ('PRI', 'ADMIN');
+INSERT INTO roles VALUES ('PRI', 'BFU');
+
+
+--
+-- TOC entry 2885 (class 0 OID 16603)
+-- Dependencies: 172
+-- Data for Name: schemata_dojizdeni; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+INSERT INTO schemata_dojizdeni VALUES ('PLZEŇ');
+INSERT INTO schemata_dojizdeni VALUES ('PRAHA');
+INSERT INTO schemata_dojizdeni VALUES ('KADAŇ');
+
+
+--
+-- TOC entry 2883 (class 0 OID 16467)
+-- Dependencies: 170
+-- Data for Name: typ_pozadavku; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+
+
+--
+-- TOC entry 2881 (class 0 OID 16420)
+-- Dependencies: 168
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+INSERT INTO users VALUES ('SMI', '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005');
+INSERT INTO users VALUES ('JAN', '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005');
+INSERT INTO users VALUES ('PRI', '56b1db8133d9eb398aabd376f07bf8ab5fc584ea0b8bd6a1770200cb613ca005');
+
+
+--
+-- TOC entry 2767 (class 2606 OID 16586)
+-- Name: letajici_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY letajici_sluzby
+    ADD CONSTRAINT letajici_pkey PRIMARY KEY (letajici);
+
+
+--
+-- TOC entry 2769 (class 2606 OID 16588)
+-- Name: letajici_poradi_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY letajici_sluzby
+    ADD CONSTRAINT letajici_poradi_key UNIQUE (poradi);
+
+
+--
+-- TOC entry 2763 (class 2606 OID 16461)
+-- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (username, role);
+
+
+--
+-- TOC entry 2771 (class 2606 OID 16610)
+-- Name: schemata_dojizdeni_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY schemata_dojizdeni
+    ADD CONSTRAINT schemata_dojizdeni_pkey PRIMARY KEY (dojizdeni);
+
+
+--
+-- TOC entry 2765 (class 2606 OID 16474)
+-- Name: typ_pozadavku_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY typ_pozadavku
+    ADD CONSTRAINT typ_pozadavku_pkey PRIMARY KEY (pozadavek);
+
+
+--
+-- TOC entry 2761 (class 2606 OID 16427)
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 2773 (class 2606 OID 16611)
+-- Name: letajici_letajici_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY letajici_sluzby
+    ADD CONSTRAINT letajici_letajici_fkey FOREIGN KEY (letajici) REFERENCES users(username) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 2774 (class 2606 OID 16616)
+-- Name: letajici_sluzby_dojizdeni_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY letajici_sluzby
+    ADD CONSTRAINT letajici_sluzby_dojizdeni_fkey FOREIGN KEY (dojizdeni) REFERENCES schemata_dojizdeni(dojizdeni) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 2772 (class 2606 OID 16462)
+-- Name: roles_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY roles
+    ADD CONSTRAINT roles_username_fkey FOREIGN KEY (username) REFERENCES users(username) ON UPDATE CASCADE;
+
+
+-- Completed on 2015-11-18 13:13:37
+
+--
+-- PostgreSQL database dump complete
+--
+
