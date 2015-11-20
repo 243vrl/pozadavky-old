@@ -8,4 +8,5 @@ and open the template in the editor.
 
 <jboss-web>
   <security-domain>test-policy</security-domain>
+   <context-root>/</context-root>
 </jboss-web>
