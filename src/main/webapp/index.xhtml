@@ -4,13 +4,14 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
         <title>VYVOJ</title>
+        <h:outputStylesheet name="css/jsfcrud.css"/>
     </h:head>
     <h:body>
         Hello from Facelets
         <br />
         <h:link outcome="/faces/welcomePrimefaces" value="Primefaces welcome page" />
         <br />
-        <h:link outcome="openfaceOkno" value="Openfaces okno" />
+        <h:link outcome="/faces/openfaceOkno" value="Openfaces okno" />
         <br />
         <h:link outcome="/admin/index" value="K adminu" />
         <br />
@@ -19,6 +20,9 @@
         <h:link outcome="admin/index" value="K adminu" />
         <br />
         <h:link outcome="/admin/index" value="K adminu" />
+        <br />
+        <h:link outcome="/users/users/List" value="Show All Users Items"/>
     </h:body>
+
 </html>
 
