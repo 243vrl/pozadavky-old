@@ -21,7 +21,8 @@
     <role-name>STAFF</role-name>
     <group-name>STAFF</group-name>
   </security-role-mapping>
-  <class-loader delegate="true"/>
+  <class-loader delegate="true" />
+    <property name="useBundledJsf" value="true" />
   <jsp-config>
     <property name="keepgenerated" value="true">
       <description>Keep a copy of the generated servlet class' java code.</description>

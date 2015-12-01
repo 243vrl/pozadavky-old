@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PozadavkyCreateDlg" widgetVar="PozadavkyCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreatePozadavkyTitle}">
+            <h:form id="PozadavkyCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{pozadavkyController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreatePozadavkyLabel_pozadavkyPK_datum}" for="pozadavkyPK_datum" />
+                        <p:calendar id="pozadavkyPK_datum" pattern="MM/dd/yyyy" value="#{pozadavkyController.selected.pozadavkyPK.datum}" title="#{bundle.EditPozadavkyTitle_pozadavkyPK_datum}" required="true" requiredMessage="#{bundle.EditPozadavkyRequiredMessage_pozadavkyPK_datum}" showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreatePozadavkyLabel_letajiciSluzby}" for="letajiciSluzby" />
+                        <p:selectOneMenu id="letajiciSluzby" value="#{pozadavkyController.selected.letajiciSluzby}" required="true" requiredMessage="#{bundle.EditPozadavkyRequiredMessage_letajiciSluzby}">
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="letajiciSluzbyItem"
+                                           itemValue="#{letajiciSluzbyItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreatePozadavkyLabel_pozadavek}" for="pozadavek" />
+                        <p:selectOneMenu id="pozadavek" value="#{pozadavkyController.selected.pozadavek}" required="true" requiredMessage="#{bundle.EditPozadavkyRequiredMessage_pozadavek}">
+                            <f:selectItems value="#{typyPozadavkuController.itemsAvailableSelectOne}"
+                                           var="pozadavekItem"
+                                           itemValue="#{pozadavekItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{pozadavkyController.create}" value="#{bundle.Save}" update="display,:PozadavkyListForm:datalist,:growl" oncomplete="handleSubmit(args,'PozadavkyCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="PozadavkyCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

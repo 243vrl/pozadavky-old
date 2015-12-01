@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PozadavkyViewDlg" widgetVar="PozadavkyViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewPozadavkyTitle}">
+            <h:form id="PozadavkyViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{pozadavkyController.selected != null}">
+                        <h:outputText value="#{bundle.ViewPozadavkyLabel_pozadavkyPK_datum}"/>
+                        <h:outputText value="#{pozadavkyController.selected.pozadavkyPK.datum}" title="#{bundle.ViewPozadavkyTitle_pozadavkyPK_datum}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewPozadavkyLabel_letajiciSluzby}"/>
+                        <h:outputText value="#{pozadavkyController.selected.letajiciSluzby}" title="#{bundle.ViewPozadavkyTitle_letajiciSluzby}"/>
+                        <h:outputText value="#{bundle.ViewPozadavkyLabel_pozadavek}"/>
+                        <h:outputText value="#{pozadavkyController.selected.pozadavek}" title="#{bundle.ViewPozadavkyTitle_pozadavek}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="PozadavkyViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

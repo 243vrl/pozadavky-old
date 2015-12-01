@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="LetajiciSluzbyEditDlg" widgetVar="LetajiciSluzbyEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditLetajiciSluzbyTitle}">
+            <h:form id="LetajiciSluzbyEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{letajiciSluzbyController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_letajici}" for="letajici" />
+                        <p:inputText id="letajici" value="#{letajiciSluzbyController.selected.letajici}" title="#{bundle.EditLetajiciSluzbyTitle_letajici}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_letajici}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_poradi}" for="poradi" />
+                        <p:inputText id="poradi" value="#{letajiciSluzbyController.selected.poradi}" title="#{bundle.EditLetajiciSluzbyTitle_poradi}" />
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_pocetSluzeb}" for="pocetSluzeb" />
+                        <p:inputText id="pocetSluzeb" value="#{letajiciSluzbyController.selected.pocetSluzeb}" title="#{bundle.EditLetajiciSluzbyTitle_pocetSluzeb}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_pocetSluzeb}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_pocetVsednichSvatku}" for="pocetVsednichSvatku" />
+                        <p:inputText id="pocetVsednichSvatku" value="#{letajiciSluzbyController.selected.pocetVsednichSvatku}" title="#{bundle.EditLetajiciSluzbyTitle_pocetVsednichSvatku}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_pocetVsednichSvatku}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_pocetSobot}" for="pocetSobot" />
+                        <p:inputText id="pocetSobot" value="#{letajiciSluzbyController.selected.pocetSobot}" title="#{bundle.EditLetajiciSluzbyTitle_pocetSobot}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_pocetSobot}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_pocetNedeli}" for="pocetNedeli" />
+                        <p:inputText id="pocetNedeli" value="#{letajiciSluzbyController.selected.pocetNedeli}" title="#{bundle.EditLetajiciSluzbyTitle_pocetNedeli}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_pocetNedeli}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_pocetPatku}" for="pocetPatku" />
+                        <p:inputText id="pocetPatku" value="#{letajiciSluzbyController.selected.pocetPatku}" title="#{bundle.EditLetajiciSluzbyTitle_pocetPatku}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_pocetPatku}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_doLiniSvozem}" for="doLiniSvozem" />
+                        <p:selectBooleanCheckbox id="doLiniSvozem" value="#{letajiciSluzbyController.selected.doLiniSvozem}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_doLiniSvozem}"/>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_dojizdeni}" for="dojizdeni" />
+                        <p:selectOneMenu id="dojizdeni" value="#{letajiciSluzbyController.selected.dojizdeni}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{schemataDojizdeniController.itemsAvailableSelectOne}"
+                                           var="dojizdeniItem"
+                                           itemValue="#{dojizdeniItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditLetajiciSluzbyLabel_users}" for="users" />
+                        <p:selectOneMenu id="users" value="#{letajiciSluzbyController.selected.users}" required="true" requiredMessage="#{bundle.EditLetajiciSluzbyRequiredMessage_users}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{usersController.itemsAvailableSelectOne}"
+                                           var="usersItem"
+                                           itemValue="#{usersItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{letajiciSluzbyController.update}" value="#{bundle.Save}" update="display,:LetajiciSluzbyListForm:datalist,:growl" oncomplete="handleSubmit(args, 'LetajiciSluzbyEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="LetajiciSluzbyEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
