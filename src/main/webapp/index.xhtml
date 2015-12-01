@@ -1,27 +1,154 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>VYVOJ</title>
-        <h:outputStylesheet name="css/jsfcrud.css"/>
-    </h:head>
-    <h:body>
-        Hello from Facelets
-        <br />
-        <h:link outcome="/welcomePrimefaces" value="Primefaces welcome page" />
-        <br />
-        <h:link outcome="/openfaceOkno" value="Openfaces okno" />
-        <br />
-        <h:link outcome="/admin/index" value="K adminu" />
-        <br />
-        <h:link outcome="/users/index" value="K userovi" />
-        <br />
-        <h:form>
-                <h:commandLink action="#{logoutBean.logout}" value="Logout"/>
-        </h:form>
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://openfaces.org/">
 
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>PrimeFaces</title>
+                <h:outputStylesheet name="css/jsfcrud.css"/>
+            </f:facet>
+            <style type="text/css">
+                .ui-widget, .ui-widget .ui-widget {
+                    font-size: 92% !important;}
+                .ui-menu-list, .ui-menuitem, .ui-menu, .ui-layout, .ui-layout-doc, .ui-layout-unit, .ui-layout-wrap, .ui-layout-bd, .ui-layout-hd{
+                    border: none !important;}
+            </style>
+
+        </h:head>
+
+        <h:body>
+            <p:dialog position="center" visible="#{loggedBean.authorizationError}"
+                      header="Moc si troufáš!" draggable="false" resizable="false"
+                      modal="true">
+                <h:outputText style="color: #D20005" value="Oops! Zdá se, že nemáš potřebná oprávnění."/>
+            </p:dialog>
+            <p:dialog position="center" visible="#{loggedBean.notlogged}"
+                      header="Login" draggable="false" resizable="false"
+                      rendered="#{loggedBean.notlogged}" modal="true"
+                      closable="false">
+                <form method="POST" action="j_security_check" accept-charset="UTF-8">
+                    <h:panelGrid columns="1" cellpadding="5" rendered="#{loggedBean.loginError}">
+                        <h:outputText style="color: #D20005" value="Wrong Username and/or password." />
+                        <h:outputText value="V případě ztráty hesla kontaktuj PŘI." />
+                    </h:panelGrid>
+                    <table border="0" cellspacing="2" cellpadding="2">
+                        <tbody>
+                            <tr>
+                                <td>Username:</td>
+                                <td><input type="text" name="j_username"  /></td>
+                            </tr>
+                            <tr>
+                                <td>Password:</td>
+                                <td><input type="password" name="j_password" /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Login" />
+                                    <input type="reset" value="Reset" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </p:dialog>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <ui:include src="#{menuNavBean.nadpis}" />
+                </p:layoutUnit>
+
+
+                <p:layoutUnit position="west" size="210" header="" collapsible="true">
+                    <h:form>
+                        <p:menu>
+                            <p:submenu label="Administrace" rendered="#{loggedBean.loggedAsAdmin}">
+                                <p:menuitem value="Uživatelé" actionListener="#{menuNavBean.setNavCenter('/admin/users/List.xhtml')}" update=":centerPanel" />
+                                <p:menuitem value="Nový uživatel"/>
+                                <p:menuitem value="Odstranění uživatele"/>
+                                <p:menuitem value="Změna uživatele"/>
+                            </p:submenu>
+                            <p:submenu label="Plánování" rendered="#{loggedBean.logged}">
+                                <p:menuitem value="Administrace sloužících" rendered="#{loggedBean.loggedAsScheduler}"/>
+                                <p:menuitem value="Požadavky"  rendered="#{loggedBean.loggedAsBFU}"/>
+                                <p:menuitem value="Úprava Požadavků" rendered="#{loggedBean.loggedAsScheduler}" />
+                                <p:menuitem value="Naplánuj"  rendered="#{loggedBean.loggedAsScheduler}"/>
+                                <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsScheduler}"/>
+                            </p:submenu>
+                            <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
+                                <p:menuitem value="Služby" />
+                                <p:menuitem value="Statistiky"/>
+                                <p:menuitem value="Rozkazy" />
+                            </p:submenu>
+                            <p:submenu label="Osobní" rendered="#{loggedBean.logged}">
+                                <p:menuitem value="Osobní údaje" />
+                                <p:menuitem value="Změna hesla"/>
+                                <p:menuitem value="Odhlásit" action="#{logoutBean.logout()}" />
+                            </p:submenu>
+                        </p:menu>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center" id="centerPanel">
+                    <p:panel  rendered="#{loggedBean.logged}">
+                        <ui:include src="#{menuNavBean.navCenter}" />
+                    </p:panel>
+                    
+
+                </p:layoutUnit>
+
+            </p:layout>
+
+
+
+
+            
+        </h:body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </f:view>
 </html>
 

@@ -4,6 +4,10 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>redmond</param-value>
+    </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -16,6 +20,10 @@
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/faces/index.xhtml?er=ae</location>
+    </error-page>
     <security-constraint>
         <display-name>admin-constraint</display-name>
         <web-resource-collection>
@@ -69,8 +77,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>jdbc-realm</realm-name>
         <form-login-config>
-            <form-login-page>/faces/login.xhtml</form-login-page>
-            <form-error-page>/faces/loginerror.xhtml</form-error-page>
+            <form-login-page>/faces/index.xhtml</form-login-page>
+            <form-error-page>/faces/index.xhtml?er=le</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>
@@ -80,5 +88,17 @@
     <security-role>
         <description/>
         <role-name>BFU</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>SCHEDULER</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>STAFF</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>HEAD</role-name>
     </security-role>
 </web-app>

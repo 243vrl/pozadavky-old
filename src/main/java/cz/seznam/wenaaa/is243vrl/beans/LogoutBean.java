@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package beans;
+package cz.seznam.wenaaa.is243vrl.beans;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

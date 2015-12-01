@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TypyPozadavkuEditDlg" widgetVar="TypyPozadavkuEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTypyPozadavkuTitle}">
+            <h:form id="TypyPozadavkuEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{typyPozadavkuController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTypyPozadavkuLabel_pozadavek}" for="pozadavek" />
+                        <p:inputText id="pozadavek" value="#{typyPozadavkuController.selected.pozadavek}" title="#{bundle.EditTypyPozadavkuTitle_pozadavek}" required="true" requiredMessage="#{bundle.EditTypyPozadavkuRequiredMessage_pozadavek}"/>
+                        <p:outputLabel value="#{bundle.EditTypyPozadavkuLabel_popis}" for="popis" />
+                        <p:inputText id="popis" value="#{typyPozadavkuController.selected.popis}" title="#{bundle.EditTypyPozadavkuTitle_popis}" />
+                        <p:outputLabel value="#{bundle.EditTypyPozadavkuLabel_useracces}" for="useracces" />
+                        <p:selectBooleanCheckbox id="useracces" value="#{typyPozadavkuController.selected.useracces}" required="true" requiredMessage="#{bundle.EditTypyPozadavkuRequiredMessage_useracces}"/>
+                        <p:outputLabel value="#{bundle.EditTypyPozadavkuLabel_headacces}" for="headacces" />
+                        <p:selectBooleanCheckbox id="headacces" value="#{typyPozadavkuController.selected.headacces}" required="true" requiredMessage="#{bundle.EditTypyPozadavkuRequiredMessage_headacces}"/>
+                        <p:outputLabel value="#{bundle.EditTypyPozadavkuLabel_scheduleracces}" for="scheduleracces" />
+                        <p:selectBooleanCheckbox id="scheduleracces" value="#{typyPozadavkuController.selected.scheduleracces}" required="true" requiredMessage="#{bundle.EditTypyPozadavkuRequiredMessage_scheduleracces}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{typyPozadavkuController.update}" value="#{bundle.Save}" update="display,:TypyPozadavkuListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TypyPozadavkuEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="TypyPozadavkuEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

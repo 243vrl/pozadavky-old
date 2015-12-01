@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TypyPozadavkuViewDlg" widgetVar="TypyPozadavkuViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTypyPozadavkuTitle}">
+            <h:form id="TypyPozadavkuViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{typyPozadavkuController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTypyPozadavkuLabel_pozadavek}"/>
+                        <h:outputText value="#{typyPozadavkuController.selected.pozadavek}" title="#{bundle.ViewTypyPozadavkuTitle_pozadavek}"/>
+                        <h:outputText value="#{bundle.ViewTypyPozadavkuLabel_popis}"/>
+                        <h:outputText value="#{typyPozadavkuController.selected.popis}" title="#{bundle.ViewTypyPozadavkuTitle_popis}"/>
+                        <h:outputText value="#{bundle.ViewTypyPozadavkuLabel_useracces}"/>
+                        <p:selectBooleanCheckbox value="#{typyPozadavkuController.selected.useracces}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewTypyPozadavkuLabel_headacces}"/>
+                        <p:selectBooleanCheckbox value="#{typyPozadavkuController.selected.headacces}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewTypyPozadavkuLabel_scheduleracces}"/>
+                        <p:selectBooleanCheckbox value="#{typyPozadavkuController.selected.scheduleracces}" disabled="true"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="TypyPozadavkuViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

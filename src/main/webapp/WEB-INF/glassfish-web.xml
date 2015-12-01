@@ -9,7 +9,20 @@
     <role-name>BFU</role-name>
     <group-name>BFU</group-name>
   </security-role-mapping>
-  <class-loader delegate="true"/>
+  <security-role-mapping>
+    <role-name>HEAD</role-name>
+    <group-name>HEAD</group-name>
+  </security-role-mapping>
+  <security-role-mapping>
+    <role-name>SCHEDULER</role-name>
+    <group-name>SCHEDULER</group-name>
+  </security-role-mapping>
+  <security-role-mapping>
+    <role-name>STAFF</role-name>
+    <group-name>STAFF</group-name>
+  </security-role-mapping>
+  <class-loader delegate="true" />
+    <property name="useBundledJsf" value="true" />
   <jsp-config>
     <property name="keepgenerated" value="true">
       <description>Keep a copy of the generated servlet class' java code.</description>
