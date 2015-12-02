@@ -55,6 +55,8 @@
             <description/>
             <url-pattern>/faces/users/*</url-pattern>
             <url-pattern>/users/*</url-pattern>
+            <url-pattern>/faces/index.xhtml</url-pattern>
+            <url-pattern>/index.xhtml</url-pattern>
             <http-method>GET</http-method>
             <http-method>PUT</http-method>
             <http-method>HEAD</http-method>
