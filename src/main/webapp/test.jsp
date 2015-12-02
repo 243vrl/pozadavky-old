@@ -22,7 +22,7 @@ try {
     DataSource datasource = (DataSource)initialContext.lookup("java:jboss/datasources/PostgreSQLDS");
     result = datasource.getConnection();
     Statement stmt = result.createStatement() ;
-    String query = "select * from users;" ;
+    String query = "select * from typy_pozadavku;" ;
     ResultSet rs = stmt.executeQuery(query) ;
     while (rs.next()) {
         out.println(rs.getString(1) + " " + rs.getString(2)+" "+"<br />");
