@@ -25,7 +25,7 @@ try {
     String query = "select * from typy_pozadavku;" ;
     ResultSet rs = stmt.executeQuery(query) ;
     while (rs.next()) {
-        out.println(rs.getString(1) + " " + rs.getString(2)+" "+rs.getString(3)+"<br />");
+        out.println(rs.getString(1) + " " + rs.getString(2)+" "+"<br />");
     }
 } catch (Exception ex) {
     out.println("Exception: " + ex + ex.getMessage());
