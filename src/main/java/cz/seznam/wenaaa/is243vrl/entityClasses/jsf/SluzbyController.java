@@ -3,7 +3,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.SluzbyFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,13 +19,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-
 @Named("sluzbyController")
 @SessionScoped
 public class SluzbyController implements Serializable {
 
-
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.SluzbyFacade ejbFacade;
+    @EJB
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade ejbFacade;
     private List<Sluzby> items = null;
     private Sluzby selected;
 
@@ -122,7 +121,7 @@ public class SluzbyController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=Sluzby.class)
+    @FacesConverter(forClass = Sluzby.class)
     public static class SluzbyControllerConverter implements Converter {
 
         @Override
@@ -130,7 +129,7 @@ public class SluzbyController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            SluzbyController controller = (SluzbyController)facesContext.getApplication().getELResolver().
+            SluzbyController controller = (SluzbyController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "sluzbyController");
             return controller.getSluzby(getKey(value));
         }

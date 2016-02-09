@@ -3,7 +3,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Users;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.UsersFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.UsersFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,18 +14,19 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-
+import javax.faces.validator.ValidatorException;
 
 @Named("usersController")
 @SessionScoped
 public class UsersController implements Serializable {
 
-
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.UsersFacade ejbFacade;
+    @EJB
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.UsersFacade ejbFacade;
     private List<Users> items = null;
     private Users selected;
 
@@ -55,7 +56,22 @@ public class UsersController implements Serializable {
         initializeEmbeddableKey();
         return selected;
     }
+    
+   
+    /**
+    * Validates if the new username is available or not 
+     * 
+     */
+    public void isUsernameValid(FacesContext ctx, UIComponent component, Object value) throws ValidatorException {
+	String novy = value.toString();
+        for(Users u: this.getItems()){
+            if (novy.equals(u.getUsername())) {
+                throw new ValidatorException( new FacesMessage("Uživatel už existuje!") );
+            }
+        }
+    }        
 
+    
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("UsersCreated"));
         if (!JsfUtil.isValidationFailed()) {
@@ -122,7 +138,7 @@ public class UsersController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=Users.class)
+    @FacesConverter(forClass = Users.class)
     public static class UsersControllerConverter implements Converter {
 
         @Override
@@ -130,7 +146,7 @@ public class UsersController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            UsersController controller = (UsersController)facesContext.getApplication().getELResolver().
+            UsersController controller = (UsersController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "usersController");
             return controller.getUsers(getKey(value));
         }

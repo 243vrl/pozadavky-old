@@ -3,7 +3,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.TypyRoles;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.TypyRolesFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypyRolesFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,13 +19,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-
 @Named("typyRolesController")
 @SessionScoped
 public class TypyRolesController implements Serializable {
 
-
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.TypyRolesFacade ejbFacade;
+    @EJB
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypyRolesFacade ejbFacade;
     private List<TypyRoles> items = null;
     private TypyRoles selected;
 
@@ -122,7 +121,7 @@ public class TypyRolesController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=TypyRoles.class)
+    @FacesConverter(forClass = TypyRoles.class)
     public static class TypyRolesControllerConverter implements Converter {
 
         @Override
@@ -130,7 +129,7 @@ public class TypyRolesController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TypyRolesController controller = (TypyRolesController)facesContext.getApplication().getELResolver().
+            TypyRolesController controller = (TypyRolesController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "typyRolesController");
             return controller.getTypyRoles(getKey(value));
         }

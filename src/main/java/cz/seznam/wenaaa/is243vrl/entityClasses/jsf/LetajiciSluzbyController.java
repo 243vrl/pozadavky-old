@@ -3,9 +3,10 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.LetajiciSluzbyFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzbyFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,13 +19,18 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Named("letajiciSluzbyController")
 @SessionScoped
 public class LetajiciSluzbyController implements Serializable {
 
     @EJB
-    private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.LetajiciSluzbyFacade ejbFacade;
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzbyFacade ejbFacade;
+    @PersistenceContext(unitName = "pozadavky_PU")
+    private EntityManager em;
     private List<LetajiciSluzby> items = null;
     private LetajiciSluzby selected;
 
@@ -79,6 +85,19 @@ public class LetajiciSluzbyController implements Serializable {
             items = getFacade().findAll();
         }
         return items;
+    }
+    
+    public List<String> getLetajici(){
+        List<String> vratka = new ArrayList<>();
+        Query q = em.createNativeQuery("SELECT letajici FROM letajici_sluzby ORDER BY poradi");
+        for( Object pom : q.getResultList()){
+            vratka.add((String)pom);
+        }
+        return vratka;
+    }
+    
+    public String getLetajici(int poradi){
+        return getLetajici().get(poradi);
     }
 
     private void persist(PersistAction persistAction, String successMessage) {

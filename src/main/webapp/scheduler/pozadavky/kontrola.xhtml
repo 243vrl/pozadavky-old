@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/index.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPozadavkyTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            
+            <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
+                <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
+                <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
+                <p:remoteCommand name="rc_click" actionListener="#{planovaniBean.nastavAtribZmeny()}"/>
+                <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic()}" var="item"
+                                 rowKey="#{item[0]}"
+                                 rowIndexVar="rowIndex"
+                                 >
+                    <f:facet name="header">
+                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{pozadavkyBean.proMesic()} - Kontrola/změna návrhu služeb"/>
+                    </f:facet>
+                    <p:columns id="sloupce" value="#{pozadavkyBean.columns}" var="column" columnIndexVar="colIndex"
+                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
+                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}">
+                        <f:facet name="header">
+                            <h:outputText value="#{column.header}"/>
+                        </f:facet>
+                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #808080" rendered="#{(colIndex != 0)?'True':'False'}" 
+                                       onmouseup="rc_mouseup([{name:'jmeno',value:#{item[0]}},{name:'den',value:#{colIndex}}])"/>
+                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{colIndex == 0?'True':'False'}"/>
+                        <p:outputLabel value="#{planovaniBean.dejSluzbuProKontrolu(item[0], colIndex)}" style="width:100%; color: #000000"
+                                       rendered="#{planovaniBean.dejSluzbuProKontrolu(item[0], colIndex)==''?'False':'True'}"
+                                       onmouseup="rc_mouseup([{name:'jmeno',value:#{item[0]}},{name:'den',value:#{colIndex}}])"/>
+                        <p:outputLabel value="______" style="width:100%; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCellvII(colIndex, item[colIndex], 2)}" 
+                                       onmousedown="rc_click([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
+                    </p:columns>
+                    <p:column>
+                        <p:outputLabel value="#{planovaniBean.proLastColumn(item[0])}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:contextMenu id="cmenu" for="PozadavkyListForm">
+                    <p:menuitem value="LK" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LK')}" update="datalist"/>
+                    <p:menuitem value="LD" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LD')}" update="datalist"/>
+                    <p:menuitem value="SK" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SK')}" update="datalist"/>
+                    <p:menuitem value="SD" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SD')}" update="datalist"/>
+                    
+                </p:contextMenu>  
+            </h:form>
+            <br/>
+            <br/>
+            <h:form id="PozadavkyListFormCalendar" style="font-size: 92% !important;">
+                <p:dataTable id="dnySvozu" value="#{planovaniBean.dnySvozu}" var="item"
+                                 rowKey="#{item[0]}"
+                                 rowIndexVar="rowIndex"
+                                 >
+                    <f:facet name="header">
+                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{pozadavkyBean.proMesic()} - svoz do Líní"/>
+                    </f:facet>
+                    <p:columns id="sloupce" value="#{planovaniBean.columns}" var="column" columnIndexVar="colIndex"
+                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
+                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}">
+                        <f:facet name="header">
+                            <h:outputText value="#{column.header}"/>
+                        </f:facet>
+                        <p:outputLabel value="#{item[colIndex]?'&#10004;':'_____'}"
+                                       style="width:100%; color: #{item[colIndex]?'#000000':pozadavkyBean.cellColor(colIndex)}"
+                                       rendered="#{colIndex == 0?'false':'true'}"
+                                       />
+                        <p:outputLabel value="CHRA"
+                                       rendered="#{colIndex == 0?'true':'false'}"
+                                       style="width:100%; color: #{pozadavkyBean.cellColor(colIndex)}"
+                                       />
+                    </p:columns>
+                    <p:column>
+                        <p:outputLabel value="5: 3+2" style="color: #ffffff"/>
+                    </p:column>
+                </p:dataTable>
+                
+            </h:form>
+            <br/>
+            <h:form id="planovani">
+                <p:commandButton value="Ulož" />
+                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

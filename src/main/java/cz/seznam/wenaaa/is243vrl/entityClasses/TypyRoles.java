@@ -8,6 +8,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -40,12 +42,7 @@ public class TypyRoles implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "id")
     private String id;
-    @JoinTable(name = "roles", joinColumns = {
-        @JoinColumn(name = "role", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "username", referencedColumnName = "username")})
-    @ManyToMany
-    private Collection<Users> usersCollection;
-
+    
     public TypyRoles() {
     }
 
@@ -61,15 +58,7 @@ public class TypyRoles implements Serializable {
         this.id = id;
     }
 
-    @XmlTransient
-    public Collection<Users> getUsersCollection() {
-        return usersCollection;
-    }
-
-    public void setUsersCollection(Collection<Users> usersCollection) {
-        this.usersCollection = usersCollection;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -94,5 +83,6 @@ public class TypyRoles implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.TypyRoles[ id=" + id + " ]";
     }
+
     
 }

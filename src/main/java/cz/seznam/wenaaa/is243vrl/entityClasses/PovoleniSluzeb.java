@@ -8,8 +8,10 @@ package cz.seznam.wenaaa.is243vrl.entityClasses;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -27,50 +29,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "PovoleniSluzeb.findAll", query = "SELECT p FROM PovoleniSluzeb p"),
-    @NamedQuery(name = "PovoleniSluzeb.findByLetajici", query = "SELECT p FROM PovoleniSluzeb p WHERE p.povoleniSluzebPK.letajici = :letajici"),
-    @NamedQuery(name = "PovoleniSluzeb.findByTypLetadla", query = "SELECT p FROM PovoleniSluzeb p WHERE p.povoleniSluzebPK.typLetadla = :typLetadla"),
-    @NamedQuery(name = "PovoleniSluzeb.findByTypSluzby", query = "SELECT p FROM PovoleniSluzeb p WHERE p.povoleniSluzebPK.typSluzby = :typSluzby"),
-    @NamedQuery(name = "PovoleniSluzeb.findByPovoleno", query = "SELECT p FROM PovoleniSluzeb p WHERE p.povoleno = :povoleno")})
+    @NamedQuery(name = "PovoleniSluzeb.findByPovoleno", query = "SELECT p FROM PovoleniSluzeb p WHERE p.povoleno = :povoleno"),
+    @NamedQuery(name = "PovoleniSluzeb.findByIdPovoleniSluzeb", query = "SELECT p FROM PovoleniSluzeb p WHERE p.idPovoleniSluzeb = :idPovoleniSluzeb")})
 public class PovoleniSluzeb implements Serializable {
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected PovoleniSluzebPK povoleniSluzebPK;
     @Basic(optional = false)
     @NotNull
     @Column(name = "povoleno")
     private boolean povoleno;
-    @JoinColumn(name = "letajici", referencedColumnName = "letajici", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private LetajiciSluzby letajiciSluzby;
-    @JoinColumn(name = "typ_letadla", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private TypyLetadel typyLetadel;
-    @JoinColumn(name = "typ_sluzby", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private TypySluzeb typySluzeb;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id_povoleni_sluzeb")
+    private Integer idPovoleniSluzeb;
+    @Column(name = "letajici")
+    private String letajici;
+    @Column(name = "typ_letadla")
+    private String typLetadla;
+    @Column(name = "typ_sluzby")
+    private String typSluzby;
 
     public PovoleniSluzeb() {
     }
 
-    public PovoleniSluzeb(PovoleniSluzebPK povoleniSluzebPK) {
-        this.povoleniSluzebPK = povoleniSluzebPK;
+    public PovoleniSluzeb(Integer idPovoleniSluzeb) {
+        this.idPovoleniSluzeb = idPovoleniSluzeb;
     }
 
-    public PovoleniSluzeb(PovoleniSluzebPK povoleniSluzebPK, boolean povoleno) {
-        this.povoleniSluzebPK = povoleniSluzebPK;
+    public PovoleniSluzeb(Integer idPovoleniSluzeb, boolean povoleno) {
+        this.idPovoleniSluzeb = idPovoleniSluzeb;
         this.povoleno = povoleno;
-    }
-
-    public PovoleniSluzeb(String letajici, String typLetadla, String typSluzby) {
-        this.povoleniSluzebPK = new PovoleniSluzebPK(letajici, typLetadla, typSluzby);
-    }
-
-    public PovoleniSluzebPK getPovoleniSluzebPK() {
-        return povoleniSluzebPK;
-    }
-
-    public void setPovoleniSluzebPK(PovoleniSluzebPK povoleniSluzebPK) {
-        this.povoleniSluzebPK = povoleniSluzebPK;
     }
 
     public boolean getPovoleno() {
@@ -81,34 +69,42 @@ public class PovoleniSluzeb implements Serializable {
         this.povoleno = povoleno;
     }
 
-    public LetajiciSluzby getLetajiciSluzby() {
-        return letajiciSluzby;
+    public Integer getIdPovoleniSluzeb() {
+        return idPovoleniSluzeb;
     }
 
-    public void setLetajiciSluzby(LetajiciSluzby letajiciSluzby) {
-        this.letajiciSluzby = letajiciSluzby;
+    public void setIdPovoleniSluzeb(Integer idPovoleniSluzeb) {
+        this.idPovoleniSluzeb = idPovoleniSluzeb;
     }
 
-    public TypyLetadel getTypyLetadel() {
-        return typyLetadel;
+    public String getLetajici() {
+        return letajici;
     }
 
-    public void setTypyLetadel(TypyLetadel typyLetadel) {
-        this.typyLetadel = typyLetadel;
+    public void setLetajici(String letajici) {
+        this.letajici = letajici;
     }
 
-    public TypySluzeb getTypySluzeb() {
-        return typySluzeb;
+    public String getTypLetadla() {
+        return typLetadla;
     }
 
-    public void setTypySluzeb(TypySluzeb typySluzeb) {
-        this.typySluzeb = typySluzeb;
+    public void setTypLetadla(String typLetadla) {
+        this.typLetadla = typLetadla;
+    }
+
+    public String getTypSluzby() {
+        return typSluzby;
+    }
+
+    public void setTypSluzby(String typSluzby) {
+        this.typSluzby = typSluzby;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (povoleniSluzebPK != null ? povoleniSluzebPK.hashCode() : 0);
+        hash += (idPovoleniSluzeb != null ? idPovoleniSluzeb.hashCode() : 0);
         return hash;
     }
 
@@ -119,7 +115,7 @@ public class PovoleniSluzeb implements Serializable {
             return false;
         }
         PovoleniSluzeb other = (PovoleniSluzeb) object;
-        if ((this.povoleniSluzebPK == null && other.povoleniSluzebPK != null) || (this.povoleniSluzebPK != null && !this.povoleniSluzebPK.equals(other.povoleniSluzebPK))) {
+        if ((this.idPovoleniSluzeb == null && other.idPovoleniSluzeb != null) || (this.idPovoleniSluzeb != null && !this.idPovoleniSluzeb.equals(other.idPovoleniSluzeb))) {
             return false;
         }
         return true;
@@ -127,7 +123,7 @@ public class PovoleniSluzeb implements Serializable {
 
     @Override
     public String toString() {
-        return "cz.seznam.wenaaa.is243vrl.entityClasses.PovoleniSluzeb[ povoleniSluzebPK=" + povoleniSluzebPK + " ]";
+        return "cz.seznam.wenaaa.is243vrl.entityClasses.PovoleniSluzeb[ idPovoleniSluzeb=" + idPovoleniSluzeb + " ]";
     }
     
 }

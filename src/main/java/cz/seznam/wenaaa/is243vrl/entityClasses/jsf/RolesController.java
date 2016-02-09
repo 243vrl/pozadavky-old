@@ -1,9 +1,9 @@
 package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 
-import cz.seznam.wenaaa.is243vrl.entityClasses.TypyPozadavku;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Roles;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypyPozadavkuFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.RolesFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,23 +19,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@Named("typyPozadavkuController")
+@Named("rolesController")
 @SessionScoped
-public class TypyPozadavkuController implements Serializable {
+public class RolesController implements Serializable {
 
     @EJB
-    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypyPozadavkuFacade ejbFacade;
-    private List<TypyPozadavku> items = null;
-    private TypyPozadavku selected;
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.RolesFacade ejbFacade;
+    private List<Roles> items = null;
+    private Roles selected;
 
-    public TypyPozadavkuController() {
+    public RolesController() {
     }
 
-    public TypyPozadavku getSelected() {
+    public Roles getSelected() {
         return selected;
     }
 
-    public void setSelected(TypyPozadavku selected) {
+    public void setSelected(Roles selected) {
         this.selected = selected;
     }
 
@@ -45,36 +45,36 @@ public class TypyPozadavkuController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private TypyPozadavkuFacade getFacade() {
+    private RolesFacade getFacade() {
         return ejbFacade;
     }
 
-    public TypyPozadavku prepareCreate() {
-        selected = new TypyPozadavku();
+    public Roles prepareCreate() {
+        selected = new Roles();
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("TypyPozadavkuCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("RolesCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("TypyPozadavkuUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("RolesUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("TypyPozadavkuDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("RolesDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<TypyPozadavku> getItems() {
+    public List<Roles> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -109,38 +109,38 @@ public class TypyPozadavkuController implements Serializable {
         }
     }
 
-    public TypyPozadavku getTypyPozadavku(java.lang.String id) {
+    public Roles getRoles(java.lang.Integer id) {
         return getFacade().find(id);
     }
 
-    public List<TypyPozadavku> getItemsAvailableSelectMany() {
+    public List<Roles> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<TypyPozadavku> getItemsAvailableSelectOne() {
+    public List<Roles> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = TypyPozadavku.class)
-    public static class TypyPozadavkuControllerConverter implements Converter {
+    @FacesConverter(forClass = Roles.class)
+    public static class RolesControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TypyPozadavkuController controller = (TypyPozadavkuController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "typyPozadavkuController");
-            return controller.getTypyPozadavku(getKey(value));
+            RolesController controller = (RolesController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "rolesController");
+            return controller.getRoles(getKey(value));
         }
 
-        java.lang.String getKey(String value) {
-            java.lang.String key;
-            key = value;
+        java.lang.Integer getKey(String value) {
+            java.lang.Integer key;
+            key = Integer.valueOf(value);
             return key;
         }
 
-        String getStringKey(java.lang.String value) {
+        String getStringKey(java.lang.Integer value) {
             StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
@@ -151,11 +151,11 @@ public class TypyPozadavkuController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof TypyPozadavku) {
-                TypyPozadavku o = (TypyPozadavku) object;
-                return getStringKey(o.getPozadavek());
+            if (object instanceof Roles) {
+                Roles o = (Roles) object;
+                return getStringKey(o.getIdRoles());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), TypyPozadavku.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Roles.class.getName()});
                 return null;
             }
         }

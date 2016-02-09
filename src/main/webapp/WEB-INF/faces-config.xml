@@ -8,26 +8,21 @@
             <base-name>/Bundle</base-name>
             <var>bundle</var>
         </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
+        <managed-bean>
+            <managed-bean-name>usersController</managed-bean-name>
+            <managed-bean-class>cz.seznam.wenaaa.is243vrl.entityClasses.jsf.UsersController</managed-bean-class>
+            <managed-bean-scope>session</managed-bean-scope>
+        </managed-bean>
+
+        <managed-bean>
+            <managed-bean-name>letajiciSluzbyController</managed-bean-name>
+            <managed-bean-class>cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController</managed-bean-class>
+            <managed-bean-scope>session</managed-bean-scope>
+            <managed-property>
+                <property-name>usersController</property-name>
+                <value>#{usersController}</value>
+            </managed-property>
+        </managed-bean>
         <resource-bundle>
             <base-name>/Bundle</base-name>
             <var>bundle</var>

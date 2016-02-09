@@ -43,9 +43,7 @@ public class TypySluzeb implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "popis")
     private String popis;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "typySluzeb")
-    private Collection<PovoleniSluzeb> povoleniSluzebCollection;
-
+    
     public TypySluzeb() {
     }
 
@@ -67,15 +65,6 @@ public class TypySluzeb implements Serializable {
 
     public void setPopis(String popis) {
         this.popis = popis;
-    }
-
-    @XmlTransient
-    public Collection<PovoleniSluzeb> getPovoleniSluzebCollection() {
-        return povoleniSluzebCollection;
-    }
-
-    public void setPovoleniSluzebCollection(Collection<PovoleniSluzeb> povoleniSluzebCollection) {
-        this.povoleniSluzebCollection = povoleniSluzebCollection;
     }
 
     @Override
@@ -102,5 +91,6 @@ public class TypySluzeb implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.TypySluzeb[ id=" + id + " ]";
     }
+
     
 }

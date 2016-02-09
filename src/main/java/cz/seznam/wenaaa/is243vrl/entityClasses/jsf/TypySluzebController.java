@@ -3,7 +3,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.TypySluzeb;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.TypySluzebFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypySluzebFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,13 +19,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-
 @Named("typySluzebController")
 @SessionScoped
 public class TypySluzebController implements Serializable {
 
-
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.TypySluzebFacade ejbFacade;
+    @EJB
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypySluzebFacade ejbFacade;
     private List<TypySluzeb> items = null;
     private TypySluzeb selected;
 
@@ -122,7 +121,7 @@ public class TypySluzebController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=TypySluzeb.class)
+    @FacesConverter(forClass = TypySluzeb.class)
     public static class TypySluzebControllerConverter implements Converter {
 
         @Override
@@ -130,7 +129,7 @@ public class TypySluzebController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TypySluzebController controller = (TypySluzebController)facesContext.getApplication().getELResolver().
+            TypySluzebController controller = (TypySluzebController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "typySluzebController");
             return controller.getTypySluzeb(getKey(value));
         }

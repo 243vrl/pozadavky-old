@@ -5,15 +5,17 @@
  */
 package cz.seznam.wenaaa.is243vrl.entityClasses;
 
+import cz.seznam.wenaaa.utils.HashedPasswordGenerator;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -42,8 +44,7 @@ public class Users implements Serializable {
     @Size(max = 260)
     @Column(name = "passwd")
     private String passwd;
-    @ManyToMany(mappedBy = "usersCollection")
-    private Collection<TypyRoles> typyRolesCollection;
+    
 
     public Users() {
     }
@@ -65,17 +66,9 @@ public class Users implements Serializable {
     }
 
     public void setPasswd(String passwd) {
-        this.passwd = passwd;
+        this.passwd = HashedPasswordGenerator.generateHash(passwd);
     }
 
-    @XmlTransient
-    public Collection<TypyRoles> getTypyRolesCollection() {
-        return typyRolesCollection;
-    }
-
-    public void setTypyRolesCollection(Collection<TypyRoles> typyRolesCollection) {
-        this.typyRolesCollection = typyRolesCollection;
-    }
 
     @Override
     public int hashCode() {
@@ -101,5 +94,5 @@ public class Users implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.Users[ username=" + username + " ]";
     }
-    
+
 }

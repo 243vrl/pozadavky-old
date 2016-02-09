@@ -3,7 +3,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.TypyLetadel;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.TypyLetadelFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypyLetadelFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,13 +19,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-
 @Named("typyLetadelController")
 @SessionScoped
 public class TypyLetadelController implements Serializable {
 
-
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.TypyLetadelFacade ejbFacade;
+    @EJB
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.TypyLetadelFacade ejbFacade;
     private List<TypyLetadel> items = null;
     private TypyLetadel selected;
 
@@ -122,7 +121,7 @@ public class TypyLetadelController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=TypyLetadel.class)
+    @FacesConverter(forClass = TypyLetadel.class)
     public static class TypyLetadelControllerConverter implements Converter {
 
         @Override
@@ -130,7 +129,7 @@ public class TypyLetadelController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TypyLetadelController controller = (TypyLetadelController)facesContext.getApplication().getELResolver().
+            TypyLetadelController controller = (TypyLetadelController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "typyLetadelController");
             return controller.getTypyLetadel(getKey(value));
         }

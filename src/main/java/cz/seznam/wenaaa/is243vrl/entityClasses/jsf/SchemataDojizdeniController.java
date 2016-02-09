@@ -3,7 +3,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.SchemataDojizdeni;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.SchemataDojizdeniFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.SchemataDojizdeniFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,13 +19,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-
 @Named("schemataDojizdeniController")
 @SessionScoped
 public class SchemataDojizdeniController implements Serializable {
 
-
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.SchemataDojizdeniFacade ejbFacade;
+    @EJB
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.SchemataDojizdeniFacade ejbFacade;
     private List<SchemataDojizdeni> items = null;
     private SchemataDojizdeni selected;
 
@@ -122,7 +121,7 @@ public class SchemataDojizdeniController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=SchemataDojizdeni.class)
+    @FacesConverter(forClass = SchemataDojizdeni.class)
     public static class SchemataDojizdeniControllerConverter implements Converter {
 
         @Override
@@ -130,7 +129,7 @@ public class SchemataDojizdeniController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            SchemataDojizdeniController controller = (SchemataDojizdeniController)facesContext.getApplication().getELResolver().
+            SchemataDojizdeniController controller = (SchemataDojizdeniController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "schemataDojizdeniController");
             return controller.getSchemataDojizdeni(getKey(value));
         }

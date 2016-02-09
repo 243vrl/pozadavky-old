@@ -23,6 +23,8 @@
         </h:head>
 
         <h:body>
+            <p:growl id="growl" life="3000" />
+
             <p:dialog position="center" visible="#{loggedBean.authorizationError}"
                       header="Moc si troufáš!" draggable="false" resizable="false"
                       modal="true">
@@ -61,25 +63,19 @@
 
             <p:layout fullPage="true">
 
-                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
-                    <ui:include src="#{menuNavBean.nadpis}" />
-                </p:layoutUnit>
-
-
+                
                 <p:layoutUnit position="west" size="210" header="" collapsible="true">
                     <h:form>
                         <p:menu>
                             <p:submenu label="Administrace" rendered="#{loggedBean.loggedAsAdmin}">
-                                <p:menuitem value="Uživatelé" actionListener="#{menuNavBean.setNavCenter('/admin/users/List.xhtml')}" update=":centerPanel" />
-                                <p:menuitem value="Nový uživatel"/>
+                                <p:menuitem value="Uživatelé" />
                                 <p:menuitem value="Odstranění uživatele"/>
                                 <p:menuitem value="Změna uživatele"/>
                             </p:submenu>
                             <p:submenu label="Plánování" rendered="#{loggedBean.logged}">
-                                <p:menuitem value="Administrace sloužících" rendered="#{loggedBean.loggedAsScheduler}"/>
-                                <p:menuitem value="Požadavky"  rendered="#{loggedBean.loggedAsBFU}"/>
-                                <p:menuitem value="Úprava Požadavků" rendered="#{loggedBean.loggedAsScheduler}" />
-                                <p:menuitem value="Naplánuj"  rendered="#{loggedBean.loggedAsScheduler}"/>
+                                <p:menuitem value="Administrace sloužících" rendered="#{loggedBean.loggedAsScheduler}" />
+                                <p:menuitem value="Požadavky"  rendered="#{loggedBean.loggedAsBFU}" outcome="/users/pozadavky/List"/>
+                                <p:menuitem value="Naplánuj" rendered="#{loggedBean.loggedAsScheduler}" outcome="/scheduler/pozadavky/prechodPlan"/>
                                 <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsScheduler}"/>
                             </p:submenu>
                             <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
@@ -97,20 +93,81 @@
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center" id="centerPanel">
-                    <p:panel  rendered="#{loggedBean.logged}">
-                        <ui:include src="#{menuNavBean.navCenter}" />
-                    </p:panel>
                     
-
+                    <ui:insert name="body"/>
+                                  
                 </p:layoutUnit>
 
             </p:layout>
 
-
-
-
-            
         </h:body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

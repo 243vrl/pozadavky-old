@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/index.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPozadavkyTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
+                <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
+                <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
+                <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic()}" var="item"
+                                 rowKey="#{item[0]}"
+                                 rowIndexVar="rowIndex"
+                                 >
+                    <f:facet name="header">
+                        <p:commandLink rendered="#{pozadavkyBean.renderedCommnandLink()?'true':'false'}" style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic datalist" actionListener="#{pozadavkyBean.uberM()}">
+                            &laquo;
+                        </p:commandLink>
+                        <p:commandLink rendered="#{pozadavkyBean.renderedCommnandLink()?'false':'true'}" style="font-weight: bold; font-size: 110% !important; color: grey; cursor: default">
+                            &laquo;
+                        </p:commandLink>
+                        &emsp;
+                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{pozadavkyBean.proMesic()}"/>
+                        &emsp;
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic datalist" actionListener="#{pozadavkyBean.pridejM()}">
+                            &raquo;
+                        </p:commandLink>
+                    </f:facet>
+                    <p:columns id="sloupce" value="#{pozadavkyBean.columns}" var="column" columnIndexVar="colIndex"
+                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
+                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}">
+                        <f:facet name="header">
+                            <h:outputText value="#{column.header}"/>
+                        </f:facet>
+                        <p:outputLabel value="______" style="width:100%; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 1)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
+                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 2)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
+                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 3)}"/>
+                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #808080" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 4)}"/>
+                    </p:columns>
+                 
+                </p:dataTable>
+                <p:contextMenu id="cmenu" for="PozadavkyListForm">
+                    <p:menuitem value="X" actionListener="#{pozadavkyBean.ulozPozadavky('X')}" update="datalist"/>
+                    <p:menuitem value="ŘD" actionListener="#{pozadavkyBean.ulozPozadavky('ŘD')}" update="datalist"/>
+                    <p:menuitem value="SC" actionListener="#{pozadavkyBean.ulozPozadavky('SC')}" update="datalist"/>
+                    <p:menuitem value="SV" actionListener="#{pozadavkyBean.ulozPozadavky('SV')}" update="datalist"/>
+                    <p:menuitem value="Vynulovat" actionListener="#{pozadavkyBean.ulozPozadavky('')}" update="datalist"/>
+                </p:contextMenu>  
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

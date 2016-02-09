@@ -39,24 +39,18 @@ public class Sluzby implements Serializable {
     @Column(name = "datum")
     @Temporal(TemporalType.DATE)
     private Date datum;
-    @JoinColumn(name = "ld", referencedColumnName = "letajici")
-    @ManyToOne
-    private LetajiciSluzby ld;
-    @JoinColumn(name = "lk", referencedColumnName = "letajici")
-    @ManyToOne
-    private LetajiciSluzby lk;
-    @JoinColumn(name = "lp", referencedColumnName = "letajici")
-    @ManyToOne
-    private LetajiciSluzby lp;
-    @JoinColumn(name = "sd", referencedColumnName = "letajici")
-    @ManyToOne
-    private LetajiciSluzby sd;
-    @JoinColumn(name = "sk", referencedColumnName = "letajici")
-    @ManyToOne
-    private LetajiciSluzby sk;
-    @JoinColumn(name = "sp", referencedColumnName = "letajici")
-    @ManyToOne
-    private LetajiciSluzby sp;
+    @Column(name = "ld")
+    private String ld;
+    @Column(name = "lk")
+    private String lk;
+    @Column(name = "lp")
+    private String lp;
+    @Column(name = "sd")
+    private String sd;
+    @Column(name = "sk")
+    private String sk;
+    @Column(name = "sp")
+    private String sp;
 
     public Sluzby() {
     }
@@ -73,51 +67,51 @@ public class Sluzby implements Serializable {
         this.datum = datum;
     }
 
-    public LetajiciSluzby getLd() {
+    public String getLd() {
         return ld;
     }
 
-    public void setLd(LetajiciSluzby ld) {
+    public void setLd(String ld) {
         this.ld = ld;
     }
 
-    public LetajiciSluzby getLk() {
+    public String getLk() {
         return lk;
     }
 
-    public void setLk(LetajiciSluzby lk) {
+    public void setLk(String lk) {
         this.lk = lk;
     }
 
-    public LetajiciSluzby getLp() {
+    public String getLp() {
         return lp;
     }
 
-    public void setLp(LetajiciSluzby lp) {
+    public void setLp(String lp) {
         this.lp = lp;
     }
 
-    public LetajiciSluzby getSd() {
+    public String getSd() {
         return sd;
     }
 
-    public void setSd(LetajiciSluzby sd) {
+    public void setSd(String sd) {
         this.sd = sd;
     }
 
-    public LetajiciSluzby getSk() {
+    public String getSk() {
         return sk;
     }
 
-    public void setSk(LetajiciSluzby sk) {
+    public void setSk(String sk) {
         this.sk = sk;
     }
 
-    public LetajiciSluzby getSp() {
+    public String getSp() {
         return sp;
     }
 
-    public void setSp(LetajiciSluzby sp) {
+    public void setSp(String sp) {
         this.sp = sp;
     }
 

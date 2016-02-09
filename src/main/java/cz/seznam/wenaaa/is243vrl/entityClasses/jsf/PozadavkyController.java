@@ -3,9 +3,15 @@ package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.PozadavkyFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Users;
+import cz.seznam.wenaaa.utils.Kalendar;
 
 import java.io.Serializable;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +24,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 
 
 @Named("pozadavkyController")
@@ -25,9 +32,11 @@ import javax.faces.convert.FacesConverter;
 public class PozadavkyController implements Serializable {
 
 
-    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClassesBeans.PozadavkyFacade ejbFacade;
+    @EJB private cz.seznam.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade ejbFacade;
     private List<Pozadavky> items = null;
     private Pozadavky selected;
+    
+    
 
     public PozadavkyController() {
     }
@@ -41,11 +50,9 @@ public class PozadavkyController implements Serializable {
     }
 
     protected void setEmbeddableKeys() {
-            selected.getPozadavkyPK().setLetajici(selected.getLetajiciSluzby().getLetajici());
     }
 
     protected void initializeEmbeddableKey() {
-        selected.setPozadavkyPK(new cz.seznam.wenaaa.is243vrl.entityClasses.PozadavkyPK());
     }
 
     private PozadavkyFacade getFacade() {
@@ -83,6 +90,10 @@ public class PozadavkyController implements Serializable {
         }
         return items;
     }
+    
+    public int dnuVmesici(int rok, int mesic){
+        return Kalendar.dnuVMesici(rok, mesic);
+    }
 
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
@@ -112,7 +123,7 @@ public class PozadavkyController implements Serializable {
         }
     }
 
-    public Pozadavky getPozadavky(cz.seznam.wenaaa.is243vrl.entityClasses.PozadavkyPK id) {
+    public Pozadavky getPozadavky(java.lang.Integer id) {
         return getFacade().find(id);
     }
 
@@ -127,9 +138,6 @@ public class PozadavkyController implements Serializable {
     @FacesConverter(forClass=Pozadavky.class)
     public static class PozadavkyControllerConverter implements Converter {
 
-        private static final String SEPARATOR = "#";
-        private static final String SEPARATOR_ESCAPED = "\\#";
-
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
@@ -140,20 +148,15 @@ public class PozadavkyController implements Serializable {
             return controller.getPozadavky(getKey(value));
         }
 
-        cz.seznam.wenaaa.is243vrl.entityClasses.PozadavkyPK getKey(String value) {
-            cz.seznam.wenaaa.is243vrl.entityClasses.PozadavkyPK key;
-            String values[] = value.split(SEPARATOR_ESCAPED);
-            key = new cz.seznam.wenaaa.is243vrl.entityClasses.PozadavkyPK();
-            key.setDatum(java.sql.Date.valueOf(values[0]));
-            key.setLetajici(values[1]);
+        java.lang.Integer getKey(String value) {
+            java.lang.Integer key;
+            key = Integer.valueOf(value);
             return key;
         }
 
-        String getStringKey(cz.seznam.wenaaa.is243vrl.entityClasses.PozadavkyPK value) {
+        String getStringKey(java.lang.Integer value) {
             StringBuilder sb = new StringBuilder();
-            sb.append(value.getDatum());
-            sb.append(SEPARATOR);
-            sb.append(value.getLetajici());
+            sb.append(value);
             return sb.toString();
         }
 
@@ -164,7 +167,7 @@ public class PozadavkyController implements Serializable {
             }
             if (object instanceof Pozadavky) {
                 Pozadavky o = (Pozadavky) object;
-                return getStringKey(o.getPozadavkyPK());
+                return getStringKey(o.getIdPozadavky());
             } else {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Pozadavky.class.getName()});
                 return null;

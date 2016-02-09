@@ -39,9 +39,7 @@ public class TypyLetadel implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "id")
     private String id;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "typyLetadel")
-    private Collection<PovoleniSluzeb> povoleniSluzebCollection;
-
+    
     public TypyLetadel() {
     }
 
@@ -55,15 +53,6 @@ public class TypyLetadel implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @XmlTransient
-    public Collection<PovoleniSluzeb> getPovoleniSluzebCollection() {
-        return povoleniSluzebCollection;
-    }
-
-    public void setPovoleniSluzebCollection(Collection<PovoleniSluzeb> povoleniSluzebCollection) {
-        this.povoleniSluzebCollection = povoleniSluzebCollection;
     }
 
     @Override
@@ -90,5 +79,5 @@ public class TypyLetadel implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.TypyLetadel[ id=" + id + " ]";
     }
-    
+
 }

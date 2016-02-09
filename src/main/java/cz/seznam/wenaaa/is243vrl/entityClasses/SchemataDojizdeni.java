@@ -38,9 +38,7 @@ public class SchemataDojizdeni implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "dojizdeni")
     private String dojizdeni;
-    @OneToMany(mappedBy = "dojizdeni")
-    private Collection<LetajiciSluzby> letajiciSluzbyCollection;
-
+    
     public SchemataDojizdeni() {
     }
 
@@ -56,14 +54,6 @@ public class SchemataDojizdeni implements Serializable {
         this.dojizdeni = dojizdeni;
     }
 
-    @XmlTransient
-    public Collection<LetajiciSluzby> getLetajiciSluzbyCollection() {
-        return letajiciSluzbyCollection;
-    }
-
-    public void setLetajiciSluzbyCollection(Collection<LetajiciSluzby> letajiciSluzbyCollection) {
-        this.letajiciSluzbyCollection = letajiciSluzbyCollection;
-    }
 
     @Override
     public int hashCode() {
@@ -89,5 +79,5 @@ public class SchemataDojizdeni implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.SchemataDojizdeni[ dojizdeni=" + dojizdeni + " ]";
     }
-    
+
 }
