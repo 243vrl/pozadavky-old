@@ -176,7 +176,7 @@ public class PlanovaniBean implements Serializable{
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:12,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
+                SluzboDen pom = naplanuj(i<3?1:25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
                 if (vysledek == null || (pom != null && pom.getMaxsluzebpresmiru() < vysledek.getMaxsluzebpresmiru())){
                     vysledek = pom;
                 }
@@ -196,7 +196,7 @@ public class PlanovaniBean implements Serializable{
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:12,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
+                SluzboDen pom = naplanuj(i<3?1:25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
                 if (pom != null){
                     vysledek = pom;
                     ukonci = false;
