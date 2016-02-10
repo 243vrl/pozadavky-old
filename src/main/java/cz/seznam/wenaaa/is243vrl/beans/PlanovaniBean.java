@@ -237,14 +237,14 @@ public class PlanovaniBean implements Serializable{
                 return null;
             }
             //System.out.print("----------------------------");
-            if(i==1){
+            /*if(i==1){
                 text = text+String.format("\n%d", i++);
             }
             else{
                 String[] arrText = text.split("\n");
                 arrText[arrText.length-1]=String.format("%d", i++);
                 text = String.join("\n", arrText);
-            }
+            }*/
             
             rozvijeny = sluzbodny.get(0);
             for(SluzboDen pom: sluzbodny){
