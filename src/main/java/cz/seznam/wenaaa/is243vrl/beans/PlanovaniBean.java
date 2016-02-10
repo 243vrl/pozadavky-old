@@ -176,7 +176,7 @@ public class PlanovaniBean implements Serializable{
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?10:30,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
+                SluzboDen pom = naplanuj(i<3?1:12,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
                 if (vysledek == null || (pom != null && pom.getMaxsluzebpresmiru() < vysledek.getMaxsluzebpresmiru())){
                     vysledek = pom;
                 }
@@ -196,7 +196,7 @@ public class PlanovaniBean implements Serializable{
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?10:30,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
+                SluzboDen pom = naplanuj(i<3?1:12,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
                 if (pom != null){
                     vysledek = pom;
                     ukonci = false;
@@ -226,8 +226,10 @@ public class PlanovaniBean implements Serializable{
         SluzboDen rozvijeny = null;
         //for(int i = 0; i < 1000; i++){
         long ted = System.currentTimeMillis();
+        int i = 0;
         while(true){
-            if((System.currentTimeMillis()-ted)>trvani*1000){
+            if(trvani*1000 < i++){
+            //if((System.currentTimeMillis()-ted)>trvani*1000){
                 //System.out.format("stop cas, hloubka: %d", rozvijeny.getHloubka());
                 return null;
             }
@@ -235,6 +237,15 @@ public class PlanovaniBean implements Serializable{
                 return null;
             }
             //System.out.print("----------------------------");
+            /*if(i==0){
+                text = text+String.format("\n%d", i++);
+            }
+            else{
+                String[] arrText = text.split("\n");
+                arrText[arrText.length-1]=String.format("%d", i++);
+                text = String.join("\n", arrText);
+            }*/
+            
             rozvijeny = sluzbodny.get(0);
             for(SluzboDen pom: sluzbodny){
                 if(pom.jeMensiNezParam(rozvijeny,true)){
