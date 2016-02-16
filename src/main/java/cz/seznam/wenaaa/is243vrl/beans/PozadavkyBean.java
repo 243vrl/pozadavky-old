@@ -180,6 +180,14 @@ public class PozadavkyBean implements Serializable{
         populateColumns();
     }
     
+    public void prenastavMesic(){
+        Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
+        GregorianCalendar pomGC = new GregorianCalendar();
+        pomGC.setTime((Date) q1.getSingleResult());
+        if(pomGC.get(Calendar.MONTH)>gc.get(Calendar.MONTH)){
+            gc.set(Calendar.MONTH, pomGC.get(Calendar.MONTH));
+        }
+    }
     public boolean renderedCommnandLink(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
         GregorianCalendar pomGC = new GregorianCalendar();
@@ -316,10 +324,10 @@ public class PozadavkyBean implements Serializable{
     }
     
     public void prechodPlanovani(){
-        System.out.format("mesic pred: %d",gc.get(Calendar.MONTH));
+        //System.out.format("mesic pred: %d",gc.get(Calendar.MONTH));
         gc = new GregorianCalendar();
         gc.add(Calendar.MONTH, 1);
-        System.out.format("mesic po: %d",gc.get(Calendar.MONTH));
+        //System.out.format("mesic po: %d",gc.get(Calendar.MONTH));
         try {
             
             FacesContext.getCurrentInstance().getExternalContext().redirect("List.xhtml");

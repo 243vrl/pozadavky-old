@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://openfaces.org/">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Požadavky</title>
+                <h:outputStylesheet name="css/jsfcrud.css"/>
+            </f:facet>
+            <style type="text/css">
+                .ui-widget, .ui-widget .ui-widget {
+                    font-size: 92% !important;}
+                .ui-menu-list, .ui-menuitem, .ui-menu, .ui-layout, .ui-layout-doc, .ui-layout-unit, .ui-layout-wrap, .ui-layout-bd, .ui-layout-hd{
+                    border: none !important;}
+            </style>
+
+        </h:head>
+
+        <h:body>
+            #{loggedBean.prechodNeprihlasen()}
+            <p:growl id="growl" life="3000" />
+
+            
+
+            <p:layout fullPage="true">
+
+                
+                <p:layoutUnit position="west" size="210" header="" collapsible="true">
+                    <h:form>
+                        <p:menu>
+                            <p:submenu label="Administrace" rendered="#{loggedBean.loggedAsAdmin}">
+                                <p:menuitem value="Uživatelé" />
+                                <p:menuitem value="Odstranění uživatele"/>
+                                <p:menuitem value="Změna uživatele"/>
+                            </p:submenu>
+                            <p:submenu label="Plánování" rendered="#{loggedBean.logged}">
+                                <p:menuitem value="Administrace sloužících" rendered="#{loggedBean.loggedAsScheduler}" />
+                                <p:menuitem value="Požadavky"  rendered="#{loggedBean.loggedAsBFU}" outcome="/users/pozadavky/List"/>
+                                <p:menuitem value="Naplánuj" rendered="#{loggedBean.loggedAsScheduler}" outcome="/scheduler/pozadavky/prechodPlan"/>
+                                <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsScheduler}"/>
+                            </p:submenu>
+                            <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
+                                <p:menuitem value="Služby" />
+                                <p:menuitem value="Statistiky"/>
+                                <p:menuitem value="Rozkazy" />
+                            </p:submenu>
+                            <p:submenu label="Osobní" rendered="#{loggedBean.logged}">
+                                <p:menuitem value="Osobní údaje" />
+                                <p:menuitem value="Změna hesla" outcome="/common/zmenahesla"/>
+                                <p:menuitem value="Odhlásit" action="#{logoutBean.logout()}" />
+                            </p:submenu>
+                        </p:menu>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center" id="centerPanel">
+                    
+                    <ui:insert name="body"/>
+                                  
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </f:view>
+</html>
+

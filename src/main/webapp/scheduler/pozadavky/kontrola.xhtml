@@ -6,7 +6,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition template="/index.xhtml">
+    <ui:composition template="/common/index.xhtml">
 
 
         <ui:define name="title">
@@ -40,6 +40,7 @@
                                        onmouseup="rc_mouseup([{name:'jmeno',value:#{item[0]}},{name:'den',value:#{colIndex}}])"/>
                         <p:outputLabel value="______" style="width:100%;  margin-left: -10px; font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCellvII(colIndex, item[colIndex], 2)}" 
                                        onmousedown="rc_click([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
+                        <p:outputLabel value="X" style="font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{colIndex == 0? 'True':'False'}"/>
                         <f:facet name="footer">
                             <h:outputText value="#{colIndex == 0? 'X':column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: #{colIndex == 0? '150%':'%92'} !important"/>
                         </f:facet>

@@ -6,17 +6,24 @@
 package cz.seznam.wenaaa.is243vrl.beans;
 
 import cz.seznam.wenaaa.utils.HashedPasswordGenerator;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
@@ -25,8 +32,8 @@ import javax.transaction.UserTransaction;
  * @author vena
  */
 @Named(value = "loggedBean")
-@RequestScoped
-public class LoggedBean {
+@SessionScoped
+public class LoggedBean  implements Serializable{
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
     @Inject
@@ -38,20 +45,34 @@ public class LoggedBean {
     public String getNoveHeslo() {
         return "";
     }
-
+    
     public void setNoveHeslo(String noveHeslo) {
-        String loginName = getLoginName();
-        String nh = HashedPasswordGenerator.generateHash(noveHeslo);
-        try{
+        try {
+            String loginName = getLoginName();
+            String nh = HashedPasswordGenerator.generateHash(noveHeslo);
             ut.begin();
             em.joinTransaction();
             Query qUpd = em.createNativeQuery("UPDATE users SET passwd = ? WHERE username = ?");
             qUpd.setParameter(1, nh);
             qUpd.setParameter(2, loginName);
             qUpd.executeUpdate();
+            ut.commit();
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage fm = new FacesMessage("Heslo úspěšně změněno","");
+            context.addMessage("hesloZmeneno", fm);
         } catch (NotSupportedException ex) {
             Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SystemException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RollbackException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (HeuristicMixedException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (HeuristicRollbackException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateException ex) {
             Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -65,14 +86,32 @@ public class LoggedBean {
      * @return the login
      */
     public String getLogged() {
+        return isLogged()?"true":"false";
+    }
+    public boolean isLogged(){
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();
         logged = request.getRemoteUser();
-        return (logged == null) ? "false": "true";
+        return (logged == null) ? false: true;
     }
-    
-    
+    public void prechodNeprihlasen(){
+        if (isLogged()) return;
+        try {
+            
+            FacesContext.getCurrentInstance().getExternalContext().redirect("faces/login.xhtml");
+        } catch (IOException ex) {
+            Logger.getLogger(PozadavkyBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void prechodCommonIndex(){
+        try {
+            
+            FacesContext.getCurrentInstance().getExternalContext().redirect("faces/common/index.xhtml");
+        } catch (IOException ex) {
+            Logger.getLogger(PozadavkyBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * @return the notlogged
      */
@@ -91,6 +130,9 @@ public class LoggedBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();
+        if(request.isUserInRole("ADMIN")){
+            return "true";
+        }
         return request.isUserInRole("BFU") ? "true":"false";
     }
 
@@ -101,6 +143,9 @@ public class LoggedBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();
+        if(request.isUserInRole("ADMIN")){
+            return "true";
+        }
         return request.isUserInRole("HEAD") ? "true":"false";
     }
 
@@ -111,6 +156,9 @@ public class LoggedBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();
+        if(request.isUserInRole("ADMIN")){
+            return "true";
+        }
         return request.isUserInRole("SCHEDULER") ? "true":"false";
     }
 
@@ -131,6 +179,9 @@ public class LoggedBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();
+        if(request.isUserInRole("ADMIN")){
+            return "true";
+        }
         return request.isUserInRole("STAFF") ? "true":"false";
     }
 

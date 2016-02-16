@@ -24,13 +24,14 @@ public class LogoutBean {
     private static Logger log = Logger.getLogger(LogoutBean.class.getName());
 
     public String logout(){
-        String destination = "/index?faces-redirect=true";
+        String destination = "/login?faces-redirect=true";
         
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();
         try{
             request.logout();
+            context.getExternalContext().invalidateSession();
         }catch(ServletException e){
             log.log(Level.SEVERE,"Failed to logout user",e);
             destination = "/loginerror?faces-redirect=true";

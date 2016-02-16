@@ -150,7 +150,7 @@ public class PlanovaniBean implements Serializable{
         naplanovano = false;
         navrhSluzeb = null;
         text = "Uzaviram db...";
-        //uzavriDB();
+        uzavriDB();
         text = text+"\nNačítám seznam sloužících...";
         Slouzici seznamSlouzicich = nactiSlouzici();
         
