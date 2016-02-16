@@ -59,8 +59,8 @@ public class PlanovaniBean implements Serializable{
     private SluzboDen navrhSluzeb;
     private String jmenoProZmenu;
     private int denProZmenu;
-    private final int MAX_PLANOVAT = 7;
-    private final int MIN_PLANOVAT = 3;
+    public static final int MAX_PLANOVAT = 7;
+    public static final int MIN_PLANOVAT = 3;
 
     public boolean isNaplanovano() {
         return naplanovano;
@@ -636,7 +636,8 @@ public class PlanovaniBean implements Serializable{
             //planovat = celkemsluzeb*(volnychdnu)/(celkemvolnychdnu)
             float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.getPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
             float maxSluzeb;
-            maxSluzeb = (planovat > MAX_PLANOVAT)?MAX_PLANOVAT:planovat;
+            planovat = (planovat > MAX_PLANOVAT)?MAX_PLANOVAT:planovat;
+            maxSluzeb = planovat;
             maxSluzeb = (maxSluzeb < MIN_PLANOVAT)?MIN_PLANOVAT:maxSluzeb;
             Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=?");
             q5.setParameter(1, gc, TemporalType.DATE);
