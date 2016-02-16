@@ -184,9 +184,13 @@ public class PozadavkyBean implements Serializable{
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
         GregorianCalendar pomGC = new GregorianCalendar();
         pomGC.setTime((Date) q1.getSingleResult());
+        //System.out.println("prenastav mesic");
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         if(pomGC.get(Calendar.MONTH)>gc.get(Calendar.MONTH)){
             gc.set(Calendar.MONTH, pomGC.get(Calendar.MONTH));
         }
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        populateColumns();
     }
     public boolean renderedCommnandLink(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");

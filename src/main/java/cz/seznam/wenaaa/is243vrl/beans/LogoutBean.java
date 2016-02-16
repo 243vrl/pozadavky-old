@@ -24,7 +24,7 @@ public class LogoutBean {
     private static Logger log = Logger.getLogger(LogoutBean.class.getName());
 
     public String logout(){
-        String destination = "/login?faces-redirect=true";
+        String destination = "/common/index?faces-redirect=true";
         
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 

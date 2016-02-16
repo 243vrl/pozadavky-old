@@ -44,7 +44,7 @@
                         </f:facet>
                         <p:outputLabel value="______" style="width:100%; margin-left: -10px; font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 1)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 2)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
-                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 3)}"/>
+                        <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000; font-weight: bold" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 3)}"/>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #808080" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 4)}"/>
                         <p:outputLabel value="X" style="font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{colIndex == 0? 'True':'False'}"/>
                         <f:facet name="footer">
