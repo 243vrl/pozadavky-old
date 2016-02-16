@@ -66,7 +66,7 @@ public class PlanovaniBean implements Serializable{
         return naplanovano;
     }
     public boolean isNenaplanovano() {
-        return naplanovano;
+        return nenaplanovano;
     }
     public String proLastColumn(String letajici){
         int[] pom = pocetSluzeb(letajici, navrhSluzeb);
@@ -182,8 +182,8 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
-            for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:12,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
+            for(int i = 0; i < 2; i++){
+                SluzboDen pom = naplanuj(i<1?1:10,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
                 if (vysledek == null || (pom != null && pom.getMaxsluzebpresmiru() < vysledek.getMaxsluzebpresmiru())){
                     vysledek = pom;
                 }
@@ -202,8 +202,8 @@ public class PlanovaniBean implements Serializable{
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
-            for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:12,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
+            for(int i = 0; i < 2; i++){
+                SluzboDen pom = naplanuj(i<1?1:10,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
                 if (pom != null){
                     vysledek = pom;
                     ukonci = false;
@@ -233,7 +233,6 @@ public class PlanovaniBean implements Serializable{
         }   
         SluzboDen rozvijeny = null;
         //for(int i = 0; i < 1000; i++){
-        long ted = System.currentTimeMillis();
         int i = 0;
         while(true){
             if(trvani*1000 < i++){
@@ -245,18 +244,18 @@ public class PlanovaniBean implements Serializable{
                 return null;
             }
             //System.out.print("----------------------------");
-            /*if(i==0){
-                text = text+String.format("\n%d", i++);
-            }
-            else{
+            try{
                 String[] arrText = text.split("\n");
-                arrText[arrText.length-1]=String.format("%d", i++);
+                Integer.parseInt(arrText[arrText.length-1]);
+                arrText[arrText.length-1]=String.format("%d", i);
                 text = String.join("\n", arrText);
-            }*/
-            
+            }
+            catch(NumberFormatException ex){
+                text = text+String.format("\n%d", i);
+            }
             rozvijeny = sluzbodny.get(0);
             for(SluzboDen pom: sluzbodny){
-                if(pom.jeMensiNezParam(rozvijeny,true)){
+                if(pom.jeMensiNezParam(rozvijeny,true,seznamSlouzicich)){
                     rozvijeny = pom;
                 }
             }
@@ -711,7 +710,7 @@ public class PlanovaniBean implements Serializable{
             int[] pom = pocetSluzeb(ss.getJmeno(), vysledek);
             float zmena = ss.getPlanujSluzeb()-pom[0]-pom[1];
             if(Math.abs(pom[0]+pom[1]-ss.getPlanujSluzeb())>=1){
-                text = text + String.format("\n%s: planovat: %f / skutecnost %d / pridat %d",ss.getJmeno(),ss.getPlanujSluzeb(),(pom[0]+pom[1]),(int)zmena);
+                text = text + String.format("\n%s: planovat: %.2f / skutecnost %d / pridat %d",ss.getJmeno(),ss.getPlanujSluzeb(),(pom[0]+pom[1]),(int)zmena);
             }
             
             ss = ss.getDalsi();
