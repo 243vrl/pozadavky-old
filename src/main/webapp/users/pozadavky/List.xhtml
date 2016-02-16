@@ -37,14 +37,17 @@
                     </f:facet>
                     <p:columns id="sloupce" value="#{pozadavkyBean.columns}" var="column" columnIndexVar="colIndex"
                                width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}">
+                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}; padding-bottom: 0 !important; padding-top: 0 !important;">
                         <f:facet name="header">
-                            <h:outputText value="#{column.header}"/>
+                            <h:outputText value="#{colIndex == 0? 'X':column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: #{colIndex == 0? '150%':'%92'} !important"/>
                         </f:facet>
-                        <p:outputLabel value="______" style="width:100%; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 1)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
+                        <p:outputLabel value="______" style="width:100%; margin-left: -10px; font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 1)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 2)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 3)}"/>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #808080" rendered="#{pozadavkyBean.renderedCell(item[0], colIndex, item[colIndex], 4)}"/>
+                        <f:facet name="footer">
+                            <h:outputText value="#{colIndex == 0? 'X':column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: #{colIndex == 0? '150%':'%92'} !important"/>
+                        </f:facet>
                     </p:columns>
                  
                 </p:dataTable>
