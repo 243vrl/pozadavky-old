@@ -85,7 +85,7 @@
                             </p:submenu>
                             <p:submenu label="Osobní" rendered="#{loggedBean.logged}">
                                 <p:menuitem value="Osobní údaje" />
-                                <p:menuitem value="Změna hesla"/>
+                                <p:menuitem value="Změna hesla" outcome="/common/zmenahesla"/>
                                 <p:menuitem value="Odhlásit" action="#{logoutBean.logout()}" />
                             </p:submenu>
                         </p:menu>

@@ -5,10 +5,20 @@
  */
 package cz.seznam.wenaaa.is243vrl.beans;
 
+import cz.seznam.wenaaa.utils.HashedPasswordGenerator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 /**
  *
@@ -17,17 +27,34 @@ import javax.servlet.http.HttpServletRequest;
 @Named(value = "loggedBean")
 @RequestScoped
 public class LoggedBean {
+    @PersistenceContext(unitName = "pozadavky_PU")
+    private EntityManager em;
+    @Inject
+    UserTransaction ut;
     private String logged;
     private String notlogged;
-    private String loggedAsBFU;
-    private String loggedAsHead;
-    private String loggedAsScheduler;
-    private String loggedAsAdmin;
-    private String loggedAsStaff;
-    private String loginName;
-    private String loginError;
-    private String authorizationError;
-    
+    private String noveHeslo;
+
+    public String getNoveHeslo() {
+        return "";
+    }
+
+    public void setNoveHeslo(String noveHeslo) {
+        String loginName = getLoginName();
+        String nh = HashedPasswordGenerator.generateHash(noveHeslo);
+        try{
+            ut.begin();
+            em.joinTransaction();
+            Query qUpd = em.createNativeQuery("UPDATE users SET passwd = ? WHERE username = ?");
+            qUpd.setParameter(1, nh);
+            qUpd.setParameter(2, loginName);
+            qUpd.executeUpdate();
+        } catch (NotSupportedException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SystemException ex) {
+            Logger.getLogger(LoggedBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * Creates a new instance of pokusBean
      */
