@@ -67,21 +67,26 @@ public class PlanovaniBean implements Serializable{
         return naplanovano;
     }
     public String proLastColumn(String letajici){
-        SluzboDen pom = navrhSluzeb;
-        int sarek = 0;
-        int zasranek = 0;
+        int[] pom = pocetSluzeb(letajici, navrhSluzeb);
+        return String.format("%d: %d+%d", pom[0]+pom[1],pom[0],pom[1]);
+    }
+    public int[] pocetSluzeb(String letajici, SluzboDen sd){
+        SluzboDen pom = sd;
+        int[] vratka = new int[2];
+        vratka[0] = 0;
+        vratka[1] = 0;
         while(pom != null){
             if(pom.getSlouzici().equals(letajici)){
                 if(pom.getTypsluzby().startsWith("L")){
-                    zasranek++;
+                    vratka[0]++;
                 }
                 else{
-                    sarek++;
+                    vratka[1]++;
                 }
             }
             pom = pom.getNahoru();
         }
-        return String.format("%d: %d+%d", sarek+zasranek,zasranek,sarek);
+        return vratka;
     }
     public String getText() {
         return text;
@@ -205,6 +210,7 @@ public class PlanovaniBean implements Serializable{
             if(ukonci) break;
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
+        vypisKolik(vysledek,seznamSlouzicich);
         navrhSluzeb = vysledek;
         /*while(vysledek != null){
             System.out.print(vysledek);
@@ -627,8 +633,9 @@ public class PlanovaniBean implements Serializable{
             q4.setParameter(3, (String)letajici);
             //planovat = celkemsluzeb*(volnychdnu)/(celkemvolnychdnu)
             float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.getPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
-            planovat = (planovat > 8)?8:planovat;
-            planovat = (planovat < 3)?3:planovat;
+            float maxSluzeb;
+            maxSluzeb = (planovat > 8)?8:planovat;
+            maxSluzeb = (maxSluzeb < 3)?3:maxSluzeb;
             Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=?");
             q5.setParameter(1, gc, TemporalType.DATE);
             q5.setParameter(2, gc1, TemporalType.DATE);
@@ -657,8 +664,8 @@ public class PlanovaniBean implements Serializable{
                 //System.out.print(nemuze);
             }
             //System.out.format("%s : %f : %d", (String)mozny_slouzici,planovat,nemuze);
-            if(vratka == null) vratka = new Slouzici((String)letajici,nemuze,planovat);
-            else vratka.addSlouzici(new Slouzici((String)letajici,nemuze,planovat));
+            if(vratka == null) vratka = new Slouzici((String)letajici,nemuze,maxSluzeb,planovat);
+            else vratka.addSlouzici(new Slouzici((String)letajici,nemuze,maxSluzeb,planovat));
         }
         return vratka;
     }
@@ -695,6 +702,20 @@ public class PlanovaniBean implements Serializable{
         }
     }
 
+    private void vypisKolik(SluzboDen vysledek, Slouzici seznamSlouzicich) {
+        Slouzici ss = seznamSlouzicich;
+        while(ss != null){
+            int[] pom = pocetSluzeb(ss.getJmeno(), vysledek);
+            float zmena = ss.getPlanujSluzeb()-pom[0]-pom[1];
+            if(Math.abs(pom[0]+pom[1]-ss.getPlanujSluzeb())>=1){
+                text = text + String.format("\n%s: planovat: %f / skutecnost %d / pridat %d",ss.getJmeno(),ss.getPlanujSluzeb(),(pom[0]+pom[1]),(int)zmena);
+            }
+            
+            ss = ss.getDalsi();
+        }
+    }
+
+    
     static public class ColumnModelvII implements Serializable {
         private String header;
         private String property;

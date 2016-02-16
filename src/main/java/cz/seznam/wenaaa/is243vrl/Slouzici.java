@@ -12,16 +12,18 @@ package cz.seznam.wenaaa.is243vrl;
  * @author vena
  */
 public class Slouzici {
-    String jmeno;
+    private String jmeno;
     long plneVolneDny;//pro binarni operace plny 1, volny 0
     float maxPocetSluzeb;
+    private float planujSluzeb;
     Slouzici dalsi;
 
-    public Slouzici(String jmeno, long plneVolneDny, float maxPocetSluzeb) {
+    public Slouzici(String jmeno, long plneVolneDny, float maxPocetSluzeb, float planujSluzeb) {
         this.dalsi = null;
         this.jmeno = jmeno;
         this.plneVolneDny = plneVolneDny;
         this.maxPocetSluzeb = maxPocetSluzeb;
+        this.planujSluzeb = planujSluzeb;
     }
     
     public void addSlouzici(Slouzici sl){
@@ -44,7 +46,7 @@ public class Slouzici {
         Slouzici pom = this;
         do{
             //System.out.format("%s/%s:%b", jmeno,pom.jmeno,pom.jmeno.equals(jmeno));
-            if(pom.jmeno.equals(jmeno))return pom.plneVolneDny;
+            if(pom.getJmeno().equals(jmeno))return pom.plneVolneDny;
             pom = pom.dalsi;
         }while(pom != null);
         //System.out.format("nevyslo");
@@ -54,7 +56,7 @@ public class Slouzici {
     public float getMaxPocetSluzeb(String jmeno) {
         Slouzici pom = this;
         do{
-            if(pom.jmeno.equals(jmeno))return pom.maxPocetSluzeb;
+            if(pom.getJmeno().equals(jmeno))return pom.maxPocetSluzeb;
             pom = pom.dalsi;
         }while(pom != null);
         throw new IllegalArgumentException();
@@ -62,7 +64,21 @@ public class Slouzici {
 
     @Override
     public String toString() {
-        return "Slouzici{" + "jmeno=" + jmeno + ", plneVolneDny=" + plneVolneDny + ", maxPocetSluzeb=" + maxPocetSluzeb + '}';
+        return "Slouzici{" + "jmeno=" + getJmeno() + ", plneVolneDny=" + plneVolneDny + ", maxPocetSluzeb=" + maxPocetSluzeb + '}';
+    }
+
+    /**
+     * @return the planujSluzeb
+     */
+    public float getPlanujSluzeb() {
+        return planujSluzeb;
+    }
+
+    /**
+     * @return the jmeno
+     */
+    public String getJmeno() {
+        return jmeno;
     }
     
 }
