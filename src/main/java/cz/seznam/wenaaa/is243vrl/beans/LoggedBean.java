@@ -99,7 +99,7 @@ public class LoggedBean  implements Serializable{
         if (isLogged()) return;
         try {
             
-            //FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+            //FacesContext.getCurrentInstance().getExternalContext().redirect("common/index.xhtml"); zachovat pri merge
             FacesContext.getCurrentInstance().getExternalContext().redirect("common/index.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(PozadavkyBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,7 +107,7 @@ public class LoggedBean  implements Serializable{
     }
     public void prechodCommonIndex(){
         try {
-            
+            //FacesContext.getCurrentInstance().getExternalContext().redirect("common/index.xhtml"); zachovat pri merge
             FacesContext.getCurrentInstance().getExternalContext().redirect("common/index.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(PozadavkyBean.class.getName()).log(Level.SEVERE, null, ex);
