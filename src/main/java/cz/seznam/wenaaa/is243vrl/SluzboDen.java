@@ -5,6 +5,7 @@
  */
 package cz.seznam.wenaaa.is243vrl;
 
+import cz.seznam.wenaaa.is243vrl.beans.PlanovaniBean;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -157,7 +158,7 @@ public class SluzboDen {
             if(pocetNedel > this.maxpocetnedel) this.maxpocetnedel = pocetNedel;
             if(pocetPatku > this.maxpocetpatku) this.maxpocetpatku = pocetPatku;
             float pocetSluzebPresMiru = (pocetSluzeb>seznamSlouzicich.getMaxPocetSluzeb(slouzici))?pocetSluzeb - seznamSlouzicich.getMaxPocetSluzeb(slouzici):0;
-            pocetSluzebPresMiru = pocetSluzeb>8?pocetSluzeb:pocetSluzebPresMiru;
+            pocetSluzebPresMiru = pocetSluzeb>PlanovaniBean.MAX_PLANOVAT?pocetSluzeb:pocetSluzebPresMiru;
             if(pocetSluzebPresMiru > this.maxsluzebpresmiru )this.maxsluzebpresmiru = pocetSluzebPresMiru;
         }else{
             maxsluzebpresmiru = 0;
