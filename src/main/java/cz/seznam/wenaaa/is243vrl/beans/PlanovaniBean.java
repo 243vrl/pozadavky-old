@@ -93,7 +93,6 @@ public class PlanovaniBean implements Serializable{
     public String getText() {
         return text;
     }
-
     public PlanovaniBean() {
         planuj = true;
         naplanovano = false;
@@ -106,24 +105,23 @@ public class PlanovaniBean implements Serializable{
     public void nastavAtribZmeny(){
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String,String> params = context.getExternalContext().getRequestParameterMap();
-        System.out.format("parametry %s / %s",params.get("jmeno"),params.get("den") );
+        //System.out.format("parametry %s / %s",params.get("jmeno"),params.get("den") );
         jmenoProZmenu =lsc.getLetajici(Integer.parseInt(params.get("jmeno")));
         denProZmenu = Integer.parseInt(params.get("den"));
-        System.out.print("nastav atrib zmeny: "+jmenoProZmenu+"/"+String.valueOf(denProZmenu));
+        //System.out.print("nastav atrib zmeny: "+jmenoProZmenu+"/"+String.valueOf(denProZmenu));
     }
     public void zmenSluzbuZKontroly(String typSluzby){
-        System.out.print("menim sluzbu");
+        //System.out.print("menim sluzbu");
         SluzboDen pom = navrhSluzeb;
         while(pom != null){
             if(pom.getDen()==denProZmenu && pom.getTypsluzby().equals(typSluzby)){
                 pom.setSlouzici(jmenoProZmenu);
-                System.out.print("zmenneno");
+                //System.out.print("zmenneno");
                 break;
             }
             pom=pom.getNahoru();
         }
     }
-    
     public String dejSluzbuProKontrolu(String slouzici, int den){
         String vratka = "";
         SluzboDen pom = navrhSluzeb;
@@ -135,10 +133,6 @@ public class PlanovaniBean implements Serializable{
         }
         return vratka;
     }
-    public void setPlanuj() {
-        planuj = planuj?!planuj:planuj;
-    }
-    
     public void naplanuj(){
         int zvysovani = 0;
         SluzboDen vysledek = null;
@@ -183,7 +177,7 @@ public class PlanovaniBean implements Serializable{
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:10,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD);
+                SluzboDen pom = naplanuj(i<3?1:10,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
                 if (vysledek == null || (pom != null && pom.getMaxsluzebpresmiru() < vysledek.getMaxsluzebpresmiru())){
                     vysledek = pom;
                 }
@@ -200,18 +194,24 @@ public class PlanovaniBean implements Serializable{
         //zlepsovani
         mezPresMiru = vysledek.getMaxsluzebpresmiru();
         while(true){
+            int mezPresMiru2 = (int)mezPresMiru + 1;
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:10,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD);
+                SluzboDen pom = naplanuj(i<3?1:10,i<3?mezPresMiru:mezPresMiru2, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
                 if (pom != null){
                     vysledek = pom;
                     ukonci = false;
+                    if(pom.getMaxsluzebpresmiru()>mezPresMiru){
+                        ukonci = true;
+                    }                    
                 }
             }
             if(ukonci) break;
+            
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
+        text = text + "\n"+String.format("konecne max pres miru %f",vysledek.getMaxsluzebpresmiru());
         vypisKolik(vysledek,seznamSlouzicich);
         navrhSluzeb = vysledek;
         /*while(vysledek != null){
@@ -221,8 +221,7 @@ public class PlanovaniBean implements Serializable{
         text = text+"\ndone";
         naplanovano = true;
     }
-    
-    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, Slouzici seznamSlouzicich, List<PomSDClass> poradiSD){
+    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, Slouzici seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
         
         List<SluzboDen> sluzbodny = new ArrayList<>();
         for(String letajici: getPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
@@ -255,7 +254,7 @@ public class PlanovaniBean implements Serializable{
             }
             rozvijeny = sluzbodny.get(0);
             for(SluzboDen pom: sluzbodny){
-                if(pom.jeMensiNezParam(rozvijeny,true,seznamSlouzicich)){
+                if(pom.jeMensiNezParam(rozvijeny,naHloubku,seznamSlouzicich)){
                     rozvijeny = pom;
                 }
             }
@@ -276,7 +275,6 @@ public class PlanovaniBean implements Serializable{
             SluzboDen predchozi = rozvijeny;
             //System.out.format("rozbaluji: %s", rozvijeny);
             //System.out.format("%d : %s : %d",novaHloubka,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
-            boolean nejde = true;
             for(String letajici: getPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
                 SluzboDen pom = new SluzboDen(poradiSD.get(novaHloubka).den,poradiSD.get(novaHloubka).typSluzby,predchozi,letajici,seznamSlouzicich);
                 //System.out.print(pomS);
@@ -286,7 +284,6 @@ public class PlanovaniBean implements Serializable{
                 if (pom.getMaxpocetnedel()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetpatku()>mezPaSoNeSv) continue;
                 if(pom.isValid(seznamSlouzicich)){
-                    nejde = false;
                     sluzbodny.add(pom);
                 }
             }
@@ -626,12 +623,15 @@ public class PlanovaniBean implements Serializable{
         q2.setParameter(2, gc1, TemporalType.DATE);
         int pocetPozadavku = (Integer) q2.getSingleResult();
         //System.out.format("\tcelkem pozadavku...%d",pocetPozadavku);
-        Query q3 = em.createNativeQuery("SELECT letajici FROM letajici_sluzby ORDER BY poradi");
-        for(Object letajici: q3.getResultList()){
+        Query q3 = em.createNativeQuery("SELECT letajici, dojizdeni FROM letajici_sluzby ORDER BY poradi");
+        for(Object letajiciDojizdeni: q3.getResultList()){
+            Object[] ld = (Object[])letajiciDojizdeni;
+            String letajici = (String)ld[0];
+            String dojizdeni = (String)ld[1];
             Query q4 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE pozadavek NOT IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND datum BETWEEN ? AND ?  AND letajici=?");
             q4.setParameter(1, gc, TemporalType.DATE);
             q4.setParameter(2, gc1, TemporalType.DATE);
-            q4.setParameter(3, (String)letajici);
+            q4.setParameter(3, letajici);
             //planovat = celkemsluzeb*(volnychdnu)/(celkemvolnychdnu)
             float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.getPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
             float maxSluzeb;
@@ -641,7 +641,7 @@ public class PlanovaniBean implements Serializable{
             Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=?");
             q5.setParameter(1, gc, TemporalType.DATE);
             q5.setParameter(2, gc1, TemporalType.DATE);
-            q5.setParameter(3, (String)letajici);
+            q5.setParameter(3, letajici);
             long nemuze = 0;
             //System.out.print((String)letajici);
             for(Object pom: q5.getResultList()){
@@ -666,8 +666,8 @@ public class PlanovaniBean implements Serializable{
                 //System.out.print(nemuze);
             }
             //System.out.format("%s : %f : %d", (String)mozny_slouzici,planovat,nemuze);
-            if(vratka == null) vratka = new Slouzici((String)letajici,nemuze,maxSluzeb,planovat);
-            else vratka.addSlouzici(new Slouzici((String)letajici,nemuze,maxSluzeb,planovat));
+            if(vratka == null) vratka = new Slouzici(letajici,nemuze,maxSluzeb,planovat,dojizdeni);
+            else vratka.addSlouzici(new Slouzici(letajici,nemuze,maxSluzeb,planovat,dojizdeni));
         }
         return vratka;
     }
@@ -703,7 +703,6 @@ public class PlanovaniBean implements Serializable{
             return "";
         }
     }
-
     private void vypisKolik(SluzboDen vysledek, Slouzici seznamSlouzicich) {
         Slouzici ss = seznamSlouzicich;
         while(ss != null){
@@ -716,8 +715,115 @@ public class PlanovaniBean implements Serializable{
             ss = ss.getDalsi();
         }
     }
-
-    
+    private int[] dejHodnotySluzby(GregorianCalendar gc){
+        int[] vratka = {1,0,0,0,0};
+        boolean[] svatky = new boolean[2];
+        svatky[0] = Kalendar.jeSvatek(gc);
+        gc.add(Calendar.DAY_OF_MONTH, 1);
+        svatky[1] = Kalendar.jeSvatek(gc);
+        gc.add(Calendar.DAY_OF_MONTH, -1);
+        switch (gc.get(Calendar.DAY_OF_WEEK)){
+            case Calendar.SATURDAY: 
+                vratka[2]++;
+                break;
+            case Calendar.SUNDAY:
+                vratka[3]++;
+                if(svatky[1]) vratka[4]++;
+                break;
+            case Calendar.FRIDAY:
+                if(svatky[0]) vratka[4]++;
+                else vratka[1]++;
+                break;
+            default:
+                if(svatky[0]) vratka[4]++;
+                if(svatky[1]) vratka[4]++;
+                break;
+        }
+        return vratka;
+    }
+    public void ulozNaplanovane(){
+        if(naplanovano){
+            GregorianCalendar gc = new GregorianCalendar();
+            gc.set(Calendar.DAY_OF_MONTH,1);
+            gc.add(Calendar.MONTH, 1);
+            SluzboDen pom = navrhSluzeb;
+            while(pom != null){
+                gc.set(Calendar.DAY_OF_MONTH, pom.getDen());
+                ulozSluzbu(gc, pom.getTypsluzby(), pom.getSlouzici());
+                pom = pom.getNahoru();
+            }
+        }
+    }
+    public void ulozSluzbu(GregorianCalendar gc, String typSluzby, String letajici){
+        String staryLetajici = null;
+        int[] hodnotySluzby = null;
+        int[] hodnotyStary = new int[5];
+        int[] hodnotyNovy = new int[5];
+        Object[] result = null;
+        try {
+            ut.begin();
+            em.joinTransaction();
+            Query q1 = em.createNativeQuery("INSERT INTO sluzby (datum) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM sluzby WHERE datum=?)");
+            q1.setParameter(1, gc, TemporalType.DATE);
+            q1.setParameter(2, gc, TemporalType.DATE);
+            q1.executeUpdate();
+            
+            ut.commit();
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
+            Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try{
+            ut.begin();
+            em.joinTransaction();
+            try{
+                Query qStary = em.createNativeQuery("SELECT "+typSluzby.toLowerCase()+ " FROM sluzby WHERE datum = ?");
+                qStary.setParameter(1, gc, TemporalType.DATE);
+                staryLetajici = (String) qStary.getSingleResult();                
+            }catch(NoResultException e){
+                staryLetajici = null;
+            }
+            if(letajici.equals(staryLetajici)) {
+                ut.commit();
+                //System.out.print("rovnaj se");
+                return;
+            }
+            hodnotySluzby = dejHodnotySluzby(gc);
+            Query qHodnoty = em.createNativeQuery("SELECT pocet_sluzeb, pocet_patku, pocet_sobot, pocet_nedeli, pocet_vsednich_svatku FROM letajici_sluzby WHERE letajici = ?");
+            if(staryLetajici != null){
+                qHodnoty.setParameter(1, staryLetajici);
+                result = (Object[])qHodnoty.getSingleResult();
+                for(int i=0;i<hodnotySluzby.length;i++){
+                    hodnotyStary[i] = (int)result[i] - hodnotySluzby[i];
+                }
+            }
+            qHodnoty.setParameter(1, letajici);
+            result = (Object[])qHodnoty.getSingleResult();
+            for(int i=0;i<hodnotySluzby.length;i++){
+                hodnotyNovy[i] = (int)result[i] + hodnotySluzby[i];
+            }
+            Query qUpdate = em.createNativeQuery("UPDATE letajici_sluzby SET pocet_sluzeb = ?, pocet_patku = ?, pocet_sobot = ?, pocet_nedeli = ?, pocet_vsednich_svatku = ? WHERE letajici  = ?");
+            if(staryLetajici != null){
+                for(int i = 0; i<hodnotyStary.length;i++){
+                    qUpdate.setParameter(i+1, hodnotyStary[i]);
+                }
+                qUpdate.setParameter(6,staryLetajici);
+                qUpdate.executeUpdate();
+            }
+            for(int i = 0; i<hodnotyNovy.length;i++){
+                qUpdate.setParameter(i+1, hodnotyNovy[i]);
+            }
+            qUpdate.setParameter(6,letajici);
+            qUpdate.executeUpdate();
+            Query qUpdate2 = em.createNativeQuery("UPDATE sluzby SET "+typSluzby.toLowerCase()+" = ? WHERE datum = ?");
+            qUpdate2.setParameter(1, letajici);
+            qUpdate2.setParameter(2, gc, TemporalType.DATE);
+            qUpdate2.executeUpdate();
+            ut.commit();
+        }
+        catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
+            Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     static public class ColumnModelvII implements Serializable {
         private String header;
         private String property;

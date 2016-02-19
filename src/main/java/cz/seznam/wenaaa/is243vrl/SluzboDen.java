@@ -231,95 +231,12 @@ public class SluzboDen {
         }
         return vratka;
     }
-    
-    public boolean jeMensiNezParam(SluzboDen sd, boolean prubeh, Slouzici seznamSlouzicich){
-        if(prubeh){
-            /*{
-            System.out.format("%s je mensi na hloubku",this);
-            System.out.print("------------------------");
-            }*/ 
-            return ctverecChyb(this, seznamSlouzicich)<ctverecChyb(sd, seznamSlouzicich);
-            //return hloubka > sd.hloubka;
+    public boolean jeMensiNezParam(SluzboDen sd, boolean hloubka, Slouzici seznamSlouzicich){
+        if(hloubka){
+            return this.hloubka > sd.hloubka;
         }
-        /*{
-            System.out.print("------------------------");
-            System.out.format("porovnavam: %s",this);
-            System.out.format("s parametrem: %s", sd);
-            
-        }*/
-        if(getMaxsluzebpresmiru() < sd.getMaxsluzebpresmiru()) {
-            /*{
-                System.out.format("%s je mensi na maxsluzebpresmiru",this);
-                System.out.print("------------------------");
-            }*/
-            return true;
-        }
-        if(getMaxsluzebpresmiru() > sd.getMaxsluzebpresmiru()) {
-            /*{
-                System.out.format("%s je mensi na maxsluzebpresmiru",sd);
-                System.out.print("------------------------");
-            }*/
-            return false;
-        }
-        if(getMaxpocetsvatku() < sd.getMaxpocetsvatku()) {
-            /*{
-                System.out.format("%s je mensi na maxpocetsvatku",this);
-                System.out.print("------------------------");
-            }*/
-            return true;
-        }
-        if(getMaxpocetsvatku() > sd.getMaxpocetsvatku()) {
-            /*{
-                System.out.format("%s je mensi na maxpocetsvatku",sd);
-                System.out.print("------------------------");
-            }*/
-            return false;
-        }
-        if(getMaxpocetsobot() < sd.getMaxpocetsobot()) {
-            /*{
-                System.out.format("%d je mensi nez %d",this.maxpocetsobot,sd.maxpocetsobot);
-                System.out.print("------------------------");
-            }*/
-            return true;
-        }
-        if(getMaxpocetsobot() > sd.getMaxpocetsobot()) {
-            /*{
-                System.out.format("%d je vetsi nez %d",this.maxpocetsobot,sd.maxpocetsobot);
-                System.out.print("------------------------");
-            }*/
-            return false;
-        }
-        if(getMaxpocetnedel() < sd.getMaxpocetnedel()) {
-            /*{
-                System.out.format("%s je mensi na maxpocetnedel",this);
-                System.out.print("------------------------");
-            }*/
-            return true;
-        }
-        if(getMaxpocetnedel() > sd.getMaxpocetnedel()) {
-            /*{
-                System.out.format("%s je mensi na maxpocetnedel",sd);
-                System.out.print("------------------------");
-            }*/
-            return false;
-        }
-        if(getMaxpocetpatku() < sd.getMaxpocetpatku()) {
-            /*{
-                System.out.format("%s je mensi na maxpocetpatku",this);
-                System.out.print("------------------------");
-            }*/
-            return true;
-        }
-        if(getMaxpocetpatku() > sd.getMaxpocetpatku()) {
-            /*{
-                System.out.format("%s je mensi na maxpocetpatku",sd);
-                System.out.print("------------------------");
-            }*/
-            return false;
-        }
-        return false;
+        return ctverecChyb(this, seznamSlouzicich)<ctverecChyb(sd, seznamSlouzicich);
     }
-
     public int getHloubka() {
         return hloubka;
     }

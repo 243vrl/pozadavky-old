@@ -156,7 +156,6 @@ public class PozadavkyBean implements Serializable{
             this.indexLetajiciho = -1;
         }
     }
-    
     public String cellColor(int den){
         String vratka = "#ffffff";
         if (den == 0) return vratka;
@@ -170,7 +169,6 @@ public class PozadavkyBean implements Serializable{
         //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         return vratka;
     }
-    
     public void uberM(){
         gc.add(Calendar.MONTH, -1);
         populateColumns();
@@ -179,7 +177,6 @@ public class PozadavkyBean implements Serializable{
         gc.add(Calendar.MONTH, 1);
         populateColumns();
     }
-    
     public void prenastavMesic(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
         GregorianCalendar pomGC = new GregorianCalendar();
@@ -198,14 +195,12 @@ public class PozadavkyBean implements Serializable{
         pomGC.setTime((Date) q1.getSingleResult());
         return this.gc.get(Calendar.MONTH)>pomGC.get(Calendar.MONTH);
     }
-    
     public String renderedCellvII(int sloupec, String hodnota, int typ){
         if("".equals(hodnota) && typ == 2 && sloupec != 0) return "true";
         if((!"".equals(hodnota)) && typ == 1 && sloupec != 0) return "true";
         if(sloupec == 0 && typ == 3) return "true";
         return "false";
     }
-    
     public String renderedCell(String kdo, int sloupec, String hodnota, int typ){
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
@@ -231,37 +226,28 @@ public class PozadavkyBean implements Serializable{
         }
         return "false";
     }
-    
     public void setKonec(int konec) {
         this.konec = konec;
         
     }
-
     public int getZacatek() {
         return zacatek;
     }
-
     public void setZacatek(int zacatek) {
         this.zacatek = zacatek;
     }
-
     public String getVybranyTypPozadavku() {
         return vybranyTypPozadavku;
     }
-
     public void setVybranyTypPozadavku(String vybranyTypPozadavku) {
         this.vybranyTypPozadavku = vybranyTypPozadavku;
     }
-
     public String[] getVybranyLetajiciPozadavky() {
         return vybranyLetajiciPozadavky;
     }
-
     public void setVybranyLetajiciPozadavky(String[] vybranyLetajiciPozadavky) {
         this.vybranyLetajiciPozadavky = vybranyLetajiciPozadavky;
     }
-
-    
     /**
      * Creates a new instance of PozadavkyBean
      */
@@ -273,15 +259,9 @@ public class PozadavkyBean implements Serializable{
         //System.out.println("konstr");
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
     }
-    
-    
-    
-    
     public int dnu(){
         return Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);   
     }
-    
-    
     public String proMesic(){
         Map m = new HashMap();
         m.put(0, "Leden");
@@ -298,9 +278,6 @@ public class PozadavkyBean implements Serializable{
         m.put(11, "Prosinec");
         return (String)m.get(gc.get(Calendar.MONTH))+" "+new SimpleDateFormat("yyyy").format(gc.getTime());
     }
-    
-    
-    
     public List<List<String>> pozadavkyNaMesic(){
         List<List<String>> vratka = new ArrayList<>();
         letajici = lsc.getLetajici();
@@ -326,7 +303,6 @@ public class PozadavkyBean implements Serializable{
         gc.set(Calendar.DAY_OF_MONTH, 1);
         return vratka;
     }
-    
     public void prechodPlanovani(){
         //System.out.format("mesic pred: %d",gc.get(Calendar.MONTH));
         gc = new GregorianCalendar();
