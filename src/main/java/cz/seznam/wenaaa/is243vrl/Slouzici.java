@@ -12,18 +12,19 @@ package cz.seznam.wenaaa.is243vrl;
  * @author vena
  */
 public class Slouzici {
-    private String jmeno;
+    private final String jmeno;
     long plneVolneDny;//pro binarni operace plny 1, volny 0
     float maxPocetSluzeb;
-    private float planujSluzeb;
+    private final float planujSluzeb;
     Slouzici dalsi;
 
-    public Slouzici(String jmeno, long plneVolneDny, float maxPocetSluzeb, float planujSluzeb) {
+    public Slouzici(String jmeno, long plneVolneDny, float maxPocetSluzeb, float planujSluzeb, String dojizdeni) {
         this.dalsi = null;
         this.jmeno = jmeno;
         this.plneVolneDny = plneVolneDny;
         this.maxPocetSluzeb = maxPocetSluzeb;
         this.planujSluzeb = planujSluzeb;
+        
     }
     
     public void addSlouzici(Slouzici sl){
@@ -52,7 +53,6 @@ public class Slouzici {
         //System.out.format("nevyslo");
         throw new IllegalArgumentException();
     }
-
     public float getMaxPocetSluzeb(String jmeno) {
         Slouzici pom = this;
         do{
