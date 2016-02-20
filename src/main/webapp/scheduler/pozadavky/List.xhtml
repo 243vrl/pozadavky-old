@@ -14,23 +14,7 @@
         </ui:define>
 
         <ui:define name="body">
-            <p:dialog position="center" widgetVar="dlg"
-                      header="Plánuji..."
-                      resizable="false"
-                      closable="false"
-                      draggable="false">
-                <h:form>
-                    <p:inputTextarea  id="txt_area" rows="25" cols="70" disabled="true" value="#{planovaniBean.text}"
-                                      style=" background-color: #ffffff; color: #000000" autoResize="false"/>
-                    <br/>
-                    <p:button id="tlacitko" disabled="#{planovaniBean.naplanovano?'False':'True'}" value="Kontrola"
-                             onclick="PF('dlg').hide()" outcome="kontrola"/>
-                    <p:commandButton id="tlacitko1" disabled="#{planovaniBean.nenaplanovano?'False':'True'}" value="OK"
-                             onclick="PF('dlg').hide()"/>
-                    <p:poll interval="1"  update="txt_area tlacitko" async="True"/>
-                </h:form>
-                
-            </p:dialog>
+            
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
                 <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
                 <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
@@ -107,7 +91,7 @@
             </h:form>
             <br/>
             <h:form id="planovani">
-                <p:commandButton value="Naplánuj" actionListener="#{planovaniBean.naplanuj()}" 
+                <p:commandButton value="Naplánuj" actionListener="#{planovaniBean.naplanuj()}" id="btNaplanuj"
                                  onclick="PF('dlg').show()"/>
                 
             </h:form>
