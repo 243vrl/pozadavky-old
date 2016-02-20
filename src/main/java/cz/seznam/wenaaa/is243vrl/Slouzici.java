@@ -26,6 +26,10 @@ public class Slouzici {
         this.planujSluzeb = planujSluzeb;
         
     }
+
+    public void setMaxPocetSluzeb(float maxPocetSluzeb) {
+        this.maxPocetSluzeb = maxPocetSluzeb;
+    }
     
     public void addSlouzici(Slouzici sl){
         Slouzici pom  = this;
