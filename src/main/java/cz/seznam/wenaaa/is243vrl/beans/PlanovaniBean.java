@@ -231,7 +231,7 @@ public class PlanovaniBean implements Serializable{
         }
         text = text + "\n"+String.format("úprava na dojíždění> ");
         mezPresMiru = (float)0.1;
-        SluzboDen pomSD = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
+        SluzboDen pomSD = naplanuj(100,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
         if (pomSD != null){
             vysledek = pomSD;
         }
