@@ -176,12 +176,13 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
-            for(int i = 0; i < 4; i++){
+            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
+            /*for(int i = 0; i < 4; i++){
                 SluzboDen pom = naplanuj(i<3?1:10,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
                 if (vysledek == null || (pom != null && pom.getMaxsluzebpresmiru() < vysledek.getMaxsluzebpresmiru())){
                     vysledek = pom;
                 }
-            }
+            }*/
             if(vysledek == null){
                 if((1 & zvysovani++)==0){
                     mezPaSoNe++;
@@ -192,26 +193,38 @@ public class PlanovaniBean implements Serializable{
             }
         }
         //zlepsovani
-        mezPresMiru = vysledek.getMaxsluzebpresmiru();
+        mezPresMiru=vysledek.getMaxsluzebpresmiru();
         while(true){
-            int mezPresMiru2 = (int)mezPresMiru + 1;
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
-            for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:10,i<3?mezPresMiru:mezPresMiru2, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
-                if (pom != null){
-                    vysledek = pom;
-                    ukonci = false;
-                    if(pom.getMaxsluzebpresmiru()>mezPresMiru){
-                        ukonci = true;
-                    }                    
-                }
+            SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,false);
+            if (pom != null){
+                vysledek = pom;
+                ukonci = false;
             }
             if(ukonci) break;
-            
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
-        text = text + "\n"+String.format("konecne max pres miru %f",vysledek.getMaxsluzebpresmiru());
+        {
+            Slouzici pom = seznamSlouzicich;
+            while(pom != null){
+                int[] ps = this.pocetSluzeb(pom.getJmeno(), vysledek);
+                int psSoucet = ps[0]+ps[1];
+                float zmena = pom.getPlanujSluzeb()-psSoucet;
+                if (zmena > 1){
+                    psSoucet += (int) zmena;
+                }
+                pom.setMaxPocetSluzeb(psSoucet);
+                pom = pom.getDalsi();
+            }
+        }
+        text = text + "\n"+String.format("úprava na dojíždění> ");
+        mezPresMiru = (float)0.1;
+        SluzboDen pomSD = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
+        if (pomSD != null){
+            vysledek = pomSD;
+        }
+        
         vypisKolik(vysledek,seznamSlouzicich);
         navrhSluzeb = vysledek;
         /*while(vysledek != null){
