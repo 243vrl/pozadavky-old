@@ -56,6 +56,7 @@ public class PlanovaniBean implements Serializable{
     private String text;
     private boolean naplanovano;
     private boolean nenaplanovano;
+    private boolean vPlanovani;
     private SluzboDen navrhSluzeb;
     private String jmenoProZmenu;
     private int denProZmenu;
@@ -93,7 +94,13 @@ public class PlanovaniBean implements Serializable{
     public String getText() {
         return text;
     }
+
+    public boolean isvPlanovani() {
+        return vPlanovani;
+    }
+
     public PlanovaniBean() {
+        this.vPlanovani = false;
         planuj = true;
         naplanovano = false;
         text = "";
@@ -140,6 +147,7 @@ public class PlanovaniBean implements Serializable{
         int mezSv;
         float mezPresMiru = 2;
         List<PomSDClass> poradiSD = null;
+        vPlanovani = true;
         nenaplanovano = false;
         naplanovano = false;
         navrhSluzeb = null;
@@ -173,6 +181,7 @@ public class PlanovaniBean implements Serializable{
             if(mezPaSoNe > 5){
                 text = text +"\nNenalezeno, uprav požadavky/svoz.";
                 nenaplanovano = true;
+                vPlanovani = false;
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
@@ -233,6 +242,7 @@ public class PlanovaniBean implements Serializable{
         }*/
         text = text+"\ndone";
         naplanovano = true;
+        vPlanovani = false;
     }
     private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, Slouzici seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
         
