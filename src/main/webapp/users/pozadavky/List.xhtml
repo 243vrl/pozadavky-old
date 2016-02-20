@@ -18,7 +18,7 @@
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
                 <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
                 <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
-                <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic()}" var="item"
+                <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
                                  >

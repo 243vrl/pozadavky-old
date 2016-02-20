@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -76,9 +77,7 @@ public class PlanovaniBean implements Serializable{
     private int denProZmenu;
     private static final int MAX_PLANOVAT = 7;
     private static final int MIN_PLANOVAT = 3;
-    private static int pocetInstanci;
-    private final int cisloInstance;
-
+    
     public boolean isNaplanovano() {
         return naplanovano;
     }
@@ -121,10 +120,10 @@ public class PlanovaniBean implements Serializable{
         naplanovano = false;
         text = "";
         GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         this.dnySvozu = new boolean[Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)+1];
         populateColumns();
-        cisloInstance=++pocetInstanci;
     }
     public void nastavAtribZmeny(){
         FacesContext context = FacesContext.getCurrentInstance();
@@ -157,7 +156,7 @@ public class PlanovaniBean implements Serializable{
         }
         return vratka;
     }
-    public void naplanuj(){
+    public void naplanuj(ActionEvent e){
         int zvysovani = 0;
         SluzboDen vysledek = null;
         int mezPaSoNe = 1;
@@ -168,14 +167,14 @@ public class PlanovaniBean implements Serializable{
         nenaplanovano = false;
         naplanovano = false;
         navrhSluzeb = null;
-        text = String.format("(%d)Uzaviram db...",cisloInstance);
+        text = String.format("Uzaviram db...");
         uzavriDB();
-        text = text+String.format("\n(%d)Načítám seznam sloužících...",cisloInstance);
+        text = text+String.format("\nNačítám seznam sloužících...");
         Slouzici seznamSlouzicich = nactiSlouzici();
         
         try{
-            text = text+String.format("\n(%d)Načítám službodny...",cisloInstance);
-            poradiSD = getPoradiSluzbodnu(seznamSlouzicich);
+            text = text+String.format("\nNačítám službodny...");
+            poradiSD = dejPoradiSluzbodnu(seznamSlouzicich);
         }catch(NoResultException ex){
             text = text+"\n"+ex.getMessage();
             System.out.print(ex.getMessage());
@@ -183,6 +182,7 @@ public class PlanovaniBean implements Serializable{
             return;
         }
         GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH,1);
         switch(gc.get(Calendar.MONTH)){
             case Calendar.JULY:
@@ -194,8 +194,6 @@ public class PlanovaniBean implements Serializable{
                 break;
         }
         //uvodni hledani
-        text = text+"\n"+String.format("(%d)uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d",cisloInstance, 1, mezPaSoNe, mezSv);
-        vysledek = naplanuj(50,1, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
         while(vysledek == null){
             if(mezPaSoNe > 5){
                 text = text +"\nNenalezeno, uprav požadavky/svoz.";
@@ -203,14 +201,8 @@ public class PlanovaniBean implements Serializable{
                 vPlanovani = false;
                 return;
             }
-            text = text+"\n"+String.format("(%d)uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d",cisloInstance, mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
-            /*for(int i = 0; i < 4; i++){
-                SluzboDen pom = naplanuj(i<3?1:10,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
-                if (vysledek == null || (pom != null && pom.getMaxsluzebpresmiru() < vysledek.getMaxsluzebpresmiru())){
-                    vysledek = pom;
-                }
-            }*/
+            text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
             if(vysledek == null){
                 if((1 & zvysovani++)==0){
                     mezPaSoNe++;
@@ -222,9 +214,23 @@ public class PlanovaniBean implements Serializable{
         }
         //zlepsovani
         mezPresMiru=vysledek.getMaxsluzebpresmiru();
+        float minulaPresMiru = mezPresMiru;
         while(true){
             boolean ukonci = true;
-            text = text + "\n"+String.format("(%d)vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d",cisloInstance, mezPresMiru, mezPaSoNe, mezSv);
+            text = text + "\n"+String.format("vylepšování hloubka> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
+            if (pom != null){
+                vysledek = pom;
+                ukonci = false;
+            }
+            if(ukonci) break;
+            minulaPresMiru = mezPresMiru;
+            mezPresMiru = vysledek.getMaxsluzebpresmiru();
+        }
+        mezPresMiru = minulaPresMiru;
+        while(true){
+            boolean ukonci = true;
+            text = text + "\n"+String.format("vylepšování čtverec> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
             SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,false);
             if (pom != null){
                 vysledek = pom;
@@ -236,7 +242,7 @@ public class PlanovaniBean implements Serializable{
         {
             Slouzici pom = seznamSlouzicich;
             while(pom != null){
-                int[] ps = this.pocetSluzeb(pom.getJmeno(), vysledek);
+                int[] ps = pocetSluzeb(pom.getJmeno(), vysledek);
                 int psSoucet = ps[0]+ps[1];
                 float zmena = pom.getPlanujSluzeb()-psSoucet;
                 if (zmena > 1){
@@ -246,7 +252,7 @@ public class PlanovaniBean implements Serializable{
                 pom = pom.getDalsi();
             }
         }
-        text = text + "\n"+String.format("(%d)úprava> ",cisloInstance);
+        text = text + "\n"+String.format("úprava> ");
         mezPresMiru = (float)0.1;
         SluzboDen pomSD = naplanuj(300,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
         if (pomSD != null){
@@ -255,18 +261,14 @@ public class PlanovaniBean implements Serializable{
         
         vypisKolik(vysledek,seznamSlouzicich);
         navrhSluzeb = vysledek;
-        /*while(vysledek != null){
-            System.out.print(vysledek);
-            vysledek = vysledek.getNahoru();
-        }*/
-        text = text+String.format("\n(%d)done",cisloInstance);
+        text = text+String.format("\ndone");
         naplanovano = true;
         vPlanovani = false;
     }
     private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, Slouzici seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
         
         List<SluzboDen> sluzbodny = new ArrayList<>();
-        for(String letajici: getPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
+        for(String letajici: dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
             SluzboDen pom = new SluzboDen(poradiSD.get(0).den,poradiSD.get(0).typSluzby,null,letajici,seznamSlouzicich);
             if(pom.isValid(seznamSlouzicich)){
                 sluzbodny.add(pom);
@@ -317,7 +319,7 @@ public class PlanovaniBean implements Serializable{
             SluzboDen predchozi = rozvijeny;
             //System.out.format("rozbaluji: %s", rozvijeny);
             //System.out.format("%d : %s : %d",novaHloubka,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
-            for(String letajici: getPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
+            for(String letajici: dejPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
                 SluzboDen pom = new SluzboDen(poradiSD.get(novaHloubka).den,poradiSD.get(novaHloubka).typSluzby,predchozi,letajici,seznamSlouzicich);
                 //System.out.print(pomS);
                 if (pom.getMaxsluzebpresmiru()>=mezPresMiru) continue;
@@ -341,14 +343,14 @@ public class PlanovaniBean implements Serializable{
     public void setColumns(List<ColumnModelvII> columns) {
         this.columns = columns;
     }
-    private List<PomSDClass> getPoradiSluzbodnu(Slouzici seznamSlouzicich) {
+    private List<PomSDClass> dejPoradiSluzbodnu(Slouzici seznamSlouzicich) {
         //System.out.println("Nacitam poradi sluzbodnu...");
         List<PomSDClass> vratka = new ArrayList<>();
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
-        for(Integer den: getPoradiDnu()){
-            for(String typ_sluzby: getPoradiSluzeb()){
+        for(Integer den: dejPoradiDnu()){
+            for(String typ_sluzby: dejPoradiSluzeb()){
                 int volnych = 0;
                 gc.set(Calendar.DAY_OF_MONTH, den);
                 Query q1 = em.createNativeQuery("SELECT letajici FROM pozadavky WHERE datum = ? AND pozadavek = ?");
@@ -404,7 +406,7 @@ public class PlanovaniBean implements Serializable{
         }
         return vratka;
     }
-    private List<String> getPoradiSluzeb(){
+    private List<String> dejPoradiSluzeb(){
         List<String> vratka = new ArrayList<>();
         vratka.add("LD");
         vratka.add("SD");
@@ -412,7 +414,7 @@ public class PlanovaniBean implements Serializable{
         vratka.add("SK");
         return vratka;
     }
-    private List<Integer> getPoradiDnu(){
+    private List<Integer> dejPoradiDnu(){
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH,1);
@@ -457,6 +459,7 @@ public class PlanovaniBean implements Serializable{
     }
     private boolean vsedniDvojSvatek(int den){
         GregorianCalendar pomGC = new GregorianCalendar();
+        pomGC.set(Calendar.DAY_OF_MONTH,1);
         pomGC.add(Calendar.MONTH, 1);
         pomGC.set(Calendar.DAY_OF_MONTH, den);
         switch(pomGC.get(Calendar.DAY_OF_WEEK)){
@@ -471,6 +474,7 @@ public class PlanovaniBean implements Serializable{
     }
     private boolean vsedniSvatek(int den) {
         GregorianCalendar pomGC = new GregorianCalendar();
+        pomGC.set(Calendar.DAY_OF_MONTH,1);
         pomGC.add(Calendar.MONTH, 1);
         pomGC.set(Calendar.DAY_OF_MONTH, den);
         switch(pomGC.get(Calendar.DAY_OF_WEEK)){
@@ -488,8 +492,8 @@ public class PlanovaniBean implements Serializable{
     }
     private void uzavriDB() {
         GregorianCalendar pomGC = new GregorianCalendar();
-        pomGC.add(Calendar.MONTH, 2);
         pomGC.set(Calendar.DAY_OF_MONTH, 1);
+        pomGC.add(Calendar.MONTH, 2);
         try {
             ut.begin();
             em.joinTransaction();
@@ -501,9 +505,10 @@ public class PlanovaniBean implements Serializable{
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private List<String> getPoradiLetajicich(String typ_sluzby, int den, String dojizdeni) {
+    private List<String> dejPoradiLetajicich(String typ_sluzby, int den, String dojizdeni) {
         List<String> vratka = new ArrayList<>();
         GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         gc.set(Calendar.DAY_OF_MONTH, den);
         Query q1 = em.createNativeQuery("SELECT letajici FROM pozadavky WHERE datum = ? AND pozadavek = ?");
@@ -613,7 +618,7 @@ public class PlanovaniBean implements Serializable{
     public void vyberZacatek(){
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String,String> params = context.getExternalContext().getRequestParameterMap();
-        String myName1 = params.get("jmeno");
+        //String myName1 = params.get("jmeno");
         String myName2 = params.get("den");
         this.zacatek = Integer.parseInt(myName2);
         this.konec = Integer.parseInt(myName2);
@@ -622,7 +627,7 @@ public class PlanovaniBean implements Serializable{
     public void vyberKonec(){
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String,String> params = context.getExternalContext().getRequestParameterMap();
-        String myName1 = params.get("jmeno");
+        //String myName1 = params.get("jmeno");
         String myName2 = params.get("den");
         this.konec = Integer.parseInt(myName2);
         //System.out.format("Konec : %d",konec);
@@ -638,6 +643,7 @@ public class PlanovaniBean implements Serializable{
     private void populateColumns(){
         columns = new ArrayList<>();
         GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         columns.add(new ColumnModelvII("","mezera"));
         for(int i = 1; i <= Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);i++) {
@@ -646,12 +652,13 @@ public class PlanovaniBean implements Serializable{
     }
     private Slouzici nactiSlouzici() {
         Slouzici vratka = null;
-        List<String> poradiSluzeb = getPoradiSluzeb();
+        List<String> poradiSluzeb = dejPoradiSluzeb();
         //System.out.print("Nacitam slouzici...");
         Query q1 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM letajici_sluzby");
         int pocetSlouzicich = (Integer) q1.getSingleResult();
         //System.out.format("\tcelkem slouzicich...%d",pocetSlouzicich);
         GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         int pocetChlivku = pocetSlouzicich*Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);
         //System.out.format("\tcelkem chlivku...%d",pocetChlivku);
@@ -675,7 +682,7 @@ public class PlanovaniBean implements Serializable{
             q4.setParameter(2, gc1, TemporalType.DATE);
             q4.setParameter(3, letajici);
             //planovat = celkemsluzeb*(volnychdnu)/(celkemvolnychdnu)
-            float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.getPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
+            float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.dejPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
             float maxSluzeb;
             planovat = (planovat > getMAX_PLANOVAT())?getMAX_PLANOVAT():planovat;
             maxSluzeb = planovat;
