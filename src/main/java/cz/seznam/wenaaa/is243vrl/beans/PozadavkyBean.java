@@ -35,6 +35,7 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import java.sql.Date;
+import javax.annotation.PostConstruct;
 
 /**
  *
@@ -59,11 +60,16 @@ public class PozadavkyBean implements Serializable{
     private GregorianCalendar gc;
     private List<String> letajici;
     private int indexLetajiciho;
+    private List<List<String>> pozadavkyNaMesic;
     
     public int getKonec() {
         return konec;
     }
 
+    public List<List<String>> getPozadavkyNaMesic() {
+        return pozadavkyNaMesic;
+    }
+    
     public List<ColumnModel> getColumns() {
         return columns;
     }
@@ -118,11 +124,11 @@ public class PozadavkyBean implements Serializable{
         //HttpServletRequest request = 
         //        (HttpServletRequest) context.getExternalContext().getRequest();
         //String uzivatel = request.getRemoteUser();
-        //System.out.printf("%d",indexLetajiciho);
+        System.out.printf("%d",indexLetajiciho);
         if(indexLetajiciho==-1) return;
         String uzivatel = letajici.get(indexLetajiciho);
-        //System.out.print(poz);
-        //System.out.printf("%s: %s zacatek/konec: %d/%d",uzivatel,poz,zacatek,konec);
+        System.out.print(poz);
+        System.out.printf("%s: %s zacatek/konec: %d/%d",uzivatel,poz,zacatek,konec);
         if(this.konec != this.zacatek){
             if((poz.equals("LK"))||(poz.equals("LD"))||(poz.equals("SK"))||(poz.equals("SD"))) return;
         }
@@ -153,6 +159,7 @@ public class PozadavkyBean implements Serializable{
         }
         finally{
             gc.set(Calendar.DAY_OF_MONTH, 1);
+            pozadavkyNaMesic.set(indexLetajiciho, pozadavkyPro(uzivatel));
             this.indexLetajiciho = -1;
         }
     }
@@ -170,12 +177,16 @@ public class PozadavkyBean implements Serializable{
         return vratka;
     }
     public void uberM(){
+        gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, -1);
         populateColumns();
+        nactiPozadavkyNaMesic();
     }
     public void pridejM(){
+        gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
         populateColumns();
+        nactiPozadavkyNaMesic();
     }
     public void prenastavMesic(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
@@ -188,6 +199,7 @@ public class PozadavkyBean implements Serializable{
         }
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         populateColumns();
+        nactiPozadavkyNaMesic();
     }
     public boolean renderedCommnandLink(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
@@ -254,6 +266,7 @@ public class PozadavkyBean implements Serializable{
     public PozadavkyBean() {
         this.indexLetajiciho = -1;
         gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
         populateColumns();
         //System.out.println("konstr");
@@ -278,35 +291,47 @@ public class PozadavkyBean implements Serializable{
         m.put(11, "Prosinec");
         return (String)m.get(gc.get(Calendar.MONTH))+" "+new SimpleDateFormat("yyyy").format(gc.getTime());
     }
-    public List<List<String>> pozadavkyNaMesic(){
-        List<List<String>> vratka = new ArrayList<>();
-        letajici = lsc.getLetajici();
-        
+    private List<String> pozadavkyPro(String jmeno){
+        //System.out.print("nacitam pozadavky pro "+jmeno);
         Query q = em.createNativeQuery("SELECT pozadavek FROM pozadavky WHERE letajici = ? AND datum = ?");
-        for(String l: letajici){
-            List<String> pom = new ArrayList<>();
-            pom.add(l);
-            q.setParameter(1, l);
-            for(int i = 1; i <= dnu();i++){
-                String vysledek = "";
-                gc.set(Calendar.DAY_OF_MONTH, i);
-                q.setParameter(2, gc, TemporalType.DATE);
-                try{
-                    vysledek = (String)q.getSingleResult();
-                } catch(NoResultException e){
-                    //nic
-                }
-                pom.add(vysledek);
+        List<String> pom = new ArrayList<>();
+        pom.add(jmeno);
+        //String txt = jmeno;
+        q.setParameter(1, jmeno);
+        //System.out.println(""+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        for(int i = 1; i <= dnu();i++){
+            String vysledek = "";
+            gc.set(Calendar.DAY_OF_MONTH, i);
+            q.setParameter(2, gc, TemporalType.DATE);
+            try{
+                 vysledek = (String)q.getSingleResult();
+            } catch(NoResultException e){
+                //nic
             }
-            vratka.add(pom);
+            //txt += ";"+vysledek;
+            pom.add(vysledek);
+        }
+        //System.out.print(txt);
+        return pom;
+    }
+    
+    @PostConstruct
+    private void nactiPozadavkyNaMesic(){
+        List<List<String>> vratka = new ArrayList<>();
+        //System.out.print("postconstruct nacitam pozadavky");
+        letajici = lsc.getLetajici();
+        for(String l: letajici){
+            vratka.add(pozadavkyPro(l));
         }
         gc.set(Calendar.DAY_OF_MONTH, 1);
-        return vratka;
+        pozadavkyNaMesic = vratka;
     }
     public void prechodPlanovani(){
         //System.out.format("mesic pred: %d",gc.get(Calendar.MONTH));
         gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
+        nactiPozadavkyNaMesic();
         //System.out.format("mesic po: %d",gc.get(Calendar.MONTH));
         try {
             
