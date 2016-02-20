@@ -231,7 +231,7 @@ public class PlanovaniBean implements Serializable{
             minulaPresMiru = mezPresMiru;
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
-        mezPresMiru = minulaPresMiru;
+        mezPresMiru = minulaPresMiru+(float)0.01;
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování čtverec> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
