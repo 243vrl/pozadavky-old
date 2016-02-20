@@ -158,7 +158,7 @@ public class SluzboDen {
             if(pocetNedel > this.maxpocetnedel) this.maxpocetnedel = pocetNedel;
             if(pocetPatku > this.maxpocetpatku) this.maxpocetpatku = pocetPatku;
             float pocetSluzebPresMiru = (pocetSluzeb>seznamSlouzicich.getMaxPocetSluzeb(slouzici))?pocetSluzeb - seznamSlouzicich.getMaxPocetSluzeb(slouzici):0;
-            pocetSluzebPresMiru = pocetSluzeb>PlanovaniBean.MAX_PLANOVAT?pocetSluzeb:pocetSluzebPresMiru;
+            pocetSluzebPresMiru = pocetSluzeb>PlanovaniBean.getMAX_PLANOVAT()?pocetSluzeb:pocetSluzebPresMiru;
             if(pocetSluzebPresMiru > this.maxsluzebpresmiru )this.maxsluzebpresmiru = pocetSluzebPresMiru;
         }else{
             maxsluzebpresmiru = 0;

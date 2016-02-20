@@ -41,6 +41,20 @@ import javax.transaction.UserTransaction;
 @Named(value = "planovaniBean")
 @SessionScoped
 public class PlanovaniBean implements Serializable{
+
+    /**
+     * @return the MAX_PLANOVAT
+     */
+    public static int getMAX_PLANOVAT() {
+        return MAX_PLANOVAT;
+    }
+
+    /**
+     * @return the MIN_PLANOVAT
+     */
+    public static int getMIN_PLANOVAT() {
+        return MIN_PLANOVAT;
+    }
     
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
@@ -60,8 +74,10 @@ public class PlanovaniBean implements Serializable{
     private SluzboDen navrhSluzeb;
     private String jmenoProZmenu;
     private int denProZmenu;
-    public static final int MAX_PLANOVAT = 7;
-    public static final int MIN_PLANOVAT = 3;
+    private static final int MAX_PLANOVAT = 7;
+    private static final int MIN_PLANOVAT = 3;
+    private static int pocetInstanci;
+    private final int cisloInstance;
 
     public boolean isNaplanovano() {
         return naplanovano;
@@ -108,6 +124,7 @@ public class PlanovaniBean implements Serializable{
         gc.add(Calendar.MONTH, 1);
         this.dnySvozu = new boolean[Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)+1];
         populateColumns();
+        cisloInstance=++pocetInstanci;
     }
     public void nastavAtribZmeny(){
         FacesContext context = FacesContext.getCurrentInstance();
@@ -151,13 +168,13 @@ public class PlanovaniBean implements Serializable{
         nenaplanovano = false;
         naplanovano = false;
         navrhSluzeb = null;
-        text = "Uzaviram db...";
+        text = String.format("(%d)Uzaviram db...",cisloInstance);
         uzavriDB();
-        text = text+"\nNačítám seznam sloužících...";
+        text = text+String.format("\n(%d)Načítám seznam sloužících...",cisloInstance);
         Slouzici seznamSlouzicich = nactiSlouzici();
         
         try{
-            text = text+"\nNačítám službodny...";
+            text = text+String.format("\n(%d)Načítám službodny...",cisloInstance);
             poradiSD = getPoradiSluzbodnu(seznamSlouzicich);
         }catch(NoResultException ex){
             text = text+"\n"+ex.getMessage();
@@ -177,7 +194,7 @@ public class PlanovaniBean implements Serializable{
                 break;
         }
         //uvodni hledani
-        text = text+"\n"+String.format("uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d", 1, mezPaSoNe, mezSv);
+        text = text+"\n"+String.format("(%d)uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d",cisloInstance, 1, mezPaSoNe, mezSv);
         vysledek = naplanuj(50,1, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
         while(vysledek == null){
             if(mezPaSoNe > 5){
@@ -186,7 +203,7 @@ public class PlanovaniBean implements Serializable{
                 vPlanovani = false;
                 return;
             }
-            text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            text = text+"\n"+String.format("(%d)uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d",cisloInstance, mezPresMiru, mezPaSoNe, mezSv);
             vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
             /*for(int i = 0; i < 4; i++){
                 SluzboDen pom = naplanuj(i<3?1:10,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
@@ -207,7 +224,7 @@ public class PlanovaniBean implements Serializable{
         mezPresMiru=vysledek.getMaxsluzebpresmiru();
         while(true){
             boolean ukonci = true;
-            text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            text = text + "\n"+String.format("(%d)vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d",cisloInstance, mezPresMiru, mezPaSoNe, mezSv);
             SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,false);
             if (pom != null){
                 vysledek = pom;
@@ -229,7 +246,7 @@ public class PlanovaniBean implements Serializable{
                 pom = pom.getDalsi();
             }
         }
-        text = text + "\n"+String.format("úprava> ");
+        text = text + "\n"+String.format("(%d)úprava> ",cisloInstance);
         mezPresMiru = (float)0.1;
         SluzboDen pomSD = naplanuj(300,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
         if (pomSD != null){
@@ -242,7 +259,7 @@ public class PlanovaniBean implements Serializable{
             System.out.print(vysledek);
             vysledek = vysledek.getNahoru();
         }*/
-        text = text+"\ndone";
+        text = text+String.format("\n(%d)done",cisloInstance);
         naplanovano = true;
         vPlanovani = false;
     }
@@ -660,9 +677,9 @@ public class PlanovaniBean implements Serializable{
             //planovat = celkemsluzeb*(volnychdnu)/(celkemvolnychdnu)
             float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.getPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
             float maxSluzeb;
-            planovat = (planovat > MAX_PLANOVAT)?MAX_PLANOVAT:planovat;
+            planovat = (planovat > getMAX_PLANOVAT())?getMAX_PLANOVAT():planovat;
             maxSluzeb = planovat;
-            maxSluzeb = (maxSluzeb < MIN_PLANOVAT)?MIN_PLANOVAT:maxSluzeb;
+            maxSluzeb = (maxSluzeb < getMIN_PLANOVAT())?getMIN_PLANOVAT():maxSluzeb;
             Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=?");
             q5.setParameter(1, gc, TemporalType.DATE);
             q5.setParameter(2, gc1, TemporalType.DATE);
