@@ -25,7 +25,8 @@ public class LogoutBean {
 
     public String logout(){
         //String destination = "/common/index?faces-redirect=true"; zachovat pri merge
-        String destination = "/common/index?faces-redirect=true";
+        //String destination = "faces/common/index?faces-redirect=true";
+        String destination = "faces/common/index?faces-redirect=true";
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = 
                 (HttpServletRequest) context.getExternalContext().getRequest();

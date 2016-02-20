@@ -19,7 +19,7 @@
                 <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
                 <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
                 <p:remoteCommand name="rc_click" actionListener="#{planovaniBean.nastavAtribZmeny()}"/>
-                <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic()}" var="item"
+                <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
                                  >
