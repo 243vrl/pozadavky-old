@@ -177,6 +177,8 @@ public class PlanovaniBean implements Serializable{
                 break;
         }
         //uvodni hledani
+        text = text+"\n"+String.format("uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d", 1, mezPaSoNe, mezSv);
+        vysledek = naplanuj(50,1, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,false);
         while(vysledek == null){
             if(mezPaSoNe > 5){
                 text = text +"\nNenalezeno, uprav požadavky/svoz.";
