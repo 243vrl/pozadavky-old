@@ -161,7 +161,7 @@ public class PlanovaniBean implements Serializable{
         SluzboDen vysledek = null;
         int mezPaSoNe = 1;
         int mezSv;
-        float mezPresMiru = 2;
+        float mezPresMiru = 1;
         List<PomSDClass> poradiSD = null;
         vPlanovani = true;
         nenaplanovano = false;
@@ -202,8 +202,12 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
+            vysledek = naplanuj(mezPresMiru<2?2:25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
             if(vysledek == null){
+                if(mezPresMiru < 2){
+                    mezPresMiru += 0.25;
+                    continue;
+                }
                 if((1 & zvysovani++)==0){
                     mezPaSoNe++;
                 }else{
