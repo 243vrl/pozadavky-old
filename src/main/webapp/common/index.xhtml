@@ -38,7 +38,8 @@
                                       style=" background-color: #ffffff; color: #000000" autoResize="false"/>
                     <br/>
                     <p:button id="tlacitko" disabled="#{planovaniBean.naplanovano?'False':'True'}" value="Kontrola"
-                             onclick="PF('dlg').hide()" outcome="/scheduler/pozadavky/kontrola"/>
+                             onclick="PF('dlg').hide()" outcome="/scheduler/pozadavky/kontrola"
+                             actionListener="#{planovaniBean.setvPlanovani(false)}"/>
                     <p:commandButton id="tlacitko1" disabled="#{planovaniBean.nenaplanovano?'False':'True'}" value="OK"
                              onclick="PF('dlg').hide()"/>
                     <p:poll interval="1"  update="txt_area tlacitko tlacitko1" async="True"/>
