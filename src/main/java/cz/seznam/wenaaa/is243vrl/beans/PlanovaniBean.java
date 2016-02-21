@@ -42,20 +42,6 @@ import javax.transaction.UserTransaction;
 @Named(value = "planovaniBean")
 @SessionScoped
 public class PlanovaniBean implements Serializable{
-
-    /**
-     * @return the MAX_PLANOVAT
-     */
-    public static int getMAX_PLANOVAT() {
-        return MAX_PLANOVAT;
-    }
-
-    /**
-     * @return the MIN_PLANOVAT
-     */
-    public static int getMIN_PLANOVAT() {
-        return MIN_PLANOVAT;
-    }
     
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
@@ -77,6 +63,20 @@ public class PlanovaniBean implements Serializable{
     private int denProZmenu;
     private static final int MAX_PLANOVAT = 7;
     private static final int MIN_PLANOVAT = 3;
+    
+    /**
+     * @return the MAX_PLANOVAT
+     */
+    public static int getMAX_PLANOVAT() {
+        return MAX_PLANOVAT;
+    }
+
+    /**
+     * @return the MIN_PLANOVAT
+     */
+    public static int getMIN_PLANOVAT() {
+        return MIN_PLANOVAT;
+    }
     
     public boolean isNaplanovano() {
         return naplanovano;
@@ -110,6 +110,10 @@ public class PlanovaniBean implements Serializable{
         return text;
     }
 
+    public void setvPlanovani(boolean vPlanovani) {
+        this.vPlanovani = vPlanovani;
+    }
+    
     public boolean isvPlanovani() {
         return vPlanovani;
     }
@@ -157,13 +161,14 @@ public class PlanovaniBean implements Serializable{
         return vratka;
     }
     public void naplanuj(ActionEvent e){
+        if(vPlanovani) return;
+        vPlanovani = true;
         int zvysovani = 0;
         SluzboDen vysledek = null;
         int mezPaSoNe = 1;
         int mezSv;
         float mezPresMiru = 1;
         List<PomSDClass> poradiSD = null;
-        vPlanovani = true;
         nenaplanovano = false;
         naplanovano = false;
         navrhSluzeb = null;
@@ -179,6 +184,7 @@ public class PlanovaniBean implements Serializable{
             text = text+"\n"+ex.getMessage();
             System.out.print(ex.getMessage());
             nenaplanovano = true;
+            vPlanovani = false;
             return;
         }
         GregorianCalendar gc = new GregorianCalendar();
@@ -205,7 +211,7 @@ public class PlanovaniBean implements Serializable{
             vysledek = naplanuj(mezPresMiru<2?2:25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
             if(vysledek == null){
                 if(mezPresMiru < 2){
-                    mezPresMiru += 0.25;
+                    mezPresMiru += 0.5;
                     continue;
                 }
                 if((1 & zvysovani++)==0){
@@ -267,7 +273,6 @@ public class PlanovaniBean implements Serializable{
         navrhSluzeb = vysledek;
         text = text+String.format("\ndone");
         naplanovano = true;
-        vPlanovani = false;
     }
     private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, Slouzici seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
         
