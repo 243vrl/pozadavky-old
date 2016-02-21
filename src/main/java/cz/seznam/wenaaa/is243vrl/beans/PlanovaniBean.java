@@ -207,7 +207,7 @@ public class PlanovaniBean implements Serializable{
                 vPlanovani = false;
                 return;
             }
-            text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
             vysledek = naplanuj(mezPresMiru<2?2:25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
             if(vysledek == null){
                 if(mezPresMiru < 2){
@@ -227,7 +227,7 @@ public class PlanovaniBean implements Serializable{
         float minulaPresMiru = mezPresMiru;
         while(true){
             boolean ukonci = true;
-            text = text + "\n"+String.format("vylepšování hloubka> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            text = text + "\n"+String.format("vylepšování hloubka> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
             SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
             if (pom != null){
                 vysledek = pom;
@@ -240,7 +240,7 @@ public class PlanovaniBean implements Serializable{
         mezPresMiru = minulaPresMiru+(float)0.01;
         while(true){
             boolean ukonci = true;
-            text = text + "\n"+String.format("vylepšování čtverec> presMiru: %f, PaSoNe: %d, Sv: %d", mezPresMiru, mezPaSoNe, mezSv);
+            text = text + "\n"+String.format("vylepšování čtverec> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
             SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,false);
             if (pom != null){
                 vysledek = pom;
@@ -262,7 +262,7 @@ public class PlanovaniBean implements Serializable{
                 pom = pom.getDalsi();
             }
         }
-        text = text + "\n"+String.format("úprava> ");
+        text = text + "\n"+String.format("úprava > ");
         mezPresMiru = (float)0.1;
         SluzboDen pomSD = naplanuj(300,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
         if (pomSD != null){
@@ -298,12 +298,14 @@ public class PlanovaniBean implements Serializable{
             //System.out.print("----------------------------");
             try{
                 String[] arrText = text.split("\n");
-                Integer.parseInt(arrText[arrText.length-1]);
-                arrText[arrText.length-1]=String.format("%d", i);
+                String[] arrText2 = arrText[arrText.length-1].split(" ");
+                Integer.parseInt(arrText2[arrText2.length-1]);
+                arrText2[arrText2.length-1]=String.format("%d", i);
+                arrText[arrText.length-1] = String.join(" ",arrText2);
                 text = String.join("\n", arrText);
             }
             catch(NumberFormatException ex){
-                text = text+String.format("\n%d", i);
+                text = text+String.format(" %d", i);
             }
             rozvijeny = sluzbodny.get(0);
             for(SluzboDen pom: sluzbodny){
