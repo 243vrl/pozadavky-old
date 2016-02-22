@@ -161,7 +161,10 @@ public class PlanovaniBean implements Serializable{
         return vratka;
     }
     public void naplanuj(ActionEvent e){
-        //if(vPlanovani) return;
+        if(vPlanovani) {
+            text = text+"\nnove volani fce";
+            return;
+        }
         vPlanovani = true;
         int zvysovani = 0;
         SluzboDen vysledek = null;
