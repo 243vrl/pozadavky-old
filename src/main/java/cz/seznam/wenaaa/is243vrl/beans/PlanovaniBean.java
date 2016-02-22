@@ -261,9 +261,9 @@ public class PlanovaniBean implements Serializable{
                 pom.setMaxPocetSluzeb(psSoucet);
                 pom = pom.getDalsi();
             }
-        }
+        }*/
         text = text + "\n"+String.format("úprava > ");
-        mezPresMiru = (float)0.1;*/
+        //mezPresMiru = (float)0.1;
         SluzboDen pomSD = naplanuj(300,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
         if (pomSD != null){
             vysledek = pomSD;
