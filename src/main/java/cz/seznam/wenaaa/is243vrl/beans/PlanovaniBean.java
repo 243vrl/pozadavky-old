@@ -308,11 +308,11 @@ public class PlanovaniBean implements Serializable{
                 text = text+String.format(" %d", i);
             }
             rozvijeny = sluzbodny.get(0);
-            for(SluzboDen pom: sluzbodny){
+            /*for(SluzboDen pom: sluzbodny){
                 if(pom.jeMensiNezParam(rozvijeny,naHloubku,seznamSlouzicich)){
                     rozvijeny = pom;
                 }
-            }
+            }*/
             sluzbodny.remove(rozvijeny);
             /*{
                 SluzboDen pomS =rozvijeny;
@@ -339,7 +339,17 @@ public class PlanovaniBean implements Serializable{
                 if (pom.getMaxpocetnedel()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetpatku()>mezPaSoNeSv) continue;
                 if(pom.isValid(seznamSlouzicich)){
-                    sluzbodny.add(pom);
+                    boolean nevlozen = true;
+                    for(int j = 0; j < sluzbodny.size();j++){
+                        if(pom.jeMensiNezParam(sluzbodny.get(j),naHloubku,seznamSlouzicich)){
+                            sluzbodny.add(j,pom);
+                            nevlozen = false;
+                            break;
+                        }
+                    }
+                    if(nevlozen){
+                        sluzbodny.add(pom);
+                    }
                 }
             }
             //if(nejde) System.out.print("nejde");
