@@ -161,7 +161,7 @@ public class PlanovaniBean implements Serializable{
         return vratka;
     }
     public void naplanuj(ActionEvent e){
-        if(vPlanovani) return;
+        //if(vPlanovani) return;
         vPlanovani = true;
         int zvysovani = 0;
         SluzboDen vysledek = null;
@@ -224,7 +224,7 @@ public class PlanovaniBean implements Serializable{
         }
         //zlepsovani
         mezPresMiru=vysledek.getMaxsluzebpresmiru();
-        float minulaPresMiru = mezPresMiru;
+        //float minulaPresMiru = mezPresMiru;
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování hloubka> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
@@ -234,10 +234,10 @@ public class PlanovaniBean implements Serializable{
                 ukonci = false;
             }
             if(ukonci) break;
-            minulaPresMiru = mezPresMiru;
+            //minulaPresMiru = mezPresMiru;
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
-        mezPresMiru = minulaPresMiru+(float)0.01;
+        /*mezPresMiru = minulaPresMiru+(float)0.01;
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování čtverec> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
@@ -263,7 +263,7 @@ public class PlanovaniBean implements Serializable{
             }
         }
         text = text + "\n"+String.format("úprava > ");
-        mezPresMiru = (float)0.1;
+        mezPresMiru = (float)0.1;*/
         SluzboDen pomSD = naplanuj(300,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
         if (pomSD != null){
             vysledek = pomSD;
