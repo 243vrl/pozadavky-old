@@ -325,6 +325,7 @@ public class PozadavkyBean implements Serializable{
         }
         gc.set(Calendar.DAY_OF_MONTH, 1);
         pozadavkyNaMesic = vratka;
+        populateColumns();
     }
     public void prechodPlanovani(){
         //System.out.format("mesic pred: %d",gc.get(Calendar.MONTH));
