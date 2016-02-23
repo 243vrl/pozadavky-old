@@ -42,7 +42,7 @@
                     </p:columns>
                  
                 </p:dataTable>
-                <p:contextMenu id="cmenu" for="PozadavkyListForm">
+                <p:contextMenu id="cmenu" for="PozadavkyListForm" event="mouseup contextmenu">
                     <p:menuitem value="X" actionListener="#{pozadavkyBean.ulozPozadavky('X')}" update="datalist"/>
                     <p:menuitem value="ŘD" actionListener="#{pozadavkyBean.ulozPozadavky('ŘD')}" update="datalist"/>
                     <p:menuitem value="SC" actionListener="#{pozadavkyBean.ulozPozadavky('SC')}" update="datalist"/>
@@ -84,7 +84,7 @@
                                        />
                     </p:columns>
                 </p:dataTable>
-                <p:contextMenu id="cmenuII" for="PozadavkyListFormCalendar">
+                <p:contextMenu id="cmenuII" for="PozadavkyListFormCalendar"  event="mouseup contextmenu click">
                     <p:menuitem value="Jede" actionListener="#{planovaniBean.nastavSvoz(true)}" update="dnySvozu"/>
                     <p:menuitem value="Vynulovat" actionListener="#{planovaniBean.nastavSvoz(false)}" update="dnySvozu"/>
                 </p:contextMenu>
