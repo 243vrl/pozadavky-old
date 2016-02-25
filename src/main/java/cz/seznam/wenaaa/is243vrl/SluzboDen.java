@@ -214,28 +214,10 @@ public class SluzboDen {
         return true;
     }
     
-    private float ctverecChyb(SluzboDen sd, Slouzici seznamSlouzicich){
-        float vratka = 0;
-        Slouzici sl = seznamSlouzicich;
-        while(sl != null){
-            SluzboDen pom = sd;
-            float pocetSluzeb = 0;
-            while(pom != null){
-                if(pom.slouzici.equals(sl.getJmeno())){
-                    pocetSluzeb++;
-                }
-                pom = pom.nahoru;
-            }
-            vratka += Math.pow((pocetSluzeb-sl.getPlanujSluzeb()), 2);
-            sl = sl.dalsi;
-        }
-        return vratka;
-    }
+    
     public boolean jeMensiNezParam(SluzboDen sd, boolean hloubka, Slouzici seznamSlouzicich){
-        if(hloubka){
-            return this.hloubka > sd.hloubka;
-        }
-        return ctverecChyb(this, seznamSlouzicich)<ctverecChyb(sd, seznamSlouzicich);
+        return this.hloubka > sd.hloubka;
+        
     }
     public int getHloubka() {
         return hloubka;

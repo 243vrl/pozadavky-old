@@ -9,8 +9,13 @@ import cz.seznam.wenaaa.is243vrl.Slouzici;
 import cz.seznam.wenaaa.is243vrl.SluzboDen;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.Kalendar;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -211,7 +216,7 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(mezPresMiru<2?2:25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
+            vysledek = naplanuj(2,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
             if(vysledek == null){
                 if(mezPresMiru < 2){
                     mezPresMiru += 0.5;
@@ -230,8 +235,8 @@ public class PlanovaniBean implements Serializable{
         //float minulaPresMiru = mezPresMiru;
         while(true){
             boolean ukonci = true;
-            text = text + "\n"+String.format("vylepšování hloubka> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
+            text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
+            SluzboDen pom = naplanuj(2,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
             if (pom != null){
                 vysledek = pom;
                 ukonci = false;
@@ -240,37 +245,7 @@ public class PlanovaniBean implements Serializable{
             //minulaPresMiru = mezPresMiru;
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
-        /*mezPresMiru = minulaPresMiru+(float)0.01;
-        while(true){
-            boolean ukonci = true;
-            text = text + "\n"+String.format("vylepšování čtverec> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,false);
-            if (pom != null){
-                vysledek = pom;
-                ukonci = false;
-            }
-            if(ukonci) break;
-            mezPresMiru = vysledek.getMaxsluzebpresmiru();
-        }
-        {
-            Slouzici pom = seznamSlouzicich;
-            while(pom != null){
-                int[] ps = pocetSluzeb(pom.getJmeno(), vysledek);
-                int psSoucet = ps[0]+ps[1];
-                float zmena = pom.getPlanujSluzeb()-psSoucet;
-                if (zmena > 1){
-                    psSoucet += (int) zmena;
-                }
-                pom.setMaxPocetSluzeb(psSoucet);
-                pom = pom.getDalsi();
-            }
-        }*/
-        text = text + "\n"+String.format("úprava > ");
-        //mezPresMiru = (float)0.1;
-        SluzboDen pomSD = naplanuj(300,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
-        if (pomSD != null){
-            vysledek = pomSD;
-        }
+        
         
         vypisKolik(vysledek,seznamSlouzicich);
         navrhSluzeb = vysledek;
@@ -303,7 +278,7 @@ public class PlanovaniBean implements Serializable{
                 String[] arrText = text.split("\n");
                 String[] arrText2 = arrText[arrText.length-1].split(" ");
                 Integer.parseInt(arrText2[arrText2.length-1]);
-                arrText2[arrText2.length-1]=String.format("%d", i);
+                arrText2[arrText2.length-1]=String.format("%d", ++i);
                 arrText[arrText.length-1] = String.join(" ",arrText2);
                 text = String.join("\n", arrText);
             }
@@ -711,7 +686,7 @@ public class PlanovaniBean implements Serializable{
             planovat = (planovat > getMAX_PLANOVAT())?getMAX_PLANOVAT():planovat;
             maxSluzeb = planovat;
             maxSluzeb = (maxSluzeb < getMIN_PLANOVAT())?getMIN_PLANOVAT():maxSluzeb;
-            Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=?");
+            Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=? ORDER BY datum");
             q5.setParameter(1, gc, TemporalType.DATE);
             q5.setParameter(2, gc1, TemporalType.DATE);
             q5.setParameter(3, letajici);
@@ -738,7 +713,7 @@ public class PlanovaniBean implements Serializable{
                 }
                 //System.out.print(nemuze);
             }
-            //System.out.format("%s : %f : %d", (String)mozny_slouzici,planovat,nemuze);
+            System.out.format("%s : %f : %d", letajici,planovat,nemuze);
             if(vratka == null) vratka = new Slouzici(letajici,nemuze,maxSluzeb,planovat,dojizdeni);
             else vratka.addSlouzici(new Slouzici(letajici,nemuze,maxSluzeb,planovat,dojizdeni));
         }
@@ -827,6 +802,52 @@ public class PlanovaniBean implements Serializable{
             }
         }
     }
+    public void ulozSluzbyZeSouboru(){
+        FileReader fr = null;
+        try {
+            fr = new FileReader("C:\\Users\\vena\\Downloads\\prehled0715-0316.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String radka;
+            List<String> ts = new ArrayList<>();
+            ts.add("lk");
+            ts.add("ld");
+            ts.add("lp");
+            ts.add("sk");
+            ts.add("sd");
+            ts.add("sp");
+            ts.add("hk");
+            ts.add("hd");
+            ts.add("hp");
+            while((radka = br.readLine()) != null){
+                if(radka.equals("")) break;
+                String[] tokens = radka.split(";");
+                System.out.format("%s",radka);
+                String[] t2 = tokens[0].split("\\.");
+                GregorianCalendar gc = new GregorianCalendar(Integer.valueOf(t2[2]), Integer.valueOf(t2[1])-1, Integer.valueOf(t2[0]));
+                System.out.format("gc je: %s",new SimpleDateFormat("DD.MM.YYYY"));
+                for(String sluzba: ts){
+                    if(!"".equals(tokens[ts.indexOf(sluzba)+1])){
+                        if(tokens[ts.indexOf(sluzba)+1].equals("MAR")){
+                            tokens[ts.indexOf(sluzba)+1] = "MAV";
+                        }
+                        ulozSluzbu(gc, sluzba, tokens[ts.indexOf(sluzba)+1]);
+                    }
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if(fr != null){
+                try {
+                    fr.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
     public void ulozSluzbu(GregorianCalendar gc, String typSluzby, String letajici){
         String staryLetajici = null;
         int[] hodnotySluzby = null;
@@ -861,7 +882,11 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             hodnotySluzby = dejHodnotySluzby(gc);
-            Query qHodnoty = em.createNativeQuery("SELECT pocet_sluzeb, pocet_patku, pocet_sobot, pocet_nedeli, pocet_vsednich_svatku FROM letajici_sluzby WHERE letajici = ?");
+            String tabulka = "letajici_sluzby";
+            if(typSluzby.toLowerCase().startsWith("h")){
+                tabulka = "h120";
+            }
+            Query qHodnoty = em.createNativeQuery("SELECT pocet_sluzeb, pocet_patku, pocet_sobot, pocet_nedeli, pocet_vsednich_svatku FROM "+tabulka+" WHERE letajici = ?");
             if(staryLetajici != null){
                 qHodnoty.setParameter(1, staryLetajici);
                 result = (Object[])qHodnoty.getSingleResult();
@@ -874,7 +899,7 @@ public class PlanovaniBean implements Serializable{
             for(int i=0;i<hodnotySluzby.length;i++){
                 hodnotyNovy[i] = (int)result[i] + hodnotySluzby[i];
             }
-            Query qUpdate = em.createNativeQuery("UPDATE letajici_sluzby SET pocet_sluzeb = ?, pocet_patku = ?, pocet_sobot = ?, pocet_nedeli = ?, pocet_vsednich_svatku = ? WHERE letajici  = ?");
+            Query qUpdate = em.createNativeQuery("UPDATE "+tabulka+" SET pocet_sluzeb = ?, pocet_patku = ?, pocet_sobot = ?, pocet_nedeli = ?, pocet_vsednich_svatku = ? WHERE letajici  = ?");
             if(staryLetajici != null){
                 for(int i = 0; i<hodnotyStary.length;i++){
                     qUpdate.setParameter(i+1, hodnotyStary[i]);

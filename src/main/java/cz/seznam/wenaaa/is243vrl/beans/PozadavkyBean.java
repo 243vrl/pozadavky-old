@@ -124,11 +124,11 @@ public class PozadavkyBean implements Serializable{
         //HttpServletRequest request = 
         //        (HttpServletRequest) context.getExternalContext().getRequest();
         //String uzivatel = request.getRemoteUser();
-        System.out.printf("%d",indexLetajiciho);
+        //System.out.printf("%d",indexLetajiciho);
         if(indexLetajiciho==-1) return;
         String uzivatel = letajici.get(indexLetajiciho);
-        System.out.print(poz);
-        System.out.printf("%s: %s zacatek/konec: %d/%d",uzivatel,poz,zacatek,konec);
+        //System.out.print(poz);
+        //System.out.printf("%s: %s zacatek/konec: %d/%d",uzivatel,poz,zacatek,konec);
         if(this.konec != this.zacatek){
             if((poz.equals("LK"))||(poz.equals("LD"))||(poz.equals("SK"))||(poz.equals("SD"))) return;
         }

@@ -5,6 +5,8 @@
  */
 package cz.seznam.wenaaa.is243vrl;
 
+import java.util.HashMap;
+
 
 
 /**
@@ -15,7 +17,9 @@ public class Slouzici {
     private final String jmeno;
     long plneVolneDny;//pro binarni operace plny 1, volny 0
     float maxPocetSluzeb;
-    private final float planujSluzeb;
+    private float planujSluzeb;
+    String skupina;
+    public HashMap musiSlouzit;
     Slouzici dalsi;
 
     public Slouzici(String jmeno, long plneVolneDny, float maxPocetSluzeb, float planujSluzeb, String dojizdeni) {
@@ -23,8 +27,7 @@ public class Slouzici {
         this.jmeno = jmeno;
         this.plneVolneDny = plneVolneDny;
         this.maxPocetSluzeb = maxPocetSluzeb;
-        this.planujSluzeb = planujSluzeb;
-        
+        musiSlouzit = new HashMap();
     }
 
     public void setMaxPocetSluzeb(float maxPocetSluzeb) {
@@ -72,10 +75,17 @@ public class Slouzici {
     }
 
     /**
+     * @param jmeno
      * @return the planujSluzeb
      */
-    public float getPlanujSluzeb() {
-        return planujSluzeb;
+    public float getPlanujSluzeb(String jmeno) {
+        Slouzici pom = this;
+        do{
+            if(pom.getJmeno().equals(jmeno))return pom.planujSluzeb;
+            pom = pom.dalsi;
+        }while(pom != null);
+        throw new IllegalArgumentException();
+        
     }
 
     /**
@@ -83,6 +93,23 @@ public class Slouzici {
      */
     public String getJmeno() {
         return jmeno;
+    }
+
+    /**
+     * @param jmeno
+     * @param planujSluzeb the planujSluzeb to set
+     */
+    public void setPlanujSluzeb(String jmeno, float planujSluzeb) {
+        Slouzici pom = this;
+        do{
+            if(pom.getJmeno().equals(jmeno)){
+                pom.planujSluzeb = planujSluzeb;
+                return;
+            }
+            pom = pom.dalsi;
+        }while(pom != null);
+        throw new IllegalArgumentException();
+        
     }
     
 }
