@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
@@ -359,7 +360,10 @@ public class PlanovaniBean implements Serializable{
                     Object pom = q1.getSingleResult();
                     int k = vratka.size();
                     for(int i = 0; i <= k; i++){
-                        if(i == k) vratka.add(new PomSDClass(den, typ_sluzby, -1));
+                        if(i == k){
+                            vratka.add(new PomSDClass(den, typ_sluzby, -1));
+                            break;
+                        }
                         if(volnych < vratka.get(i).volnychPolicek){
                             vratka.add(i, new PomSDClass(den, typ_sluzby, -1));
                             break;
@@ -649,44 +653,41 @@ public class PlanovaniBean implements Serializable{
             columns.add(new ColumnModelvII(String.format("%d", i), String.format("%d", i)));
         }
     }
-    private Slouzici nactiSlouzici() {
-        Slouzici vratka = null;
+    private List<Slouzici> nactiSlouzici() {
+        List<Slouzici> vratka = new ArrayList<>();
         List<String> poradiSluzeb = dejPoradiSluzeb();
-        //System.out.print("Nacitam slouzici...");
-        Query q1 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM letajici_sluzby");
-        int pocetSlouzicich = (Integer) q1.getSingleResult();
-        //System.out.format("\tcelkem slouzicich...%d",pocetSlouzicich);
+        
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
-        int pocetChlivku = pocetSlouzicich*Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);
-        //System.out.format("\tcelkem chlivku...%d",pocetChlivku);
-        Query q2 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE pozadavek NOT IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND datum BETWEEN ? AND ?");
         gc.set(Calendar.DAY_OF_MONTH, 1);
-        q2.setParameter(1, gc, TemporalType.DATE);
         GregorianCalendar gc1 = new GregorianCalendar();
         gc1.set(Calendar.DAY_OF_MONTH, 1);
         gc1.add(Calendar.MONTH, 2);
         gc1.add(Calendar.DAY_OF_MONTH, -1);
-        q2.setParameter(2, gc1, TemporalType.DATE);
-        int pocetPozadavku = (Integer) q2.getSingleResult();
-        //System.out.format("\tcelkem pozadavku...%d",pocetPozadavku);
-        Query q3 = em.createNativeQuery("SELECT letajici, dojizdeni FROM letajici_sluzby ORDER BY poradi");
-        for(Object letajiciDojizdeni: q3.getResultList()){
-            Object[] ld = (Object[])letajiciDojizdeni;
-            String letajici = (String)ld[0];
-            String dojizdeni = (String)ld[1];
-            Query q4 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE pozadavek NOT IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND datum BETWEEN ? AND ?  AND letajici=?");
-            q4.setParameter(1, gc, TemporalType.DATE);
-            q4.setParameter(2, gc1, TemporalType.DATE);
-            q4.setParameter(3, letajici);
-            //planovat = celkemsluzeb*(volnychdnu)/(celkemvolnychdnu)
-            float planovat = (float)(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)*this.dejPoradiSluzeb().size())*(Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1)-(Integer) q4.getSingleResult())/(pocetChlivku-pocetPozadavku);
-            float maxSluzeb;
-            planovat = (planovat > getMAX_PLANOVAT())?getMAX_PLANOVAT():planovat;
-            maxSluzeb = planovat;
-            maxSluzeb = (maxSluzeb < getMIN_PLANOVAT())?getMIN_PLANOVAT():maxSluzeb;
-            Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=? ORDER BY datum");
+        int dnuVmesici = gc1.get(Calendar.DAY_OF_MONTH)-gc.get(Calendar.DAY_OF_MONTH)+1;
+        //prvni nacteni slouzicich a jejich rozdeleni do skupin
+        Query q3 = em.createNativeQuery("SELECT ls.letajici, ls.dojizdeni, ps.typ_sluzby FROM letajici_sluzby as ls, povoleni_sluzeb as ps WHERE ls.letajici = ps.letajici AND ps.povoleno = TRUE ORDER BY ls.poradi");
+        for(Object letajiciDojizdeniSluzba: q3.getResultList()){
+            Object[] lds = (Object[])letajiciDojizdeniSluzba;
+            String letajici = (String)lds[0];
+            String dojizdeni = (String)lds[1];
+            String sluzba = (String)lds[1];
+            {
+                for(Slouzici sl: vratka){
+                    Slouzici pom = new Slouzici(letajici,sluzba,dojizdeni);
+                    if(sl.equals(pom)){
+                        vratka.set(vratka.indexOf(sl), new Slouzici(letajici, sl.getSkupina()+";"+sluzba,dojizdeni));
+                    }else{
+                        vratka.add(pom);
+                    }
+                }
+            }
+        }
+        //nacteni plnych volnych dnu
+        for(Slouzici slouzici: vratka){
+            String letajici = slouzici.getJmeno();
+            Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=? AND pozadavek NOT IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) ORDER BY datum");
             q5.setParameter(1, gc, TemporalType.DATE);
             q5.setParameter(2, gc1, TemporalType.DATE);
             q5.setParameter(3, letajici);
@@ -713,9 +714,12 @@ public class PlanovaniBean implements Serializable{
                 }
                 //System.out.print(nemuze);
             }
-            System.out.format("%s : %f : %d", letajici,planovat,nemuze);
-            if(vratka == null) vratka = new Slouzici(letajici,nemuze,maxSluzeb,planovat,dojizdeni);
-            else vratka.addSlouzici(new Slouzici(letajici,nemuze,maxSluzeb,planovat,dojizdeni));
+            slouzici.setPlneVolneDny(nemuze);
+            System.out.format("%s : nemuze : %d", letajici,nemuze);
+        }
+        List<SkupinaSluzeb> skupiny = new ArrayList<>();
+        for(Slouzici slouzici: vratka){
+            
         }
         return vratka;
     }
@@ -951,6 +955,69 @@ public class PlanovaniBean implements Serializable{
             this.typSluzby = typSluzby;
             this.volnychPolicek = volnychPolicek;
         }
+    }
+
+    private static class SkupinaSluzeb {
+        int nepresunutelne;
+        int LK;
+        int LD;
+        int LP;
+        int SK;
+        int SD;
+        int SP;
+        String jmenoSkupiny;
+        int pocetLetajicich;
+        int volnychChlivu;
+        public SkupinaSluzeb(String jmenoSkupiny) {
+            this.SP = 0;
+            this.SD = 0;
+            this.SK = 0;
+            this.LP = 0;
+            this.LD = 0;
+            this.LK = 0;
+            this.nepresunutelne = 0;
+            this.jmenoSkupiny = jmenoSkupiny;
+            this.pocetLetajicich = 0;
+        }
+
+        void addLetajici(Slouzici sl, int dnuVmesici, int nepresunutelne){
+            if(!sl.getSkupina().equals(jmenoSkupiny)){
+                throw new IllegalArgumentException(String.format("spatne jmeno skupiny > %s / %s",sl.getJmeno(),sl.getSkupina()));
+            }
+            pocetLetajicich++;
+            volnychChlivu += dnuVmesici-sl.getPocetPlnychDnu();
+            this.nepresunutelne += nepresunutelne;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final SkupinaSluzeb other = (SkupinaSluzeb) obj;
+            if (!Objects.equals(this.jmenoSkupiny, other.jmenoSkupiny)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 53 * hash + this.nepresunutelne;
+            hash = 53 * hash + this.LK;
+            hash = 53 * hash + this.LD;
+            hash = 53 * hash + this.LP;
+            hash = 53 * hash + this.SK;
+            hash = 53 * hash + this.SD;
+            hash = 53 * hash + this.SP;
+            hash = 53 * hash + Objects.hashCode(this.jmenoSkupiny);
+            hash = 53 * hash + this.pocetLetajicich;
+            return hash;
+        }
+        
     }
     
 }

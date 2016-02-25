@@ -5,7 +5,7 @@
  */
 package cz.seznam.wenaaa.is243vrl;
 
-import java.util.HashMap;
+import java.util.Objects;
 
 
 
@@ -15,101 +15,89 @@ import java.util.HashMap;
  */
 public class Slouzici {
     private final String jmeno;
-    long plneVolneDny;//pro binarni operace plny 1, volny 0
-    float maxPocetSluzeb;
+    private long plneVolneDny;//pro binarni operace plny 1, volny 0
+    private float maxPocetSluzeb;
     private float planujSluzeb;
-    String skupina;
-    public HashMap musiSlouzit;
-    Slouzici dalsi;
+    private final String skupina;
+    private final String dojizdeni;
+    
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.jmeno);
+        hash = 29 * hash + (int) (this.plneVolneDny ^ (this.plneVolneDny >>> 32));
+        hash = 29 * hash + Float.floatToIntBits(this.maxPocetSluzeb);
+        hash = 29 * hash + Float.floatToIntBits(this.planujSluzeb);
+        hash = 29 * hash + Objects.hashCode(this.skupina);
+        return hash;
+    }
 
-    public Slouzici(String jmeno, long plneVolneDny, float maxPocetSluzeb, float planujSluzeb, String dojizdeni) {
-        this.dalsi = null;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Slouzici other = (Slouzici) obj;
+        return Objects.equals(this.jmeno, other.jmeno);
+    }
+    
+    public int getPocetPlnychDnu(){
+        long pom = this.plneVolneDny;
+        int vratka = 0;
+        while(pom != 0){
+            if((pom & 1) == 1){
+                vratka++;
+            }
+            pom = pom>>1;
+        }
+        return vratka;
+    }
+    
+    public Slouzici(String jmeno, String skupina, String dojizdeni){
         this.jmeno = jmeno;
+        this.skupina = skupina;
+        this.dojizdeni = dojizdeni;
+    }
+
+    public String getDojizdeni() {
+        return dojizdeni;
+    }
+
+    public long getPlneVolneDny() {
+        return plneVolneDny;
+    }
+
+    public void setPlneVolneDny(long plneVolneDny) {
         this.plneVolneDny = plneVolneDny;
-        this.maxPocetSluzeb = maxPocetSluzeb;
-        musiSlouzit = new HashMap();
+    }
+
+    public float getMaxPocetSluzeb() {
+        return maxPocetSluzeb;
     }
 
     public void setMaxPocetSluzeb(float maxPocetSluzeb) {
         this.maxPocetSluzeb = maxPocetSluzeb;
     }
-    
-    public void addSlouzici(Slouzici sl){
-        Slouzici pom  = this;
-        while(pom.dalsi != null){
-            pom = pom.dalsi;
-        }
-        pom.dalsi = sl;
+
+    public float getPlanujSluzeb() {
+        return planujSluzeb;
     }
 
-    public Slouzici getDalsi() {
-        return dalsi;
+    public void setPlanujSluzeb(float planujSluzeb) {
+        this.planujSluzeb = planujSluzeb;
     }
 
-    public void setDalsi(Slouzici dalsi) {
-        this.dalsi = dalsi;
-    }
-
-    public long getPlneVolneDny(String jmeno) {
-        Slouzici pom = this;
-        do{
-            //System.out.format("%s/%s:%b", jmeno,pom.jmeno,pom.jmeno.equals(jmeno));
-            if(pom.getJmeno().equals(jmeno))return pom.plneVolneDny;
-            pom = pom.dalsi;
-        }while(pom != null);
-        //System.out.format("nevyslo");
-        throw new IllegalArgumentException();
-    }
-    public float getMaxPocetSluzeb(String jmeno) {
-        Slouzici pom = this;
-        do{
-            if(pom.getJmeno().equals(jmeno))return pom.maxPocetSluzeb;
-            pom = pom.dalsi;
-        }while(pom != null);
-        throw new IllegalArgumentException();
-    }
-
-    @Override
-    public String toString() {
-        return "Slouzici{" + "jmeno=" + getJmeno() + ", plneVolneDny=" + plneVolneDny + ", maxPocetSluzeb=" + maxPocetSluzeb + '}';
-    }
-
-    /**
-     * @param jmeno
-     * @return the planujSluzeb
-     */
-    public float getPlanujSluzeb(String jmeno) {
-        Slouzici pom = this;
-        do{
-            if(pom.getJmeno().equals(jmeno))return pom.planujSluzeb;
-            pom = pom.dalsi;
-        }while(pom != null);
-        throw new IllegalArgumentException();
-        
-    }
-
-    /**
-     * @return the jmeno
-     */
     public String getJmeno() {
         return jmeno;
     }
 
-    /**
-     * @param jmeno
-     * @param planujSluzeb the planujSluzeb to set
-     */
-    public void setPlanujSluzeb(String jmeno, float planujSluzeb) {
-        Slouzici pom = this;
-        do{
-            if(pom.getJmeno().equals(jmeno)){
-                pom.planujSluzeb = planujSluzeb;
-                return;
-            }
-            pom = pom.dalsi;
-        }while(pom != null);
-        throw new IllegalArgumentException();
-        
+    public String getSkupina() {
+        return skupina;
     }
     
+    
 }
+    
