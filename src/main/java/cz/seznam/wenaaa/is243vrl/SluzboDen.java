@@ -10,6 +10,7 @@ import cz.seznam.wenaaa.utils.Kalendar;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,8 +53,8 @@ public class SluzboDen {
         return datum.get(Calendar.DAY_OF_MONTH);
     }
     
-    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, String slouzici, Slouzici seznamSlouzicich){
-        this.slouzici = slouzici;
+    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici){
+        this.slouzici = slouzici.getJmeno();
         GregorianCalendar gc = new GregorianCalendar();
         gc.add(Calendar.MONTH, 1);
         gc.set(Calendar.DAY_OF_MONTH, den);
@@ -157,7 +158,7 @@ public class SluzboDen {
             if(pocetSobot > this.maxpocetsobot) this.maxpocetsobot = pocetSobot;
             if(pocetNedel > this.maxpocetnedel) this.maxpocetnedel = pocetNedel;
             if(pocetPatku > this.maxpocetpatku) this.maxpocetpatku = pocetPatku;
-            float pocetSluzebPresMiru = (pocetSluzeb>seznamSlouzicich.getMaxPocetSluzeb(slouzici))?pocetSluzeb - seznamSlouzicich.getMaxPocetSluzeb(slouzici):0;
+            float pocetSluzebPresMiru = (pocetSluzeb>slouzici.getPlanujSluzeb())?pocetSluzeb - slouzici.getPlanujSluzeb():0;
             pocetSluzebPresMiru = pocetSluzeb>PlanovaniBean.getMAX_PLANOVAT()?pocetSluzeb:pocetSluzebPresMiru;
             if(pocetSluzebPresMiru > this.maxsluzebpresmiru )this.maxsluzebpresmiru = pocetSluzebPresMiru;
         }else{
@@ -171,10 +172,10 @@ public class SluzboDen {
         
     }
     
-    public boolean isValid(Slouzici seznamSlouzicich){
+    public boolean isValid(Slouzici slouzici){
         //System.out.println("kontrola isValid...");
         //System.out.print(this);
-        long nemuze = seznamSlouzicich.getPlneVolneDny(slouzici);
+        long nemuze = slouzici.getPlneVolneDny();
         long novaSluzba = (long) Math.pow(2, datum.get(Calendar.DAY_OF_MONTH));
         if((novaSluzba & nemuze) != 0) {
             //System.out.print("nemuze na pozadavek");
@@ -215,9 +216,8 @@ public class SluzboDen {
     }
     
     
-    public boolean jeMensiNezParam(SluzboDen sd, boolean hloubka, Slouzici seznamSlouzicich){
+    public boolean jeMensiNezParam(SluzboDen sd){
         return this.hloubka > sd.hloubka;
-        
     }
     public int getHloubka() {
         return hloubka;

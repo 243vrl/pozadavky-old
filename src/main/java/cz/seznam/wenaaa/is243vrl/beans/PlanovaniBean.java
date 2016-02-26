@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -184,7 +185,7 @@ public class PlanovaniBean implements Serializable{
         text = String.format("Uzaviram db...");
         uzavriDB();
         text = text+String.format("\nNačítám seznam sloužících...");
-        Slouzici seznamSlouzicich = nactiSlouzici();
+        List<Slouzici> seznamSlouzicich = nactiSlouzici();
         
         try{
             text = text+String.format("\nNačítám službodny...");
@@ -217,7 +218,7 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(2,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
+            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
             if(vysledek == null){
                 if(mezPresMiru < 2){
                     mezPresMiru += 0.5;
@@ -237,7 +238,7 @@ public class PlanovaniBean implements Serializable{
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(2,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
+            SluzboDen pom = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
             if (pom != null){
                 vysledek = pom;
                 ukonci = false;
@@ -253,12 +254,18 @@ public class PlanovaniBean implements Serializable{
         text = text+String.format("\ndone");
         naplanovano = true;
     }
-    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, Slouzici seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
+    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
         
         List<SluzboDen> sluzbodny = new ArrayList<>();
         for(String letajici: dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
-            SluzboDen pom = new SluzboDen(poradiSD.get(0).den,poradiSD.get(0).typSluzby,null,letajici,seznamSlouzicich);
-            if(pom.isValid(seznamSlouzicich)){
+            Slouzici pomSl = null;
+            for(Slouzici sl: seznamSlouzicich){
+                if(sl.getJmeno().equals(letajici)){
+                    pomSl = sl;
+                }
+            }
+            SluzboDen pom = new SluzboDen(poradiSD.get(0).den,poradiSD.get(0).typSluzby,null,pomSl);
+            if(pom.isValid(pomSl)){
                 sluzbodny.add(pom);
             }
         }   
@@ -310,17 +317,23 @@ public class PlanovaniBean implements Serializable{
             //System.out.format("rozbaluji: %s", rozvijeny);
             //System.out.format("%d : %s : %d",novaHloubka,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             for(String letajici: dejPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
-                SluzboDen pom = new SluzboDen(poradiSD.get(novaHloubka).den,poradiSD.get(novaHloubka).typSluzby,predchozi,letajici,seznamSlouzicich);
+                Slouzici pomSl = new Slouzici(letajici,"","");
+                for(Slouzici sl: seznamSlouzicich){
+                    if(sl.getJmeno().equals(letajici)){
+                        pomSl = sl;
+                    }
+                }
+                SluzboDen pom = new SluzboDen(poradiSD.get(novaHloubka).den,poradiSD.get(novaHloubka).typSluzby,predchozi,pomSl);
                 //System.out.print(pomS);
                 if (pom.getMaxsluzebpresmiru()>=mezPresMiru) continue;
                 if (pom.getMaxpocetsvatku()>mezSv) continue;
                 if (pom.getMaxpocetsobot()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetnedel()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetpatku()>mezPaSoNeSv) continue;
-                if(pom.isValid(seznamSlouzicich)){
+                if(pom.isValid(pomSl)){
                     boolean nevlozen = true;
                     for(int j = 0; j < sluzbodny.size();j++){
-                        if(pom.jeMensiNezParam(sluzbodny.get(j),naHloubku,seznamSlouzicich)){
+                        if(pom.jeMensiNezParam(sluzbodny.get(j))){
                             sluzbodny.add(j,pom);
                             nevlozen = false;
                             break;
@@ -343,7 +356,7 @@ public class PlanovaniBean implements Serializable{
     public void setColumns(List<ColumnModelvII> columns) {
         this.columns = columns;
     }
-    private List<PomSDClass> dejPoradiSluzbodnu(Slouzici seznamSlouzicich) {
+    private List<PomSDClass> dejPoradiSluzbodnu(List<Slouzici> seznamSlouzicich) {
         //System.out.println("Nacitam poradi sluzbodnu...");
         List<PomSDClass> vratka = new ArrayList<>();
         GregorianCalendar gc = new GregorianCalendar();
@@ -386,7 +399,8 @@ public class PlanovaniBean implements Serializable{
                     mozny_slouzici = q2.getResultList();
                 }
                 for(Object pom: mozny_slouzici){
-                    long volneDny = seznamSlouzicich.getPlneVolneDny((String) pom);
+                    int intpom = seznamSlouzicich.indexOf(new Slouzici((String) pom,"",""));
+                    long volneDny = seznamSlouzicich.get(intpom).getPlneVolneDny();
                     if(((long)Math.pow(2, den) & volneDny) == 0){
                         volnych++;
                     }
@@ -667,21 +681,21 @@ public class PlanovaniBean implements Serializable{
         gc1.add(Calendar.DAY_OF_MONTH, -1);
         int dnuVmesici = gc1.get(Calendar.DAY_OF_MONTH)-gc.get(Calendar.DAY_OF_MONTH)+1;
         //prvni nacteni slouzicich a jejich rozdeleni do skupin
-        Query q3 = em.createNativeQuery("SELECT ls.letajici, ls.dojizdeni, ps.typ_sluzby FROM letajici_sluzby as ls, povoleni_sluzeb as ps WHERE ls.letajici = ps.letajici AND ps.povoleno = TRUE ORDER BY ls.poradi");
+        Query q3 = em.createNativeQuery("SELECT ls.letajici, ls.dojizdeni, ps.typ_sluzby FROM letajici_sluzby as ls, povoleni_sluzeb as ps WHERE ls.letajici = ps.letajici AND ps.povoleno = TRUE ORDER BY ps.typ_sluzby");
         for(Object letajiciDojizdeniSluzba: q3.getResultList()){
             Object[] lds = (Object[])letajiciDojizdeniSluzba;
             String letajici = (String)lds[0];
             String dojizdeni = (String)lds[1];
-            String sluzba = (String)lds[1];
-            {
-                for(Slouzici sl: vratka){
-                    Slouzici pom = new Slouzici(letajici,sluzba,dojizdeni);
-                    if(sl.equals(pom)){
-                        vratka.set(vratka.indexOf(sl), new Slouzici(letajici, sl.getSkupina()+";"+sluzba,dojizdeni));
-                    }else{
-                        vratka.add(pom);
-                    }
-                }
+            String sluzba = (String)lds[2];
+            if(!poradiSluzeb.contains(sluzba)){
+                continue;
+            }
+            Slouzici pom = new Slouzici(letajici,sluzba,dojizdeni);
+            if(vratka.contains(pom)){
+                vratka.get(vratka.indexOf(pom)).pridejSluzbuDoSkupiny(sluzba);
+            }
+            else{
+                vratka.add(pom);
             }
         }
         //nacteni plnych volnych dnu
@@ -717,9 +731,96 @@ public class PlanovaniBean implements Serializable{
             slouzici.setPlneVolneDny(nemuze);
             System.out.format("%s : nemuze : %d", letajici,nemuze);
         }
+        //vytvoreni skupin letajicich podle moznych sluzeb
         List<SkupinaSluzeb> skupiny = new ArrayList<>();
+        int nepresunutelnePlanovanych = 0;
         for(Slouzici slouzici: vratka){
-            
+            Query q6 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE letajici = ? AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces)");
+            q6.setParameter(1, slouzici.getJmeno());
+            int nepresunutelnejch = (int) q6.getSingleResult();
+            nepresunutelnePlanovanych += nepresunutelnejch;
+            SkupinaSluzeb pomSkupina = new SkupinaSluzeb(slouzici.getSkupina());
+            if(!skupiny.contains(pomSkupina)){
+                skupiny.add(pomSkupina);
+            }
+            skupiny.get(skupiny.indexOf(pomSkupina)).addLetajici(slouzici, dnuVmesici, nepresunutelnejch);
+        }
+        //upresneni poctu sluzeb k planovani a jejich "predani" do skupin
+        int nepresunutelneVsech = 0;
+        Query q7 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND pozadavek = ?");
+        for(String ts:poradiSluzeb){
+            q7.setParameter(1, ts);
+            int pocet = (int) q7.getSingleResult();
+            nepresunutelneVsech += pocet;
+            for( SkupinaSluzeb sksl: skupiny){
+                if(sksl.jmenoSkupiny.contains(ts)){
+                    sksl.pridejSluzbu(ts, dnuVmesici-pocet);
+                    break;
+                }
+            }
+        }
+        //idealni prumer
+        int volnychChlivu = 0;
+        for(SkupinaSluzeb skupina: skupiny){
+            volnychChlivu += skupina.volnychChlivu;
+        }
+        int pocetSl = poradiSluzeb.size()*dnuVmesici;
+        float idealPrumer = ((float)pocetSl-(nepresunutelneVsech-nepresunutelnePlanovanych))/((float)volnychChlivu);
+        //vyrovnavani
+        for(SkupinaSluzeb pppp:skupiny){
+            System.out.print(pppp);
+        }
+        while(true){
+            float ctverecChyb = 0;
+            for(SkupinaSluzeb sksl: skupiny){
+                ctverecChyb += Math.pow(sksl.hodnotaChlivu()-idealPrumer,2);
+            }
+            int odkud = -1;
+            int kam = -1;
+            float novyCtverec = ctverecChyb;
+            for(int i = 0; i < skupiny.size(); i++){
+                for(int j = 0; j < skupiny.size(); j++){
+                    if(skupiny.get(i).hodnotaChlivu()<=skupiny.get(j).hodnotaChlivu()){
+                        continue;
+                    }
+                    if(!skupiny.get(i).muzeDat(skupiny.get(j))){
+                        continue;
+                    }
+                    float pomCtverec = 0;
+                    for(int k = 0; k < skupiny.size(); k++){
+                        if(i == k){
+                            pomCtverec += Math.pow(skupiny.get(k).hodnotaChlivuMinus()-idealPrumer,2);
+                            continue;
+                        }
+                        if(j == k){
+                            pomCtverec += Math.pow(skupiny.get(k).hodnotaChlivuPlus()-idealPrumer,2);
+                            continue;
+                        }
+                        pomCtverec += Math.pow(skupiny.get(k).hodnotaChlivu()-idealPrumer,2);
+                    }
+                    if(pomCtverec < novyCtverec){
+                        odkud = i;
+                        kam = j;
+                        novyCtverec = pomCtverec;
+                    }
+                }
+            }
+            if(novyCtverec == ctverecChyb) break;
+            System.out.format("presouvam od %s do %s", skupiny.get(odkud).jmenoSkupiny,skupiny.get(kam).jmenoSkupiny);
+            skupiny.get(odkud).predejSluzbu(skupiny.get(kam));
+            for(SkupinaSluzeb pppp:skupiny){
+                System.out.print(pppp);
+            }
+        }
+        //zapis do letajicich
+        for(Slouzici letajici: vratka){
+            for( SkupinaSluzeb sksl: skupiny){
+                if(letajici.getSkupina().equals(sksl.jmenoSkupiny)){
+                    letajici.setPlanujSluzeb(sksl.hodnotaChlivu()*(dnuVmesici-letajici.getPocetPlnychDnu()));
+                    break;
+                }
+            }
+            System.out.format("%s : planovat : %f", letajici.getJmeno(),letajici.getPlanujSluzeb());
         }
         return vratka;
     }
@@ -755,16 +856,13 @@ public class PlanovaniBean implements Serializable{
             return "";
         }
     }
-    private void vypisKolik(SluzboDen vysledek, Slouzici seznamSlouzicich) {
-        Slouzici ss = seznamSlouzicich;
-        while(ss != null){
+    private void vypisKolik(SluzboDen vysledek, List<Slouzici> seznamSlouzicich) {
+        for(Slouzici ss:seznamSlouzicich){
             int[] pom = pocetSluzeb(ss.getJmeno(), vysledek);
             float zmena = ss.getPlanujSluzeb()-pom[0]-pom[1];
             if(Math.abs(pom[0]+pom[1]-ss.getPlanujSluzeb())>=1){
                 text = text + String.format("\n%s: planovat: %.2f / skutecnost %d / pridat %d",ss.getJmeno(),ss.getPlanujSluzeb(),(pom[0]+pom[1]),(int)zmena);
             }
-            
-            ss = ss.getDalsi();
         }
     }
     private int[] dejHodnotySluzby(GregorianCalendar gc){
@@ -968,7 +1066,8 @@ public class PlanovaniBean implements Serializable{
         String jmenoSkupiny;
         int pocetLetajicich;
         int volnychChlivu;
-        public SkupinaSluzeb(String jmenoSkupiny) {
+        
+        SkupinaSluzeb(String jmenoSkupiny) {
             this.SP = 0;
             this.SD = 0;
             this.SK = 0;
@@ -979,7 +1078,34 @@ public class PlanovaniBean implements Serializable{
             this.jmenoSkupiny = jmenoSkupiny;
             this.pocetLetajicich = 0;
         }
-
+        float celkemSluzeb(){
+            return (float)nepresunutelne+LK+LD+LP+SK+SD+SP;
+        }
+        float hodnotaChlivu(){
+            return (celkemSluzeb())/volnychChlivu;
+        }
+        float hodnotaChlivuMinus(){
+            return (celkemSluzeb()-1)/volnychChlivu;
+        }
+        float hodnotaChlivuPlus(){
+            return (celkemSluzeb()+1)/volnychChlivu;
+        }
+        void pridejSluzbu(String typ,int pocet){
+            switch(typ){
+                case "LK": LK += pocet;
+                    break;
+                case "LD": LD += pocet;
+                    break;
+                case "LP": LP += pocet;
+                    break;
+                case "SK": SK += pocet;
+                    break;
+                case "SD": SD += pocet;
+                    break;
+                case "SP": SP += pocet;
+                    break;
+            }
+        }
         void addLetajici(Slouzici sl, int dnuVmesici, int nepresunutelne){
             if(!sl.getSkupina().equals(jmenoSkupiny)){
                 throw new IllegalArgumentException(String.format("spatne jmeno skupiny > %s / %s",sl.getJmeno(),sl.getSkupina()));
@@ -1002,7 +1128,7 @@ public class PlanovaniBean implements Serializable{
             }
             return true;
         }
-
+        
         @Override
         public int hashCode() {
             int hash = 7;
@@ -1016,6 +1142,61 @@ public class PlanovaniBean implements Serializable{
             hash = 53 * hash + Objects.hashCode(this.jmenoSkupiny);
             hash = 53 * hash + this.pocetLetajicich;
             return hash;
+        }
+
+        private boolean muzeDat(SkupinaSluzeb komu) {
+            if(jmenoSkupiny.contains("LK") && komu.jmenoSkupiny.contains("LK")
+                    && LK > 0) return true;
+            if(jmenoSkupiny.contains("LD") && komu.jmenoSkupiny.contains("LD")
+                    && LD > 0) return true;
+            if(jmenoSkupiny.contains("LP") && komu.jmenoSkupiny.contains("LP")
+                    && LP > 0) return true;
+            if(jmenoSkupiny.contains("SK") && komu.jmenoSkupiny.contains("SK")
+                    && SK > 0) return true;
+            if(jmenoSkupiny.contains("SD") && komu.jmenoSkupiny.contains("SD")
+                    && SD > 0) return true;
+            if(jmenoSkupiny.contains("SP") && komu.jmenoSkupiny.contains("SP")
+                    && SP > 0) return true;
+            return false;
+        }
+
+        private void predejSluzbu(SkupinaSluzeb komu) {
+            if(jmenoSkupiny.contains("LK") && komu.jmenoSkupiny.contains("LK")){
+                pridejSluzbu("LK", -1);
+                komu.pridejSluzbu("LK", 1);
+                return;
+            }
+            if(jmenoSkupiny.contains("LD") && komu.jmenoSkupiny.contains("LD")){
+                pridejSluzbu("LD", -1);
+                komu.pridejSluzbu("LD", 1);
+                return;
+            }
+            if(jmenoSkupiny.contains("LP") && komu.jmenoSkupiny.contains("LP")){
+                pridejSluzbu("LP", -1);
+                komu.pridejSluzbu("LP", 1);
+                return;
+            }
+            if(jmenoSkupiny.contains("SK") && komu.jmenoSkupiny.contains("SK")){
+                pridejSluzbu("SK", -1);
+                komu.pridejSluzbu("SK", 1);
+                return;
+            }
+            if(jmenoSkupiny.contains("SD") && komu.jmenoSkupiny.contains("SD")){
+                pridejSluzbu("SD", -1);
+                komu.pridejSluzbu("SD", 1);
+                return;
+            }
+            if(jmenoSkupiny.contains("SP") && komu.jmenoSkupiny.contains("SP")){
+                pridejSluzbu("SP", -1);
+                komu.pridejSluzbu("SP", 1);
+                return;
+            }
+            throw new NoResultException("nepodarilo se predat sluzbu");
+        }
+
+        @Override
+        public String toString() {
+            return "Skupina " + jmenoSkupiny + ": sluzeb="+celkemSluzeb()+" n=" + nepresunutelne + ", LK=" + LK + ", LD=" + LD + ", LP=" + LP + ", SK=" + SK + ", SD=" + SD + ", SP=" + SP + ", letajicich=" + pocetLetajicich + ", volnychChlivu=" + volnychChlivu + ", chlivek="+hodnotaChlivu()+", chlivekM="+hodnotaChlivuMinus()+", chlivekP="+hodnotaChlivuPlus();
         }
         
     }

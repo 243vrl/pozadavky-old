@@ -18,7 +18,7 @@ public class Slouzici {
     private long plneVolneDny;//pro binarni operace plny 1, volny 0
     private float maxPocetSluzeb;
     private float planujSluzeb;
-    private final String skupina;
+    private String skupina;
     private final String dojizdeni;
     
     @Override
@@ -44,6 +44,9 @@ public class Slouzici {
         return Objects.equals(this.jmeno, other.jmeno);
     }
     
+    public void pridejSluzbuDoSkupiny(String typSluzby){
+        this.skupina += ";"+typSluzby;
+    }
     public int getPocetPlnychDnu(){
         long pom = this.plneVolneDny;
         int vratka = 0;
@@ -60,6 +63,12 @@ public class Slouzici {
         this.jmeno = jmeno;
         this.skupina = skupina;
         this.dojizdeni = dojizdeni;
+        if(skupina.equals("")){
+            this.planujSluzeb = 9;
+        }else{
+            this.planujSluzeb = 0;
+        }
+        
     }
 
     public String getDojizdeni() {
