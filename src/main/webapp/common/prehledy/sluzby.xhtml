@@ -35,15 +35,16 @@
                         <p:dataTable id="podlePilotu" value="#{prehledyBean.sluzbyPodlePilotu}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
+                                 rowStyleClass="#{item[0] == loggedBean.loginName?'prihlasen':'null'}"
                                  >
                     
                             <p:columns id="sloupce" value="#{prehledyBean.columns}" var="column" columnIndexVar="colIndex"
                                width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               style=" background-color: #{item[0] == loggedBean.loginName &amp;&amp; prehledyBean.cellColor(colIndex)=='#ffffff'?'#dfeffc':prehledyBean.cellColor(colIndex)};">
+                               styleClass="#{prehledyBean.getStyle(colIndex)}">
                                 <f:facet name="header">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000"/>
+                                <p:outputLabel value="#{item[colIndex]}" />
                                 <f:facet name="footer">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>
@@ -55,15 +56,16 @@
                         <p:dataTable id="podlePalubaru" value="#{prehledyBean.sluzbyPodlePalubaru}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
+                                 rowStyleClass="#{item[0] == loggedBean.loginName?'prihlasen':'null'}"
                                  >
                     
                             <p:columns id="sloupcePal" value="#{prehledyBean.columns}" var="column" columnIndexVar="colIndex"
                                width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               style=" background-color: #{item[0] == loggedBean.loginName &amp;&amp; prehledyBean.cellColor(colIndex)=='#ffffff'?'#dfeffc':prehledyBean.cellColor(colIndex)};">
+                               styleClass="#{prehledyBean.getStyle(colIndex)}">
                                 <f:facet name="header">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000"/>
+                                <p:outputLabel value="#{item[colIndex]}"/>
                                 <f:facet name="footer">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>
@@ -77,7 +79,6 @@
                                  rowIndexVar="rowIndex"
                                  resizableColumns="true"
                                  style="table-layout: fixed;  width: 510px; background-image: none"
-                                 rowStyleClass="svatek"
                                  >
                             <f:facet name="header">
                                 <h:outputText value="Hotovosti na měsíc"/><br/>
@@ -102,34 +103,44 @@
                                     <p:column headerText="PT"/>
                                 </p:row>
                             </p:columnGroup>
-                            <p:column width="5">
+                            <p:column width="5"
+                                      styleClass="#{prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[0]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[1] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[1]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[2] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[2]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[3] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[3]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[4] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[4]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[5] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[5]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[6] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[6]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[7] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[7]}" />
                             </p:column>
-                            <p:column width="10">
+                            <p:column width="10"
+                                      styleClass="#{item[8] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[8]}" />
                             </p:column>
-                            <p:column>
+                            <p:column width="10"
+                                      styleClass="#{item[9] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[9]}" />
                             </p:column>
                         </p:dataTable>

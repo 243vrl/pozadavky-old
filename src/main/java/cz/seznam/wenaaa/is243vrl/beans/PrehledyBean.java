@@ -199,7 +199,19 @@ public class PrehledyBean implements Serializable{
         //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         return vratka;
     }
-
+    public String getStyle(int den){
+        if (den == 0) return "null";
+        //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        //System.out.println(den);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        String vratka ="null";
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        if(Kalendar.jeSvatek(gc)) vratka = "svatek";
+        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka="vikend";
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        return vratka;
+    }
     public List<List<String>> getSluzbyPodleDni() {
         return sluzbyPodleDni;
     }
