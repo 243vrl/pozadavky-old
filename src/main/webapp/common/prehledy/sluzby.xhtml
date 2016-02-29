@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/common/index.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPozadavkyTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
+                <p:panel id="sluzbyPanel" style="padding-left: 0 !important; padding-right: 0 !important;">
+                    <f:facet name="header">
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{prehledyBean.uberM()}">
+                            &laquo;
+                        </p:commandLink>
+                        &emsp;
+                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{prehledyBean.proMesic()}"/>
+                        &emsp;
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{prehledyBean.pridejM()}">
+                            &raquo;
+                        </p:commandLink>
+                    </f:facet>
+                </p:panel>
+                <p:tabView id="sluzbyTab" dynamic="true" cache="true"
+                           style="padding-left: 0 !important; padding-right: 0 !important;">
+                    <p:tab title="Piloti"
+                           style="padding-left: 0 !important; padding-right: 0 !important;">
+                        <p:dataTable id="podlePilotu" value="#{prehledyBean.sluzbyPodlePilotu}" var="item"
+                                 rowKey="#{item[0]}"
+                                 rowIndexVar="rowIndex"
+                                 >
+                    
+                            <p:columns id="sloupce" value="#{prehledyBean.columns}" var="column" columnIndexVar="colIndex"
+                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
+                               style=" background-color: #{item[0] == loggedBean.loginName &amp;&amp; prehledyBean.cellColor(colIndex)=='#ffffff'?'#dfeffc':prehledyBean.cellColor(colIndex)};">
+                                <f:facet name="header">
+                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
+                                </f:facet>
+                                <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000"/>
+                                <f:facet name="footer">
+                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
+                                </f:facet>
+                            </p:columns>
+                        </p:dataTable>
+                    </p:tab>
+                    <p:tab title="Palubáři"
+                           style="padding-left: 0 !important; padding-right: 0 !important;">
+                        <p:dataTable id="podlePalubaru" value="#{prehledyBean.sluzbyPodlePalubaru}" var="item"
+                                 rowKey="#{item[0]}"
+                                 rowIndexVar="rowIndex"
+                                 >
+                    
+                            <p:columns id="sloupcePal" value="#{prehledyBean.columns}" var="column" columnIndexVar="colIndex"
+                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
+                               style=" background-color: #{item[0] == loggedBean.loginName &amp;&amp; prehledyBean.cellColor(colIndex)=='#ffffff'?'#dfeffc':prehledyBean.cellColor(colIndex)};">
+                                <f:facet name="header">
+                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
+                                </f:facet>
+                                <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000"/>
+                                <f:facet name="footer">
+                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
+                                </f:facet>
+                            </p:columns>
+                        </p:dataTable>
+                    </p:tab>
+                    <p:tab title="Podle dnů"
+                           style=" padding-left: 0 !important; padding-right: 0 !important;">
+                        <p:dataTable id="podleDnu" value="#{prehledyBean.sluzbyPodleDni}" var="item"
+                                 rowKey="#{item[0]}"
+                                 rowIndexVar="rowIndex"
+                                 resizableColumns="true"
+                                 style="table-layout: fixed;  width: 510px; background-image: none"
+                                 rowStyleClass="svatek"
+                                 >
+                            <f:facet name="header">
+                                <h:outputText value="Hotovosti na měsíc"/><br/>
+                                <h:outputText value="#{prehledyBean.proMesic()}"/>
+                            </f:facet>
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column rowspan="2" headerText=" " />
+                                    <p:column colspan="3" headerText="LZS Plzeň" />
+                                    <p:column colspan="3" headerText="SAR Kbely" />
+                                    <p:column colspan="3" headerText="H 120" />
+                                </p:row>
+                                <p:row>
+                                    <p:column headerText="KV"/>
+                                    <p:column headerText="PL"/>
+                                    <p:column headerText="PT"/>
+                                    <p:column headerText="KV"/>
+                                    <p:column headerText="PL"/>
+                                    <p:column headerText="PT"/>
+                                    <p:column headerText="KV"/>
+                                    <p:column headerText="PL"/>
+                                    <p:column headerText="PT"/>
+                                </p:row>
+                            </p:columnGroup>
+                            <p:column width="5">
+                                <h:outputText value="#{item[0]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[1]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[2]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[3]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[4]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[5]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[6]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[7]}" />
+                            </p:column>
+                            <p:column width="10">
+                                <h:outputText value="#{item[8]}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{item[9]}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+                
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

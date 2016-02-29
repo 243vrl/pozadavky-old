@@ -53,7 +53,7 @@
                     </p:columns>
                  
                 </p:dataTable>
-                <p:contextMenu id="cmenu" for="PozadavkyListForm">
+                <p:contextMenu id="cmenu" for="PozadavkyListForm"  event="mouseup contextmenu click">
                     <p:menuitem value="X" actionListener="#{pozadavkyBean.ulozPozadavky('X')}" update="datalist"/>
                     <p:menuitem value="ŘD" actionListener="#{pozadavkyBean.ulozPozadavky('ŘD')}" update="datalist"/>
                     <p:menuitem value="SC" actionListener="#{pozadavkyBean.ulozPozadavky('SC')}" update="datalist"/>

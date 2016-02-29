@@ -16,8 +16,14 @@
             <style type="text/css">
                 .ui-widget, .ui-widget .ui-widget {
                     font-size: 92% !important;}
-                .ui-menu-list, .ui-menuitem, .ui-menu, .ui-layout, .ui-layout-doc, .ui-layout-unit, .ui-layout-wrap, .ui-layout-bd, .ui-layout-hd{
+                .ui-menu-list, .ui-menuitem, .ui-menu, .ui-layout, .ui-layout-doc,
+                .ui-layout-unit, .ui-layout-wrap, .ui-layout-bd, .ui-layout-hd,
+                .ui-panel, .ui-tabs{
                     border: none !important;}
+                .svatek{
+                    background-image: none !important;
+                    background-color: rgba(255, 0, 0, 0.87) !important;
+                }
             </style>
 
         </h:head>
@@ -66,7 +72,7 @@
                                 <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsScheduler}"/>
                             </p:submenu>
                             <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
-                                <p:menuitem value="Služby" />
+                                <p:menuitem value="Služby" outcome="/common/prehledy/sluzby"/>
                                 <p:menuitem value="Statistiky"/>
                                 <p:menuitem value="Rozkazy" />
                             </p:submenu>

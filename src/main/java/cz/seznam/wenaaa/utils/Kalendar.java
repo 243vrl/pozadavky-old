@@ -7,6 +7,7 @@ package cz.seznam.wenaaa.utils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  *
@@ -105,7 +106,9 @@ public class Kalendar {
         }
         return false;
     }
-    
+    public static int dnuVMesici(GregorianCalendar gc){
+        return dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);
+    }
     public static int dnuVMesici(int rok, int mesic){
         switch(mesic){
             case 1:

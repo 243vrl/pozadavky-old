@@ -163,8 +163,14 @@ public class PozadavkyBean implements Serializable{
             this.indexLetajiciho = -1;
         }
     }
-    public String cellColor(int den){
+    public String cellColor(int den/*, String kdo*/){
         String vratka = "#ffffff";
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = 
+                (HttpServletRequest) context.getExternalContext().getRequest();
+        /*if(kdo.equals(request.getRemoteUser())){
+            vratka = "#dfeffc";
+        }*/
         if (den == 0) return vratka;
         //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         //System.out.println(den);
