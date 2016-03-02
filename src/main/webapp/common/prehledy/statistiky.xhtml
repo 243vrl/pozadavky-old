@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/common/index.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPozadavkyTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="statistikyListForm" style="font-size: 92%">
+                <p:tabView id="sluzbyTab" dynamic="true" cache="true"
+                           style="padding-left: 0 !important; padding-right: 0 !important;">
+                    <p:tab title="LZS SAR"
+                           style="padding-left: 0 !important; padding-right: 0 !important;">
+                        <p:dataTable id="statistikyLS" value="#{prehledyBean.prumeryLS}" var="item"
+                        rowKey="#{item.letajici}"
+                        rowIndexVar="rowIndex"
+                        rowStyleClass="#{item.letajici == loggedBean.loginName?'prihlasen':'null'}">
+                    <f:facet name="header">
+                        Statistiky H120
+                    </f:facet>
+                    <p:columnGroup type="header">
+                        <p:row>
+                            <p:column rowspan="2" headerText=" "  sortBy="#{item.letajici}"/>
+                            <p:column rowspan="2" headerText="Služeb"  sortBy="#{item.pocetSluzeb}"/>
+                            <p:column colspan="2" headerText="Volné dny" />
+                            <p:column colspan="2" headerText="Svátky" />
+                            <p:column colspan="2" headerText="Soboty" />
+                            <p:column colspan="2" headerText="Neděle" />
+                            <p:column colspan="2" headerText="Pátky" />
+                        </p:row>
+                        <p:row>
+                            <p:column headerText="Počet"  sortBy="#{item.volneDny}"/>
+                            <p:column headerText="Průměr" sortBy="#{item.pVolne}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetVsednichSvatku}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pSv}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetSobot}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pSo}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetNedeli}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pNe}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetPatku}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pPa}"/>
+                        </p:row>
+                    </p:columnGroup>
+                    <p:column>
+                        <h:outputText value="#{item.letajici}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetSluzeb}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.volneDny}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pVolne}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetVsednichSvatku}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pSv}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetSobot}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pSo}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetNedeli}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pNe}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetPatku}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pPa}" />
+                    </p:column>
+                </p:dataTable>
+                </p:tab>
+                    <p:tab title="H120"
+                           style="padding-left: 0 !important; padding-right: 0 !important;">
+                <p:dataTable id="statistikyH120" value="#{prehledyBean.h120}" var="item"
+                        rowKey="#{item.letajici}"
+                        rowIndexVar="rowIndex"
+                        rowStyleClass="#{item.letajici == loggedBean.loginName?'prihlasen':'null'}">
+                    <f:facet name="header">
+                        Statistiky H120
+                    </f:facet>
+                    <p:columnGroup type="header">
+                        <p:row>
+                            <p:column rowspan="2" headerText=" "  sortBy="#{item.letajici}"/>
+                            <p:column rowspan="2" headerText="Služeb"  sortBy="#{item.pocetSluzeb}"/>
+                            <p:column colspan="2" headerText="Volné dny" />
+                            <p:column colspan="2" headerText="Svátky" />
+                            <p:column colspan="2" headerText="Soboty" />
+                            <p:column colspan="2" headerText="Neděle" />
+                            <p:column colspan="2" headerText="Pátky" />
+                        </p:row>
+                        <p:row>
+                            <p:column headerText="Počet"  sortBy="#{item.volneDny}"/>
+                            <p:column headerText="Průměr" sortBy="#{item.pVolne}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetVsednichSvatku}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pSv}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetSobot}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pSo}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetNedeli}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pNe}"/>
+                            <p:column headerText="Počet"  sortBy="#{item.pocetPatku}"/>
+                            <p:column headerText="Průměr"  sortBy="#{item.pPa}"/>
+                        </p:row>
+                    </p:columnGroup>
+                    <p:column>
+                        <h:outputText value="#{item.letajici}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetSluzeb}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.volneDny}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pVolne}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetVsednichSvatku}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pSv}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetSobot}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pSo}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetNedeli}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pNe}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pocetPatku}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.pPa}" />
+                    </p:column>
+                </p:dataTable>
+                </p:tab>
+                </p:tabView>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

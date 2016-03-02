@@ -15,7 +15,7 @@
             </f:facet>
             <style type="text/css">
                 .ui-widget, .ui-widget .ui-widget {
-                    font-size: 92% !important;}
+                    font-size: 92%}
                 .ui-menu-list, .ui-menuitem, .ui-menu, .ui-layout, .ui-layout-doc,
                 .ui-layout-unit, .ui-layout-wrap, .ui-layout-bd, .ui-layout-hd,
                 .ui-panel, .ui-tabs{
@@ -32,7 +32,41 @@
                     background-image: none !important;
                     background-color: rgba(0, 255, 0, 0.4) !important;
                 }
-                
+                .svatek-aktivni{
+                    background-image: none !important;
+                    background-color: rgba(255, 0, 0, 0.35) !important;
+                    padding-bottom: 0 !important; padding-top: 0 !important;
+                }
+                .vikend-aktivni{
+                    background-image: none !important;
+                    background-color: rgba(255, 255, 0, 0.5) !important;
+                    padding-bottom: 0 !important; padding-top: 0 !important;
+                }
+                .prihlasen-aktivni{
+                    background-image: none !important;
+                    background-color: rgba(0, 255, 0, 0.4) !important;
+                    padding-bottom: 0 !important; padding-top: 0 !important;
+                }
+                .aktivni{
+                    background-image: none !important;
+                    padding-bottom: 0 !important; padding-top: 0 !important;
+                }
+                .podtrzitko{
+                    width:100%; margin-left: -10px; font-size: 150% !important;
+                    color: #ffffff;
+                }
+                .podtrzitko-prihlasen{
+                    width:100%; margin-left: -10px; font-size: 150% !important;
+                    color: rgba(0, 255, 0, 0) !important;
+                }
+                .podtrzitko-vikend{
+                    width:100%; margin-left: -10px; font-size: 150% !important;
+                    color: rgba(255, 255, 0, 0) !important;
+                }
+                .podtrzitko-svatek{
+                    width:100%; margin-left: -10px; font-size: 150% !important;
+                    color: rgba(255, 0, 0, 0) !important;
+                }
             </style>
 
         </h:head>
@@ -82,7 +116,7 @@
                             </p:submenu>
                             <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
                                 <p:menuitem value="Služby" outcome="/common/prehledy/sluzby"/>
-                                <p:menuitem value="Statistiky"/>
+                                <p:menuitem value="Statistiky" outcome="/common/prehledy/statistiky"/>
                                 <p:menuitem value="Rozkazy" />
                             </p:submenu>
                             <p:submenu label="Osobní" rendered="#{loggedBean.logged}">

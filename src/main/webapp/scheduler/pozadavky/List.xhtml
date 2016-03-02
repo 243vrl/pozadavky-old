@@ -21,28 +21,27 @@
                 <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
+                                 style="background-image: none !important;"
                                  >
                     <f:facet name="header">
                         <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{pozadavkyBean.proMesic()} - Úprava požadavků"/>
                     </f:facet>
                     <p:columns id="sloupce" value="#{pozadavkyBean.columns}" var="column" columnIndexVar="colIndex"
                                width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}; padding-bottom: 0 !important; padding-top: 0 !important;">
+                               styleClass="#{planovaniBean.getStyle(colIndex)}">
                         <f:facet name="header">
-                            <h:outputText value="#{colIndex == 0? 'X':column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: #{colIndex == 0? '150%':'%92'} !important"/>
-                            
+                            <h:outputText value="#{colIndex == 0? '&nbsp;':column.header}" />
                         </f:facet>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000; " rendered="#{pozadavkyBean.renderedCellvII(colIndex, item[colIndex], 1)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
                         <p:outputLabel value="#{item[colIndex]}" style="width:100%; color: #000000" rendered="#{pozadavkyBean.renderedCellvII(colIndex, item[colIndex], 3)}"/>
-                        <p:outputLabel value="______" style="width:100%; margin-left: -10px; font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{pozadavkyBean.renderedCellvII(colIndex, item[colIndex], 2)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
-                        <p:outputLabel value="X" style="font-size: 150% !important; color: #{pozadavkyBean.cellColor(colIndex)}" rendered="#{colIndex == 0? 'True':'False'}"/>
+                        <p:outputLabel value="_____" styleClass="#{planovaniBean.getPodtrzitkoStyle(colIndex)}" rendered="#{pozadavkyBean.renderedCellvII(colIndex, item[colIndex], 2)}" onmousedown="rc_mousedown([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" onmouseup="rc_mouseup([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"/>
                         <f:facet name="footer">
-                            <h:outputText value="#{colIndex == 0? 'X':column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: #{colIndex == 0? '150%':'%92'} !important"/>
+                            <h:outputText value="#{colIndex == 0? '&nbsp;':column.header}" />
                         </f:facet>
                     </p:columns>
                  
                 </p:dataTable>
-                <p:contextMenu id="cmenu" for="PozadavkyListForm" event="mouseup contextmenu">
+                <p:contextMenu id="cmenu" for="PozadavkyListForm">
                     <p:menuitem value="X" actionListener="#{pozadavkyBean.ulozPozadavky('X')}" update="datalist"/>
                     <p:menuitem value="ŘD" actionListener="#{pozadavkyBean.ulozPozadavky('ŘD')}" update="datalist"/>
                     <p:menuitem value="SC" actionListener="#{pozadavkyBean.ulozPozadavky('SC')}" update="datalist"/>
@@ -68,23 +67,20 @@
                     </f:facet>
                     <p:columns id="sloupce" value="#{planovaniBean.columns}" var="column" columnIndexVar="colIndex"
                                width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               style=" background-color: #{pozadavkyBean.cellColor(colIndex)}; padding-bottom: 0 !important; padding-top: 0 !important;">
+                               styleClass="#{planovaniBean.getStyle(colIndex)}">
                         <f:facet name="header">
-                            <h:outputText value="#{colIndex == 0? 'X':column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: #{colIndex == 0? '150%':'%92'} !important"/>
+                            <h:outputText value="#{colIndex == 0? '&nbsp;':column.header}"/>
                         </f:facet>
                         <p:outputLabel value="#{item[colIndex]?'&#10004;':'_____'}"
-                                       style="width:100%; #{item[colIndex]?'':'margin-left: -10px; font-size: 150% !important'};color: #{item[colIndex]?'#000000':pozadavkyBean.cellColor(colIndex)}"
+                                       styleClass="#{item[colIndex]?'':planovaniBean.getPodtrzitkoStyle(colIndex)}"
                                        onmousedown="rc_mousedownII([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])" 
                                        onmouseup="rc_mouseupII([{name:'jmeno',value:#{rowIndex}},{name:'den',value:#{colIndex}}])"
                                        rendered="#{colIndex == 0?'false':'true'}"
                                        />
-                        <p:outputLabel value="CHRA"
-                                       rendered="#{colIndex == 0?'true':'false'}"
-                                       style="width:100%; color: #{pozadavkyBean.cellColor(colIndex)}"
-                                       />
+                        
                     </p:columns>
                 </p:dataTable>
-                <p:contextMenu id="cmenuII" for="PozadavkyListFormCalendar"  event="mouseup contextmenu">
+                <p:contextMenu id="cmenuII" for="PozadavkyListFormCalendar">
                     <p:menuitem value="Jede" actionListener="#{planovaniBean.nastavSvoz(true)}" update="dnySvozu"/>
                     <p:menuitem value="Vynulovat" actionListener="#{planovaniBean.nastavSvoz(false)}" update="dnySvozu"/>
                 </p:contextMenu>
