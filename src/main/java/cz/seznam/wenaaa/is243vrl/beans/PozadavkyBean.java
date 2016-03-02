@@ -163,6 +163,32 @@ public class PozadavkyBean implements Serializable{
             this.indexLetajiciho = -1;
         }
     }
+    public String getStyle(int den, boolean prihlasen){
+        if (den == 0) return "null";
+        //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        //System.out.println(den);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        String vratka =prihlasen?"aktivni":"null";
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        if(Kalendar.jeSvatek(gc)) vratka = prihlasen?"svatek-aktivni":"svatek";
+        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka=prihlasen?"vikend-aktivni":"vikend";
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        return vratka;
+    }
+    public String getPodtrzitkoStyle(int den){
+        if (den == 0) return "null";
+        //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        //System.out.println(den);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        String vratka ="podtrzitko-prihlasen";
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        if(Kalendar.jeSvatek(gc)) vratka = "podtrzitko-svatek";
+        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka="podtrzitko-vikend";
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        return vratka;
+    }
     public String cellColor(int den/*, String kdo*/){
         String vratka = "#ffffff";
         FacesContext context = FacesContext.getCurrentInstance();

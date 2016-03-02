@@ -5,6 +5,8 @@
  */
 package cz.seznam.wenaaa.is243vrl.beans;
 
+import cz.seznam.wenaaa.is243vrl.entityClasses.PrumeryH120;
+import cz.seznam.wenaaa.is243vrl.entityClasses.PrumerySluzeb;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.io.Serializable;
@@ -45,7 +47,9 @@ public class PrehledyBean implements Serializable{
     private List<List<String>> sluzbyPodleDni;
     private List<List<String>> sluzbyPodlePilotu;
     private List<List<String>> sluzbyPodlePalubaru;
+    private List<PrumeryH120> h120 = null;
     private List<ColumnModelIII> columns = new ArrayList<>();
+    private List<PrumerySluzeb> prumeryLS = null;
     /**
      * Creates a new instance of PrehledyBean
      */
@@ -55,6 +59,11 @@ public class PrehledyBean implements Serializable{
         populateColumns();
     }
     @PostConstruct
+    private void uvodniNacteni(){
+        nactiPrumerySluzeb();
+        nactiPrumeryH120();
+        nactiSluzbyNaMesic();
+    }
     private void nactiSluzbyNaMesic(){
         sluzbyPodlePilotu = new ArrayList<>();
         sluzbyPodlePalubaru = new ArrayList<>();
@@ -122,6 +131,10 @@ public class PrehledyBean implements Serializable{
             pomVratka.add(String.valueOf(den));
             for(int j = 1; j < sl.length; j++){
                 String jmeno = (String) sl[j];
+                if(jmeno == null){
+                    pomVratka.add("");
+                    continue;
+                }
                 pomVratka.add(jmeno);
                 for(List<String> pl: podlePilotu){
                     if(jmeno.equals(pl.get(0))){
@@ -223,7 +236,56 @@ public class PrehledyBean implements Serializable{
     public List<List<String>> getSluzbyPodlePalubaru() {
         return sluzbyPodlePalubaru;
     }
+    
+    private void nactiPrumeryH120() {
+        Query q = em.createNativeQuery("SELECT * FROM prumery_h120 WHERE pocet_sluzeb > 1 ORDER BY p_volne DESC");
+        h120 = new ArrayList<>();
+        for(Object obj: q.getResultList()){
+            Object[] pole = (Object[]) obj;
+            String letajici = (String)pole[0];
+            int pocetSluzeb = (int)pole[1]-1;
+            int pocetVsednichSvatku = (int)pole[2];
+            double pSv = (double)pole[3];
+            int pocetSobot = (int)pole[4];
+            double pSo = (double)pole[5];
+            int pocetNedeli = (int)pole[6];
+            double pNe = (double)pole[7];
+            int pocetPatku = (int)pole[8];
+            double pPa = (double)pole[9];
+            int volneDny = (int)pole[10];
+            double pVolne = (double)pole[11];
+            h120.add(new PrumeryH120(letajici,pocetSluzeb, pocetVsednichSvatku, pSv, pocetSobot,
+            pSo, pocetNedeli, pNe, pocetPatku, pPa, volneDny, pVolne));
+        }
+    }
+    private void nactiPrumerySluzeb() {
+        Query q = em.createNativeQuery("SELECT * FROM prumery_sluzeb WHERE pocet_sluzeb > 1 ORDER BY p_volne DESC");
+        prumeryLS = new ArrayList<>();
+        for(Object obj: q.getResultList()){
+            Object[] pole = (Object[]) obj;
+            String letajici = (String)pole[0];
+            int pocetSluzeb = (int)pole[1]-1;
+            int pocetVsednichSvatku = (int)pole[2];
+            double pSv = (double)pole[3];
+            int pocetSobot = (int)pole[4];
+            double pSo = (double)pole[5];
+            int pocetNedeli = (int)pole[6];
+            double pNe = (double)pole[7];
+            int pocetPatku = (int)pole[8];
+            double pPa = (double)pole[9];
+            int volneDny = (int)pole[10];
+            double pVolne = (double)pole[11];
+            prumeryLS.add(new PrumerySluzeb(letajici,pocetSluzeb, pocetVsednichSvatku, pSv, pocetSobot,
+            pSo, pocetNedeli, pNe, pocetPatku, pPa, volneDny, pVolne));
+        }
+    }
+    public List<PrumeryH120> getH120() {
+        return h120;
+    }
 
+    public List<PrumerySluzeb> getPrumeryLS() {
+        return prumeryLS;
+    }
     
 
     public List<ColumnModelIII> getColumns() {

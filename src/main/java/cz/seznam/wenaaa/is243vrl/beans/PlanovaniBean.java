@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
@@ -35,12 +37,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -124,7 +128,38 @@ public class PlanovaniBean implements Serializable{
     public boolean isvPlanovani() {
         return vPlanovani;
     }
-
+    public String getStyle(int den){
+        if (den == 0) return "null";
+        //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        //System.out.println(den);
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        gc.add(Calendar.MONTH, 1);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        String vratka ="aktivni";
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        if(Kalendar.jeSvatek(gc)) vratka = "svatek-aktivni";
+        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka="vikend-aktivni";
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        return vratka;
+    }
+    public String getPodtrzitkoStyle(int den){
+        if (den == 0) return "null";
+        //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        //System.out.println(den);
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        gc.add(Calendar.MONTH, 1);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        String vratka ="podtrzitko";
+        //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        if(Kalendar.jeSvatek(gc)) vratka = "podtrzitko-svatek";
+        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka="podtrzitko-vikend";
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
+        return vratka;
+    }
     public PlanovaniBean() {
         this.vPlanovani = false;
         planuj = true;
@@ -650,7 +685,7 @@ public class PlanovaniBean implements Serializable{
         //String myName1 = params.get("jmeno");
         String myName2 = params.get("den");
         this.konec = Integer.parseInt(myName2);
-        //System.out.format("Konec : %d",konec);
+        //System.out.print(konec);
     }
     public void nastavSvoz(boolean jede){
         for(int i = 1; i < this.dnySvozu.length; i++){
