@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,8 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
@@ -37,14 +34,12 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -459,6 +454,7 @@ public class PlanovaniBean implements Serializable{
                 //System.out.print("vratka size po: "+Integer.toString(vratka.size()));
             }
         }
+        text = text+"done";
         return vratka;
     }
     private List<String> dejPoradiSluzeb(){
@@ -556,6 +552,7 @@ public class PlanovaniBean implements Serializable{
             qUpd.setParameter(1, pomGC, TemporalType.DATE);
             qUpd.executeUpdate();
             ut.commit();
+            text = text + "done";
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -872,6 +869,7 @@ public class PlanovaniBean implements Serializable{
             }
             //System.out.format("%s : planovat : %f", letajici.getJmeno(),letajici.getPlanujSluzeb());
         }
+        text = text + "done";
         return vratka;
     }
     private String dejSchemaDojizdeni(SluzboDen sd, String typSluzby, int den) {

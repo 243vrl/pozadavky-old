@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ZpravyCreateDlg" widgetVar="ZpravyCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateZpravyTitle}">
+            <h:form id="ZpravyCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{zpravyController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateZpravyLabel_datumOd}" for="datumOd" />
+                        <p:calendar id="datumOd" pattern="MM/dd/yyyy" value="#{zpravyController.selected.datumOd}" title="#{bundle.EditZpravyTitle_datumOd}" required="true" requiredMessage="#{bundle.EditZpravyRequiredMessage_datumOd}" showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateZpravyLabel_datumDo}" for="datumDo" />
+                        <p:calendar id="datumDo" pattern="MM/dd/yyyy" value="#{zpravyController.selected.datumDo}" title="#{bundle.EditZpravyTitle_datumDo}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateZpravyLabel_textZpravy}" for="textZpravy" />
+                        <p:inputText id="textZpravy" value="#{zpravyController.selected.textZpravy}" title="#{bundle.CreateZpravyTitle_textZpravy}" required="true" requiredMessage="#{bundle.CreateZpravyRequiredMessage_textZpravy}"/>
+                        
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{zpravyController.create}" value="#{bundle.Save}" update="display,:ZpravyListForm:datalist,:growl" oncomplete="handleSubmit(args,'ZpravyCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="ZpravyCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
