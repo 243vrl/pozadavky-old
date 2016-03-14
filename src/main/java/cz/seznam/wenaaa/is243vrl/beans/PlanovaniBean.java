@@ -306,9 +306,10 @@ public class PlanovaniBean implements Serializable{
         //for(int i = 0; i < 1000; i++){
         int i = 0;
         while(true){
+            text += "\nvstup do while";
             if(trvani*1000 < i++){
             //if((System.currentTimeMillis()-ted)>trvani*1000){
-                //System.out.format("stop cas, hloubka: %d", rozvijeny.getHloubka());
+                text += String.format("\nstop cas, hloubka: %d", rozvijeny.getHloubka());
                 return null;
             }
             if(sluzbodny.isEmpty()){
@@ -316,6 +317,7 @@ public class PlanovaniBean implements Serializable{
             }
             //System.out.print("----------------------------");
             try{
+                text += "\nv try";
                 String[] arrText = text.split("\n");
                 String[] arrText2 = arrText[arrText.length-1].split(" ");
                 Integer.parseInt(arrText2[arrText2.length-1]);
@@ -347,7 +349,7 @@ public class PlanovaniBean implements Serializable{
             int novaHloubka = rozvijeny.getHloubka() + 1;
             String dojizdeni = dejSchemaDojizdeni(rozvijeny,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             SluzboDen predchozi = rozvijeny;
-            //System.out.format("rozbaluji: %s", rozvijeny);
+            text += String.format("\nrozbaluji: %s", rozvijeny);
             //System.out.format("%d : %s : %d",novaHloubka,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             for(String letajici: dejPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
                 Slouzici pomSl = new Slouzici(letajici,"","");
