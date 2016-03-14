@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -217,7 +218,6 @@ public class PlanovaniBean implements Serializable{
         text = text+String.format("\nNačítám seznam sloužících...");
         List<Slouzici> neplanovani = nactiNeplanovane();
         List<Slouzici> seznamSlouzicich = nactiSlouzici();
-        
         try{
             text = text+String.format("\nNačítám službodny...");
             poradiSD = dejPoradiSluzbodnu(seznamSlouzicich);
@@ -244,13 +244,20 @@ public class PlanovaniBean implements Serializable{
         //uvodni hledani
         while(vysledek == null){
             if(mezPaSoNe > 5){
+                text = text +"\nkolikrat nelze naplanovat:";
+                poradiSD.sort(new pomSDComparator());
+                for(PomSDClass sd : poradiSD){
+                    if(sd.kolikratNesel > 0){
+                        text += String.format("\n%s:%d > %d", sd.typSluzby, sd.den, sd.kolikratNesel);
+                    }
+                }
                 text = text +"\nNenalezeno, uprav požadavky/svoz.";
                 nenaplanovano = true;
                 vPlanovani = false;
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d >", (int)mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani);
+            vysledek = naplanuj(250,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani);
             if(vysledek == null){
                 /*if(mezPresMiru < 2){
                     mezPresMiru += 0.5;
@@ -273,7 +280,7 @@ public class PlanovaniBean implements Serializable{
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(25,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani);
+            SluzboDen pom = naplanuj(250,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani);
             if (pom != null){
                 vysledek = pom;
                 ukonci = false;
@@ -322,30 +329,11 @@ public class PlanovaniBean implements Serializable{
                 return null;
             }
             if(sluzbodny.isEmpty()){
-                {
-                    SluzboDen pomS =rozvijeny;
-                    while(pomS != null){
-                        text += "\n"+pomS.toString();
-                        pomS = pomS.getNahoru();
-                    }
-                }
                 return null;
             }
             rozvijeny = sluzbodny.get(0);
             //System.out.print("----------------------------");
-            try{
-                //text += "\nv try";
-                String[] arrText = text.split("\n");
-                String[] arrText2 = arrText[arrText.length-1].split(" ");
-                Integer.parseInt(arrText2[arrText2.length-1]);
-                arrText2[arrText2.length-2]=rozvijeny.toStringII();
-                arrText2[arrText2.length-1]=String.format("%d", ++i);
-                arrText[arrText.length-1] = String.join(" ",arrText2);
-                text = String.join("\n", arrText);
-            }
-            catch(NumberFormatException ex){
-                text = text+" "+rozvijeny.toStringII()+String.format(" %d", i);
-            }
+            
             
             /*for(SluzboDen pom: sluzbodny){
                 if(pom.jeMensiNezParam(rozvijeny,naHloubku,seznamSlouzicich)){
@@ -362,21 +350,42 @@ public class PlanovaniBean implements Serializable{
             String dojizdeni = dejSchemaDojizdeni(rozvijeny,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             SluzboDen predchozi = rozvijeny;
             //text += String.format("\nrozbaluji: %s", rozvijeny);
-            //System.out.format("%d : %s : %d",novaHloubka,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
+            //String sDalsi = String.format("%s:%d",poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
+            try{
+                //text += "\nv try";
+                String[] arrText = text.split("\n");
+                String[] arrText2 = arrText[arrText.length-1].split(" ");
+                Integer.parseInt(arrText2[arrText2.length-1]);
+                arrText2[arrText2.length-1]=String.format("%d", ++i);
+                arrText[arrText.length-1] = String.join(" ",arrText2);
+                text = String.join("\n", arrText);
+            }
+            catch(NumberFormatException ex){
+                text = text+String.format(" %d", i);
+            }
+            boolean nenalezeno = true;
             for(String letajici: dejPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
-                Slouzici pomSl = new Slouzici(letajici,"","");
+                Slouzici pomSl = null;
                 for(Slouzici sl: seznamSlouzicich){
                     if(sl.getJmeno().equals(letajici)){
                         pomSl = sl;
                     }
                 }
+                if(pomSl == null){
+                    for(Slouzici sl: neplanovani){
+                        if(sl.getJmeno().equals(letajici)){
+                         pomSl = sl;
+                        }
+                    }
+                }
                 SluzboDen pom = new SluzboDen(poradiSD.get(novaHloubka).den,poradiSD.get(novaHloubka).typSluzby,predchozi,pomSl);
-                //System.out.print(pomS);
+                //System.out.print(pom);
                 if (pom.getMaxsluzebpresmiru()>=mezPresMiru) continue;
                 if (pom.getMaxpocetsvatku()>mezSv) continue;
                 if (pom.getMaxpocetsobot()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetnedel()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetpatku()>mezPaSoNeSv) continue;
+                //System.out.print("prosel pres meze");
                 if(pom.isValid(pomSl)){
                     boolean nevlozen = true;
                     for(int j = 0; j < sluzbodny.size();j++){
@@ -389,11 +398,12 @@ public class PlanovaniBean implements Serializable{
                     if(nevlozen){
                         sluzbodny.add(pom);
                     }
+                    nenalezeno = false;
                 }
             }
-            //if(nejde) System.out.print("nejde");
-            //System.out.print("///////////////////////////////////////////////////");
-            
+            if(nenalezeno){
+                poradiSD.get(novaHloubka).kolikratNesel++;
+            }
         }
         return rozvijeny;
     }
@@ -767,7 +777,7 @@ public class PlanovaniBean implements Serializable{
                     if ((nemuze & (long) Math.pow(2, den+1)) == 0) nemuze += (long) Math.pow(2,den+1);
                 }
                 else{
-                    if(pom2.startsWith("X")){
+                    if(pom2.startsWith("X") || (den == 1)){
                         nemuze += (long) Math.pow(2, den);
                     }else {
                         nemuze += (long) Math.pow(2,den);
@@ -1128,6 +1138,7 @@ public class PlanovaniBean implements Serializable{
         private final int den;
         private final String typSluzby;
         private final int volnychPolicek;
+        private long kolikratNesel = 0;
 
         @Override
         public String toString() {
@@ -1138,6 +1149,7 @@ public class PlanovaniBean implements Serializable{
             this.den = den;
             this.typSluzby = typSluzby;
             this.volnychPolicek = volnychPolicek;
+            this.kolikratNesel = 0;
         }
     }
 
@@ -1224,6 +1236,9 @@ public class PlanovaniBean implements Serializable{
         void addLetajici(Slouzici sl, int dnuVmesici, int nepresunutelne){
             if(!sl.getSkupina().equals(jmenoSkupiny)){
                 throw new IllegalArgumentException(String.format("spatne jmeno skupiny > %s / %s",sl.getJmeno(),sl.getSkupina()));
+            }
+            if(dnuVmesici-sl.getPocetPlnychDnu() < 0){
+                throw new IllegalArgumentException(String.format("spatny pocet plnych dnu > %s / %d",sl.getJmeno(),sl.getPocetPlnychDnu()));
             }
             volnychChlivu.add(dnuVmesici-sl.getPocetPlnychDnu());
             this.nepresunutelne += nepresunutelne;
@@ -1318,9 +1333,23 @@ public class PlanovaniBean implements Serializable{
 
         @Override
         public String toString() {
-            return "Skupina " + jmenoSkupiny + ": sluzeb="+celkemSluzeb()+" n=" + nepresunutelne + ", LK=" + LK + ", LD=" + LD + ", LP=" + LP + ", SK=" + SK + ", SD=" + SD + ", SP=" + SP + ", letajicich=" + volnychChlivu.size() +", chlivek="+hodnotaChlivu()+", chlivekM="+hodnotaChlivuMinus()+", chlivekP="+hodnotaChlivuPlus();
+            String chl = "[";
+            for(Integer i:this.volnychChlivu){
+                chl += String.format(" %d,", i);
+            }
+            return "Skupina " + jmenoSkupiny + ": sluzeb="+celkemSluzeb()+" n=" + nepresunutelne + ", LK=" + LK + ", LD=" + LD + ", LP=" + LP + ", SK=" + SK + ", SD=" + SD + ", SP=" + SP + ", letajicich=" + volnychChlivu.size() +", chlivek="+hodnotaChlivu()+", chlivekM="+hodnotaChlivuMinus()+", chlivekP="+hodnotaChlivuPlus()+", chlivy="+chl+"]";
         }
         
+    }
+
+    private static class pomSDComparator implements Comparator<PomSDClass>{
+
+        public pomSDComparator() {
+        }
+        @Override
+        public int compare(PomSDClass o1, PomSDClass o2) {
+             return (int)(o2.kolikratNesel - o1.kolikratNesel);
+        }
     }
     
 }
