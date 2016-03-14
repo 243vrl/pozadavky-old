@@ -150,7 +150,9 @@ public class LoggedBean  implements Serializable{
         }
         return request.isUserInRole("HEAD") ? "true":"false";
     }
-
+    public boolean loggedAsAdminSchedulerHead(){
+        return getLoggedAsAdmin().equalsIgnoreCase("true") || getLoggedAsHead().equalsIgnoreCase("true") || getLoggedAsScheduler().equalsIgnoreCase("true");
+    }
     /**
      * @return the loggedAsScheduler
      */

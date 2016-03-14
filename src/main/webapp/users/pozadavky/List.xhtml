@@ -15,9 +15,24 @@
 
         <ui:define name="body">
             #{pozadavkyBean.prenastavMesic()}
-            <h:outputText value="6.4. - 7.4. záchranné práce LKLN" style="font-size: large; font-weight: bold;"/>
-            <br/>
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
+                <p:dataTable id="zpravy" value="#{pozadavkyBean.zpravyNaMesic}" var="item">
+                    <p:column style="width:70px;">
+                        <h:outputText value="#{item.datumOd}">
+                            
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:70px;">
+                        <h:outputText value="#{item.datumDo}">
+                            
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.textZpravy}"/>
+                    </p:column>
+                </p:dataTable>
+                <br/>
+                <br/>
                 <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
                 <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
                 <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic}" var="item"
@@ -26,7 +41,7 @@
                                  rowStyleClass="#{item[0] == loggedBean.loginName?'prihlasen':null}"
                                  >
                     <f:facet name="header">
-                        <p:commandLink rendered="#{pozadavkyBean.renderedCommnandLink()?'true':'false'}" style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic datalist" actionListener="#{pozadavkyBean.uberM()}">
+                        <p:commandLink rendered="#{pozadavkyBean.renderedCommnandLink()?'true':'false'}" style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic datalist :PozadavkyListForm:zpravy" actionListener="#{pozadavkyBean.uberM()}">
                             &laquo;
                         </p:commandLink>
                         <p:commandLink rendered="#{pozadavkyBean.renderedCommnandLink()?'false':'true'}" style="font-weight: bold; font-size: 110% !important; color: grey; cursor: default">
@@ -35,7 +50,7 @@
                         &emsp;
                         <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{pozadavkyBean.proMesic()}"/>
                         &emsp;
-                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic datalist" actionListener="#{pozadavkyBean.pridejM()}">
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic datalist :PozadavkyListForm:zpravy" actionListener="#{pozadavkyBean.pridejM()}">
                             &raquo;
                         </p:commandLink>
                     </f:facet>

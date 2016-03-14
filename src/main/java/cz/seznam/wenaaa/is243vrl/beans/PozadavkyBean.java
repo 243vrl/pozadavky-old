@@ -5,7 +5,9 @@
  */
 package cz.seznam.wenaaa.is243vrl.beans;
 
+import cz.seznam.wenaaa.is243vrl.entityClasses.Zpravy;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
+import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.ZpravyController;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.io.IOException;
 import java.io.Serializable;
@@ -52,6 +54,8 @@ public class PozadavkyBean implements Serializable{
     UserTransaction ut;
     @Inject
     LetajiciSluzbyController lsc;
+    @Inject
+    ZpravyController zc;
     private int zacatek;
     private int konec;
     private String vybranyTypPozadavku;
@@ -61,6 +65,7 @@ public class PozadavkyBean implements Serializable{
     private List<String> letajici;
     private int indexLetajiciho;
     private List<List<String>> pozadavkyNaMesic;
+    private List<Zpravy> zpravyNaMesic;
     
     public int getKonec() {
         return konec;
@@ -68,6 +73,14 @@ public class PozadavkyBean implements Serializable{
 
     public List<List<String>> getPozadavkyNaMesic() {
         return pozadavkyNaMesic;
+    }
+    
+    private void setZpravyNaMesic(){
+        zpravyNaMesic = zc.getNaMesic(gc);
+    }
+
+    public List<Zpravy> getZpravyNaMesic() {
+        return zpravyNaMesic;
     }
     
     public List<ColumnModel> getColumns() {
@@ -213,12 +226,14 @@ public class PozadavkyBean implements Serializable{
         gc.add(Calendar.MONTH, -1);
         populateColumns();
         nactiPozadavkyNaMesic();
+        setZpravyNaMesic();
     }
     public void pridejM(){
         gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
         populateColumns();
         nactiPozadavkyNaMesic();
+        setZpravyNaMesic();
     }
     public void prenastavMesic(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
@@ -232,6 +247,7 @@ public class PozadavkyBean implements Serializable{
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         populateColumns();
         nactiPozadavkyNaMesic();
+        setZpravyNaMesic();
     }
     public boolean renderedCommnandLink(){
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
@@ -365,6 +381,7 @@ public class PozadavkyBean implements Serializable{
         gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
         nactiPozadavkyNaMesic();
+        setZpravyNaMesic();
         //System.out.format("mesic po: %d",gc.get(Calendar.MONTH));
         try {
             
