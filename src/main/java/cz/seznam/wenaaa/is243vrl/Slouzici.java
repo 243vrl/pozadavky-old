@@ -105,6 +105,11 @@ public class Slouzici {
     public String getSkupina() {
         return skupina;
     }
+
+    @Override
+    public String toString() {
+        return "Slouzici{" + "jmeno=" + jmeno + ", plneVolneDny=" + plneVolneDny + ", maxPocetSluzeb=" + maxPocetSluzeb + ", planujSluzeb=" + planujSluzeb + ", skupina=" + skupina + ", dojizdeni=" + dojizdeni + '}';
+    }
     
     
 }
