@@ -221,6 +221,7 @@ public class PlanovaniBean implements Serializable{
         try{
             text = text+String.format("\nNačítám službodny...");
             poradiSD = dejPoradiSluzbodnu(seznamSlouzicich);
+            
         }catch(NoResultException ex){
             text = text+"\n"+ex.getMessage();
             System.out.print(ex.getMessage());
@@ -322,12 +323,12 @@ public class PlanovaniBean implements Serializable{
             }
             if(sluzbodny.isEmpty()){
                 {
-                SluzboDen pomS =rozvijeny;
-                while(pomS != null){
-                    text += "\n"+pomS.toString();
-                    pomS = pomS.getNahoru();
+                    SluzboDen pomS =rozvijeny;
+                    while(pomS != null){
+                        text += "\n"+pomS.toString();
+                        pomS = pomS.getNahoru();
+                    }
                 }
-            }
                 return null;
             }
             rozvijeny = sluzbodny.get(0);
@@ -467,7 +468,7 @@ public class PlanovaniBean implements Serializable{
                 //System.out.print("vratka size po: "+Integer.toString(vratka.size()));
             }
         }
-        text = text+"done";
+        text = text+String.format("%d...done",vratka.size());
         return vratka;
     }
     private List<String> dejPoradiSluzeb(){
@@ -885,7 +886,7 @@ public class PlanovaniBean implements Serializable{
             }
             //System.out.format("%s : planovat : %f", letajici.getJmeno(),letajici.getPlanujSluzeb());
         }
-        text = text + "done";
+        text += String.format("...%d...done", vratka.size());
        return vratka;
     }
     private List<Slouzici> nactiNeplanovane(){
@@ -906,6 +907,7 @@ public class PlanovaniBean implements Serializable{
             q2.setParameter(1, jmeno);
             vratka.add(new Slouzici(jmeno, "", (String)q2.getSingleResult()));
         }
+        text += String.format("...%d", vratka.size());
         return vratka;
     }
     private String dejSchemaDojizdeni(SluzboDen sd, String typSluzby, int den) {
