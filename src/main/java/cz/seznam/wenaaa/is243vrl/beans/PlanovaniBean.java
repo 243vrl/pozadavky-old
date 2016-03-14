@@ -323,20 +323,22 @@ public class PlanovaniBean implements Serializable{
             if(sluzbodny.isEmpty()){
                 return null;
             }
+            rozvijeny = sluzbodny.get(0);
             //System.out.print("----------------------------");
             try{
                 //text += "\nv try";
                 String[] arrText = text.split("\n");
                 String[] arrText2 = arrText[arrText.length-1].split(" ");
                 Integer.parseInt(arrText2[arrText2.length-1]);
+                arrText2[arrText2.length-2]=rozvijeny.toStringII();
                 arrText2[arrText2.length-1]=String.format("%d", ++i);
                 arrText[arrText.length-1] = String.join(" ",arrText2);
                 text = String.join("\n", arrText);
             }
             catch(NumberFormatException ex){
-                text = text+String.format(" %d", i);
+                text = text+" "+rozvijeny.toStringII()+String.format(" %d", i);
             }
-            rozvijeny = sluzbodny.get(0);
+            
             /*for(SluzboDen pom: sluzbodny){
                 if(pom.jeMensiNezParam(rozvijeny,naHloubku,seznamSlouzicich)){
                     rozvijeny = pom;

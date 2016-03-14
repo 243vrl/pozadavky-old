@@ -222,7 +222,9 @@ public class SluzboDen {
     public int getHloubka() {
         return hloubka;
     }
-
+    public String toStringII(){
+        return String.format("%s:%d", this.typsluzby, this.datum.get(Calendar.DAY_OF_MONTH));
+    }
     @Override
     public String toString() {
         return "SluzboDen{" + "datum=" + new SimpleDateFormat("dd/MM/YY").format(this.datum.getTime()) + ", typdne=" + typdne + ", typsluzby=" + typsluzby + ", slouzici=" + slouzici + ", maxsluzebpresmiru=" + getMaxsluzebpresmiru() + ", maxpocetsvatku=" + getMaxpocetsvatku() + ", maxpocetsobot=" + getMaxpocetsobot() + ", maxpocetnedel=" + getMaxpocetnedel() + ", maxpocetpatku=" + getMaxpocetpatku() + ", hloubka=" + hloubka + '}';
