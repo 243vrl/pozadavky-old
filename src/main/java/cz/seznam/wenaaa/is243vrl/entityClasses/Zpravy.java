@@ -35,9 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Zpravy.findByDatumOd", query = "SELECT z FROM Zpravy z WHERE z.datumOd = :datumOd"),
     @NamedQuery(name = "Zpravy.findByDatumDo", query = "SELECT z FROM Zpravy z WHERE z.datumDo = :datumDo"),
     @NamedQuery(name = "Zpravy.findByTextZpravy", query = "SELECT z FROM Zpravy z WHERE z.textZpravy = :textZpravy"),
-    @NamedQuery(name = "Zpravy.findByPodal", query = "SELECT z FROM Zpravy z WHERE z.podal = :podal"),
-    @NamedQuery(name = "Zpravy.findByTyp", query = "SELECT z FROM Zpravy z WHERE z.typ = :typ"),
-    @NamedQuery(name = "Zpravy.naMesic", query = "SELECT z FROM Zpravy z WHERE (z.typ != 'A') AND ((z.datumOd BETWEEN :od AND :do) OR (z.datumDo BETWEEN :od AND :do))")})
+    @NamedQuery(name = "Zpravy.findByAutomaticky", query = "SELECT z FROM Zpravy z WHERE z.automaticky = :automaticky"),
+    @NamedQuery(name = "Zpravy.naMesic", query = "SELECT z FROM Zpravy z WHERE (z.automaticky = false) AND ((z.datumOd BETWEEN :od AND :do) OR (z.datumDo BETWEEN :od AND :do))")})
 public class Zpravy implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -63,9 +62,10 @@ public class Zpravy implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "podal")
     private String podal;
-    @Size(max = 2)
-    @Column(name = "typ")
-    private String typ;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "automaticky")
+    private boolean automaticky;
 
     public Zpravy() {
     }
@@ -74,18 +74,11 @@ public class Zpravy implements Serializable {
         this.id = id;
     }
 
-    public String getPodal() {
-        return podal;
-    }
-
-    public void setPodal(String podal) {
-        this.podal = podal;
-    }
-    
-    public Zpravy(Integer id, Date datumOd, String textZpravy) {
+    public Zpravy(Integer id, Date datumOd, String textZpravy, boolean automaticky) {
         this.id = id;
         this.datumOd = datumOd;
         this.textZpravy = textZpravy;
+        this.automaticky = automaticky;
     }
 
     public Integer getId() {
@@ -120,12 +113,12 @@ public class Zpravy implements Serializable {
         this.textZpravy = textZpravy;
     }
 
-    public String getTyp() {
-        return typ;
+    public boolean getAutomaticky() {
+        return automaticky;
     }
 
-    public void setTyp(String typ) {
-        this.typ = typ;
+    public void setAutomaticky(boolean automaticky) {
+        this.automaticky = automaticky;
     }
 
     @Override
@@ -151,6 +144,12 @@ public class Zpravy implements Serializable {
     @Override
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.Zpravy[ id=" + id + " ]";
+    }
+    public String getPodal(){
+        return this.podal;
+    }
+    public void setPodal(String loginName) {
+        this.podal = loginName;
     }
     
 }

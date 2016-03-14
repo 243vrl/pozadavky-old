@@ -48,6 +48,14 @@
                             </f:facet>
                             <h:outputText value="#{item.textZpravy}"/>
                         </p:column>
+                        <p:column style="width:50px;">
+                            <f:facet name="header">
+                                <h:outputText value=" "/>
+                            </f:facet>
+                            <h:outputText value="#{item.podal}">
+                                
+                            </h:outputText>
+                        </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{zpravyController.prepareCreate}" update=":ZpravyCreateForm" disabled="#{loggedBean.loggedAsAdminSchedulerHead()? 'False':'True'}" oncomplete="PF('ZpravyCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":ZpravyViewForm" oncomplete="PF('ZpravyViewDialog').show()" disabled="#{empty zpravyController.selected}"/>
