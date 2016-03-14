@@ -321,6 +321,13 @@ public class PlanovaniBean implements Serializable{
                 return null;
             }
             if(sluzbodny.isEmpty()){
+                {
+                SluzboDen pomS =rozvijeny;
+                while(pomS != null){
+                    text += "\n"+pomS.toString();
+                    pomS = pomS.getNahoru();
+                }
+            }
                 return null;
             }
             rozvijeny = sluzbodny.get(0);
@@ -345,13 +352,7 @@ public class PlanovaniBean implements Serializable{
                 }
             }*/
             sluzbodny.remove(rozvijeny);
-            /*{
-                SluzboDen pomS =rozvijeny;
-                while(pomS != null){
-                    System.out.print(pomS);
-                    pomS = pomS.getNahoru();
-                }
-            }*/
+            
             
             if((rozvijeny.getHloubka() + 1)==poradiSD.size()){
                 break;

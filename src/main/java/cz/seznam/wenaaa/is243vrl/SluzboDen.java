@@ -227,7 +227,7 @@ public class SluzboDen {
     }
     @Override
     public String toString() {
-        return "SluzboDen{" + "datum=" + new SimpleDateFormat("dd/MM/YY").format(this.datum.getTime()) + ", typdne=" + typdne + ", typsluzby=" + typsluzby + ", slouzici=" + slouzici + ", maxsluzebpresmiru=" + getMaxsluzebpresmiru() + ", maxpocetsvatku=" + getMaxpocetsvatku() + ", maxpocetsobot=" + getMaxpocetsobot() + ", maxpocetnedel=" + getMaxpocetnedel() + ", maxpocetpatku=" + getMaxpocetpatku() + ", hloubka=" + hloubka + '}';
+        return "SluzboDen{" + new SimpleDateFormat("dd").format(this.datum.getTime())+ ", " + typsluzby + ", " + slouzici+ "," + hloubka + '}';
     }
 
     @Override
