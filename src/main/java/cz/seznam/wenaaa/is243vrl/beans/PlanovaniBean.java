@@ -215,6 +215,7 @@ public class PlanovaniBean implements Serializable{
         text = String.format("Uzaviram db...");
         uzavriDB();
         text = text+String.format("\nNačítám seznam sloužících...");
+        List<Slouzici> neplanovani = nactiNeplanovane();
         List<Slouzici> seznamSlouzicich = nactiSlouzici();
         
         try{
@@ -248,7 +249,7 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d >", (int)mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true);
+            vysledek = naplanuj(25,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani);
             if(vysledek == null){
                 /*if(mezPresMiru < 2){
                     mezPresMiru += 0.5;
@@ -271,7 +272,7 @@ public class PlanovaniBean implements Serializable{
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(25,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true);
+            SluzboDen pom = naplanuj(25,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani);
             if (pom != null){
                 vysledek = pom;
                 ukonci = false;
@@ -287,14 +288,21 @@ public class PlanovaniBean implements Serializable{
         text = text+String.format("\ndone");
         naplanovano = true;
     }
-    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
-        text += "\nvstup do naplanujII";
+    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku,List<Slouzici> neplanovani){
+        //text += "\nvstup do naplanujII";
         List<SluzboDen> sluzbodny = new ArrayList<>();
         for(String letajici: dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
             Slouzici pomSl = null;
             for(Slouzici sl: seznamSlouzicich){
                 if(sl.getJmeno().equals(letajici)){
                     pomSl = sl;
+                }
+            }
+            if(pomSl == null){
+                for(Slouzici sl: neplanovani){
+                    if(sl.getJmeno().equals(letajici)){
+                        pomSl = sl;
+                    }
                 }
             }
             SluzboDen pom = new SluzboDen(poradiSD.get(0).den,poradiSD.get(0).typSluzby,null,pomSl);
@@ -306,10 +314,10 @@ public class PlanovaniBean implements Serializable{
         //for(int i = 0; i < 1000; i++){
         int i = 0;
         while(true){
-            text += "\nvstup do while";
+            //text += "\nvstup do while";
             if(trvani*1000 < i++){
             //if((System.currentTimeMillis()-ted)>trvani*1000){
-                text += String.format("\nstop cas, hloubka: %d", rozvijeny.getHloubka());
+                //text += String.format("\nstop cas, hloubka: %d", rozvijeny.getHloubka());
                 return null;
             }
             if(sluzbodny.isEmpty()){
@@ -317,7 +325,7 @@ public class PlanovaniBean implements Serializable{
             }
             //System.out.print("----------------------------");
             try{
-                text += "\nv try";
+                //text += "\nv try";
                 String[] arrText = text.split("\n");
                 String[] arrText2 = arrText[arrText.length-1].split(" ");
                 Integer.parseInt(arrText2[arrText2.length-1]);
@@ -349,7 +357,7 @@ public class PlanovaniBean implements Serializable{
             int novaHloubka = rozvijeny.getHloubka() + 1;
             String dojizdeni = dejSchemaDojizdeni(rozvijeny,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             SluzboDen predchozi = rozvijeny;
-            text += String.format("\nrozbaluji: %s", rozvijeny);
+            //text += String.format("\nrozbaluji: %s", rozvijeny);
             //System.out.format("%d : %s : %d",novaHloubka,poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             for(String letajici: dejPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)){
                 Slouzici pomSl = new Slouzici(letajici,"","");
@@ -711,12 +719,11 @@ public class PlanovaniBean implements Serializable{
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
-        gc.set(Calendar.DAY_OF_MONTH, 1);
         GregorianCalendar gc1 = new GregorianCalendar();
         gc1.set(Calendar.DAY_OF_MONTH, 1);
         gc1.add(Calendar.MONTH, 2);
         gc1.add(Calendar.DAY_OF_MONTH, -1);
-        int dnuVmesici = gc1.get(Calendar.DAY_OF_MONTH)-gc.get(Calendar.DAY_OF_MONTH)+1;
+        int dnuVmesici = gc1.get(Calendar.DAY_OF_MONTH);
         //prvni nacteni slouzicich a jejich rozdeleni do skupin
         Query q3 = em.createNativeQuery("SELECT ls.letajici, ls.dojizdeni, ps.typ_sluzby FROM letajici_sluzby as ls, povoleni_sluzeb as ps WHERE ls.letajici = ps.letajici AND ps.povoleno = TRUE ORDER BY ps.typ_sluzby");
         for(Object letajiciDojizdeniSluzba: q3.getResultList()){
@@ -772,8 +779,10 @@ public class PlanovaniBean implements Serializable{
         List<SkupinaSluzeb> skupiny = new ArrayList<>();
         int nepresunutelnePlanovanych = 0;
         for(Slouzici slouzici: vratka){
-            Query q6 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE letajici = ? AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces)");
-            q6.setParameter(1, slouzici.getJmeno());
+            Query q6 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici = ? AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces)");
+            q6.setParameter(1, gc, TemporalType.DATE);
+            q6.setParameter(2, gc1, TemporalType.DATE);
+            q6.setParameter(3, slouzici.getJmeno());
             int nepresunutelnejch = (int) q6.getSingleResult();
             nepresunutelnePlanovanych += nepresunutelnejch;
             SkupinaSluzeb pomSkupina = new SkupinaSluzeb(slouzici.getSkupina());
@@ -784,9 +793,11 @@ public class PlanovaniBean implements Serializable{
         }
         //upresneni poctu sluzeb k planovani a jejich "predani" do skupin
         int nepresunutelneVsech = 0;
-        Query q7 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND pozadavek = ?");
+        Query q7 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE datum BETWEEN ? AND ?  AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND pozadavek = ?");
         for(String ts:poradiSluzeb){
-            q7.setParameter(1, ts);
+            q7.setParameter(1, gc, TemporalType.DATE);
+            q7.setParameter(2, gc1, TemporalType.DATE);
+            q7.setParameter(3, ts);
             int pocet = (int) q7.getSingleResult();
             nepresunutelneVsech += pocet;
             for( SkupinaSluzeb sksl: skupiny){
@@ -872,6 +883,26 @@ public class PlanovaniBean implements Serializable{
             //System.out.format("%s : planovat : %f", letajici.getJmeno(),letajici.getPlanujSluzeb());
         }
         text = text + "done";
+       return vratka;
+    }
+    private List<Slouzici> nactiNeplanovane(){
+        List<Slouzici> vratka = new ArrayList<>();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        gc.add(Calendar.MONTH, 1);
+        GregorianCalendar gc1 = new GregorianCalendar();
+        gc1.set(Calendar.DAY_OF_MONTH, 1);
+        gc1.add(Calendar.MONTH, 2);
+        gc1.add(Calendar.DAY_OF_MONTH, -1);
+        Query qLast = em.createNativeQuery("SELECT letajici FROM pozadavky WHERE datum BETWEEN ? AND ?  AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND letajici NOT IN (SELECT letajici FROM povoleni_sluzeb WHERE povoleno = true) GROUP BY letajici");
+        qLast.setParameter(1, gc, TemporalType.DATE);
+        qLast.setParameter(2, gc1, TemporalType.DATE);
+        Query q2 = em.createNativeQuery("SELECT dojizdeni FROM letajici_sluzby WHERE letajici = ?");
+        for(Object lt : qLast.getResultList()){
+            String jmeno = (String)lt;
+            q2.setParameter(1, jmeno);
+            vratka.add(new Slouzici(jmeno, "", (String)q2.getSingleResult()));
+        }
         return vratka;
     }
     private String dejSchemaDojizdeni(SluzboDen sd, String typSluzby, int den) {

@@ -68,9 +68,8 @@ public class Slouzici {
         }else{
             this.planujSluzeb = 0;
         }
-        
     }
-
+    
     public String getDojizdeni() {
         return dojizdeni;
     }
