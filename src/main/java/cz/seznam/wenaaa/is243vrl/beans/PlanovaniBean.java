@@ -288,7 +288,7 @@ public class PlanovaniBean implements Serializable{
         naplanovano = true;
     }
     private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku){
-        
+        text += "\nvstup do naplanujII";
         List<SluzboDen> sluzbodny = new ArrayList<>();
         for(String letajici: dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
             Slouzici pomSl = null;
