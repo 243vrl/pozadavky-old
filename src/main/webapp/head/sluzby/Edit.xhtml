@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SluzbyEditDlg" widgetVar="SluzbyEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditSluzbyTitle}">
+            <h:form id="SluzbyEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{sluzbyController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_datum}" for="datum" />
+                        <p:calendar id="datum" pattern="MM/dd/yyyy" value="#{sluzbyController.selected.datum}" title="#{bundle.EditSluzbyTitle_datum}" required="true" requiredMessage="#{bundle.EditSluzbyRequiredMessage_datum}" showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_hd}" for="hd" />
+                        <p:selectOneMenu id="hd" value="#{sluzbyController.selected.hd}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="hdItem"
+                                           itemValue="#{hdItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_hk}" for="hk" />
+                        <p:selectOneMenu id="hk" value="#{sluzbyController.selected.hk}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="hkItem"
+                                           itemValue="#{hkItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_hp}" for="hp" />
+                        <p:selectOneMenu id="hp" value="#{sluzbyController.selected.hp}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="hpItem"
+                                           itemValue="#{hpItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_ld}" for="ld" />
+                        <p:selectOneMenu id="ld" value="#{sluzbyController.selected.ld}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="ldItem"
+                                           itemValue="#{ldItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_lk}" for="lk" />
+                        <p:selectOneMenu id="lk" value="#{sluzbyController.selected.lk}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="lkItem"
+                                           itemValue="#{lkItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_lp}" for="lp" />
+                        <p:selectOneMenu id="lp" value="#{sluzbyController.selected.lp}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="lpItem"
+                                           itemValue="#{lpItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_sd}" for="sd" />
+                        <p:selectOneMenu id="sd" value="#{sluzbyController.selected.sd}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="sdItem"
+                                           itemValue="#{sdItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_sk}" for="sk" />
+                        <p:selectOneMenu id="sk" value="#{sluzbyController.selected.sk}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="skItem"
+                                           itemValue="#{skItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSluzbyLabel_sp}" for="sp" />
+                        <p:selectOneMenu id="sp" value="#{sluzbyController.selected.sp}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{letajiciSluzbyController.itemsAvailableSelectOne}"
+                                           var="spItem"
+                                           itemValue="#{spItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{sluzbyController.update}" value="#{bundle.Save}" update="display,:SluzbyListForm:datalist,:growl" oncomplete="handleSubmit(args, 'SluzbyEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="SluzbyEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

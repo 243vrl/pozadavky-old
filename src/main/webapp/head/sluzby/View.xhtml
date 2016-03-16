@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SluzbyViewDlg" widgetVar="SluzbyViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewSluzbyTitle}">
+            <h:form id="SluzbyViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{sluzbyController.selected != null}">
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_datum}"/>
+                        <h:outputText value="#{sluzbyController.selected.datum}" title="#{bundle.ViewSluzbyTitle_datum}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_hd}"/>
+                        <h:outputText value="#{sluzbyController.selected.hd}" title="#{bundle.ViewSluzbyTitle_hd}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_hk}"/>
+                        <h:outputText value="#{sluzbyController.selected.hk}" title="#{bundle.ViewSluzbyTitle_hk}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_hp}"/>
+                        <h:outputText value="#{sluzbyController.selected.hp}" title="#{bundle.ViewSluzbyTitle_hp}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_ld}"/>
+                        <h:outputText value="#{sluzbyController.selected.ld}" title="#{bundle.ViewSluzbyTitle_ld}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_lk}"/>
+                        <h:outputText value="#{sluzbyController.selected.lk}" title="#{bundle.ViewSluzbyTitle_lk}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_lp}"/>
+                        <h:outputText value="#{sluzbyController.selected.lp}" title="#{bundle.ViewSluzbyTitle_lp}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_sd}"/>
+                        <h:outputText value="#{sluzbyController.selected.sd}" title="#{bundle.ViewSluzbyTitle_sd}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_sk}"/>
+                        <h:outputText value="#{sluzbyController.selected.sk}" title="#{bundle.ViewSluzbyTitle_sk}"/>
+                        <h:outputText value="#{bundle.ViewSluzbyLabel_sp}"/>
+                        <h:outputText value="#{sluzbyController.selected.sp}" title="#{bundle.ViewSluzbyTitle_sp}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="SluzbyViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

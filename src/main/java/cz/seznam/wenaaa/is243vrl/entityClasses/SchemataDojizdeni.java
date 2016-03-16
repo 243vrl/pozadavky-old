@@ -31,6 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SchemataDojizdeni.findAll", query = "SELECT s FROM SchemataDojizdeni s"),
     @NamedQuery(name = "SchemataDojizdeni.findByDojizdeni", query = "SELECT s FROM SchemataDojizdeni s WHERE s.dojizdeni = :dojizdeni")})
 public class SchemataDojizdeni implements Serializable {
+    @OneToMany(mappedBy = "dojizdeni")
+    private Collection<LetajiciSluzby> letajiciSluzbyCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -78,6 +80,15 @@ public class SchemataDojizdeni implements Serializable {
     @Override
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.SchemataDojizdeni[ dojizdeni=" + dojizdeni + " ]";
+    }
+
+    @XmlTransient
+    public Collection<LetajiciSluzby> getLetajiciSluzbyCollection() {
+        return letajiciSluzbyCollection;
+    }
+
+    public void setLetajiciSluzbyCollection(Collection<LetajiciSluzby> letajiciSluzbyCollection) {
+        this.letajiciSluzbyCollection = letajiciSluzbyCollection;
     }
 
 }

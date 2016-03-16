@@ -25,7 +25,7 @@ import javax.persistence.Query;
 
 @Named("letajiciSluzbyController")
 @SessionScoped
-public class LetajiciSluzbyController implements Serializable {
+public class LetajiciSluzbyController implements Serializable  {
 
     @EJB
     private cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzbyFacade ejbFacade;
@@ -93,6 +93,14 @@ public class LetajiciSluzbyController implements Serializable {
         vratka.addAll(getPalubari());
         return vratka;
     }
+    public List<LetajiciSluzby> getPiloti(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findPiloti");
+        return q.getResultList();
+    }
+    public List<LetajiciSluzby> getPalubaci(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findPalubari");
+        return q.getResultList();
+    }
     public List<String> getLetajici(){
         List<String> vratka = new ArrayList<>();
         Query q = em.createNativeQuery("SELECT letajici FROM letajici_sluzby WHERE poradi < 1000 ORDER BY poradi");
@@ -154,45 +162,6 @@ public class LetajiciSluzbyController implements Serializable {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = LetajiciSluzby.class)
-    public static class LetajiciSluzbyControllerConverter implements Converter {
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            LetajiciSluzbyController controller = (LetajiciSluzbyController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "letajiciSluzbyController");
-            return controller.getLetajiciSluzby(getKey(value));
-        }
-
-        java.lang.String getKey(String value) {
-            java.lang.String key;
-            key = value;
-            return key;
-        }
-
-        String getStringKey(java.lang.String value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value);
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof LetajiciSluzby) {
-                LetajiciSluzby o = (LetajiciSluzby) object;
-                return getStringKey(o.getLetajici());
-            } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), LetajiciSluzby.class.getName()});
-                return null;
-            }
-        }
-
-    }
+    
 
 }
