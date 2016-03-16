@@ -39,6 +39,7 @@
                                  resizableColumns="true"
                                  style="table-layout: fixed;  width: 550px; background-image: none"
                                  editable="true" editMode="cell"
+                                 rowStyleClass="#{sluzbyController.getStyle(rowIndex+1)}"
                                  >
                             <p:ajax event="cellEdit" listener="#{sluzbyController.onCellEdit}" 
                                 oncomplete="List" update=":PozadavkyListForm:msgs"/>

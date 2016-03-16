@@ -1,5 +1,6 @@
 package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 
+import cz.seznam.wenaaa.is243vrl.beans.PlanovaniBean;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
@@ -49,6 +50,8 @@ public class SluzbyController implements Serializable {
     private List<List<String>> sluzbyPodlePalubaru;
     @Inject
     private LetajiciSluzbyController lsc;
+    @Inject
+    private PlanovaniBean pb;
     private List<ColumnModelIV> columns = new ArrayList<>();
     
     public SluzbyController() {
@@ -176,7 +179,18 @@ public class SluzbyController implements Serializable {
         Object newValue = event.getNewValue();
         selected = naMesic.get(event.getRowIndex());
         if(newValue != null && !newValue.equals(oldValue)) {
-            update();
+            //update();
+            GregorianCalendar pomGC = new GregorianCalendar();
+            pomGC.setTime(selected.getDatum());
+            pb.ulozSluzbu(pomGC, "LK", selected.getLk().getLetajici());
+            pb.ulozSluzbu(pomGC, "LD", selected.getLd().getLetajici());
+            pb.ulozSluzbu(pomGC, "LP", selected.getLp().getLetajici());
+            pb.ulozSluzbu(pomGC, "SK", selected.getSk().getLetajici());
+            pb.ulozSluzbu(pomGC, "SD", selected.getSd().getLetajici());
+            pb.ulozSluzbu(pomGC, "SP", selected.getSp().getLetajici());
+            pb.ulozSluzbu(pomGC, "HK", selected.getHk().getLetajici());
+            pb.ulozSluzbu(pomGC, "HD", selected.getHd().getLetajici());
+            pb.ulozSluzbu(pomGC, "HP", selected.getHp().getLetajici());
             nactiNaMesic();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);
