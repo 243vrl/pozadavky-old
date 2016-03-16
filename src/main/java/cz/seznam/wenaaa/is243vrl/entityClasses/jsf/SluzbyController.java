@@ -177,6 +177,7 @@ public class SluzbyController implements Serializable {
         selected = naMesic.get(event.getRowIndex());
         if(newValue != null && !newValue.equals(oldValue)) {
             update();
+            nactiNaMesic();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
