@@ -112,7 +112,7 @@
                                 <p:menuitem value="Administrace sloužících" rendered="#{loggedBean.loggedAsScheduler}" />
                                 <p:menuitem value="Požadavky"  rendered="#{loggedBean.loggedAsBFU}" outcome="/users/pozadavky/List"/>
                                 <p:menuitem value="Naplánuj" rendered="#{loggedBean.loggedAsScheduler}" outcome="/scheduler/pozadavky/prechodPlan"/>
-                                <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsScheduler}"/>
+                                <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsAdminSchedulerHead()}" outcome="/head/sluzby/sluzby"/>
                             </p:submenu>
                             <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
                                 <p:menuitem value="Služby" outcome="/common/prehledy/sluzby"/>

@@ -51,5 +51,17 @@
             <base-name>/Bundle</base-name>
             <var>bundle</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
+        <converter>
+            <converter-id>lscConverter</converter-id>
+            <converter-class>cz.seznam.wenaaa.is243vrl.LscConverter</converter-class>
+        </converter>
     </application>
 </faces-config>

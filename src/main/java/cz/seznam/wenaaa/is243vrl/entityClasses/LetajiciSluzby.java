@@ -6,16 +6,21 @@
 package cz.seznam.wenaaa.is243vrl.entityClasses;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -26,6 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "LetajiciSluzby.findAll", query = "SELECT l FROM LetajiciSluzby l  ORDER BY l.poradi ASC"),
+    @NamedQuery(name = "LetajiciSluzby.findPiloti", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi < 1000 ORDER BY l.poradi ASC"),
+    @NamedQuery(name = "LetajiciSluzby.findPalubari", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findByLetajici", query = "SELECT l FROM LetajiciSluzby l WHERE l.letajici = :letajici"),
     @NamedQuery(name = "LetajiciSluzby.findByPoradi", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi = :poradi"),
     @NamedQuery(name = "LetajiciSluzby.findByPocetSluzeb", query = "SELECT l FROM LetajiciSluzby l WHERE l.pocetSluzeb = :pocetSluzeb"),
@@ -35,6 +42,27 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LetajiciSluzby.findByPocetPatku", query = "SELECT l FROM LetajiciSluzby l WHERE l.pocetPatku = :pocetPatku"),
     @NamedQuery(name = "LetajiciSluzby.findByDoLiniSvozem", query = "SELECT l FROM LetajiciSluzby l WHERE l.doLiniSvozem = :doLiniSvozem")})
 public class LetajiciSluzby implements Serializable {
+    @JoinColumn(name = "letajici", referencedColumnName = "username")
+    @OneToOne(optional = false)
+    private Users users;
+    @OneToMany(mappedBy = "hd")
+    private Collection<Sluzby> sluzbyCollection;
+    @OneToMany(mappedBy = "hk")
+    private Collection<Sluzby> sluzbyCollection1;
+    @OneToMany(mappedBy = "hp")
+    private Collection<Sluzby> sluzbyCollection2;
+    @OneToMany(mappedBy = "ld")
+    private Collection<Sluzby> sluzbyCollection3;
+    @OneToMany(mappedBy = "lk")
+    private Collection<Sluzby> sluzbyCollection4;
+    @OneToMany(mappedBy = "lp")
+    private Collection<Sluzby> sluzbyCollection5;
+    @OneToMany(mappedBy = "sd")
+    private Collection<Sluzby> sluzbyCollection6;
+    @OneToMany(mappedBy = "sk")
+    private Collection<Sluzby> sluzbyCollection7;
+    @OneToMany(mappedBy = "sp")
+    private Collection<Sluzby> sluzbyCollection8;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -182,7 +210,96 @@ public class LetajiciSluzby implements Serializable {
 
     @Override
     public String toString() {
-        return "cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby[ letajici=" + letajici + " ]";
+        return letajici;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection() {
+        return sluzbyCollection;
+    }
+
+    public void setSluzbyCollection(Collection<Sluzby> sluzbyCollection) {
+        this.sluzbyCollection = sluzbyCollection;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection1() {
+        return sluzbyCollection1;
+    }
+
+    public void setSluzbyCollection1(Collection<Sluzby> sluzbyCollection1) {
+        this.sluzbyCollection1 = sluzbyCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection2() {
+        return sluzbyCollection2;
+    }
+
+    public void setSluzbyCollection2(Collection<Sluzby> sluzbyCollection2) {
+        this.sluzbyCollection2 = sluzbyCollection2;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection3() {
+        return sluzbyCollection3;
+    }
+
+    public void setSluzbyCollection3(Collection<Sluzby> sluzbyCollection3) {
+        this.sluzbyCollection3 = sluzbyCollection3;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection4() {
+        return sluzbyCollection4;
+    }
+
+    public void setSluzbyCollection4(Collection<Sluzby> sluzbyCollection4) {
+        this.sluzbyCollection4 = sluzbyCollection4;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection5() {
+        return sluzbyCollection5;
+    }
+
+    public void setSluzbyCollection5(Collection<Sluzby> sluzbyCollection5) {
+        this.sluzbyCollection5 = sluzbyCollection5;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection6() {
+        return sluzbyCollection6;
+    }
+
+    public void setSluzbyCollection6(Collection<Sluzby> sluzbyCollection6) {
+        this.sluzbyCollection6 = sluzbyCollection6;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection7() {
+        return sluzbyCollection7;
+    }
+
+    public void setSluzbyCollection7(Collection<Sluzby> sluzbyCollection7) {
+        this.sluzbyCollection7 = sluzbyCollection7;
+    }
+
+    @XmlTransient
+    public Collection<Sluzby> getSluzbyCollection8() {
+        return sluzbyCollection8;
+    }
+
+    public void setSluzbyCollection8(Collection<Sluzby> sluzbyCollection8) {
+        this.sluzbyCollection8 = sluzbyCollection8;
     }
     
 }

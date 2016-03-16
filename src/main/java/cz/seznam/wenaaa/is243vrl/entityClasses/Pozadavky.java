@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Pozadavky.findAll", query = "SELECT p FROM Pozadavky p"),
+    @NamedQuery(name = "Pozadavky.naMesic", query = "SELECT p FROM Pozadavky p WHERE (p.datum BETWEEN :od AND :do) AND p.pozadavek IN (SELECT t.pozadavek FROM TypyPozadavku t WHERE t.useracces = :ua)"),
     @NamedQuery(name = "Pozadavky.findByDatum", query = "SELECT p FROM Pozadavky p WHERE p.datum = :datum"),
     @NamedQuery(name = "Pozadavky.findByIdPozadavky", query = "SELECT p FROM Pozadavky p WHERE p.idPozadavky = :idPozadavky")})
 public class Pozadavky implements Serializable {

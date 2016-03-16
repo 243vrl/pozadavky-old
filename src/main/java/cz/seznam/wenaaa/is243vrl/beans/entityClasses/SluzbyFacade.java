@@ -20,7 +20,7 @@ public class SluzbyFacade extends AbstractFacade<Sluzby> {
     private EntityManager em;
 
     @Override
-    protected EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {
         return em;
     }
 

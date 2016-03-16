@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -34,6 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
     @NamedQuery(name = "Users.findByPasswd", query = "SELECT u FROM Users u WHERE u.passwd = :passwd")})
 public class Users implements Serializable {
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
+    private LetajiciSluzby letajiciSluzby;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -93,6 +96,14 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.Users[ username=" + username + " ]";
+    }
+
+    public LetajiciSluzby getLetajiciSluzby() {
+        return letajiciSluzby;
+    }
+
+    public void setLetajiciSluzby(LetajiciSluzby letajiciSluzby) {
+        this.letajiciSluzby = letajiciSluzby;
     }
 
 }

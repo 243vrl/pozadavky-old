@@ -5,6 +5,7 @@
  */
 package cz.seznam.wenaaa.is243vrl.beans;
 
+import cz.seznam.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.seznam.wenaaa.is243vrl.entityClasses.PrumeryH120;
 import cz.seznam.wenaaa.is243vrl.entityClasses.PrumerySluzeb;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
@@ -94,13 +95,13 @@ public class PrehledyBean implements Serializable{
     public void uberM(){
         gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, -1);
-        populateColumns();
+        //populateColumns();
         nactiSluzbyNaMesic();
     }
     public void pridejM(){
         gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
-        populateColumns();
+        //populateColumns();
         nactiSluzbyNaMesic();
     }
     private void populateColumns(){
@@ -110,13 +111,44 @@ public class PrehledyBean implements Serializable{
             columns.add(new PrehledyBean.ColumnModelIII(String.format("%d", i), String.format("%d", i)));
         }
     }
+    public boolean jePozadavek(String str){
+        if (str.equals("\u271C"))
+                return false;
+        if (str.equals("\u26AB"))
+                return false;
+        if (str.equals("L"))
+                return false;
+        return true;
+    }
     private List<List<String>> nactiSluzby_interni(List<List<String>> podlePilotu, List<List<String>> podlePalubaru) {
         List<List<String>> vratka = new ArrayList<>();
         GregorianCalendar gc2 = new GregorianCalendar();
         gc2.set(Calendar.DAY_OF_MONTH, 1);
         gc2.set(Calendar.MONTH, gc.get(Calendar.MONTH));
+        gc2.set(Calendar.YEAR, gc.get(Calendar.YEAR));
         gc2.add(Calendar.MONTH,1);
         gc2.add(Calendar.DAY_OF_MONTH, -1);
+        Query q1 = em.createNamedQuery("Pozadavky.naMesic");
+        q1.setParameter("od", gc, TemporalType.DATE);
+        q1.setParameter("do", gc2, TemporalType.DATE);
+        q1.setParameter("ua", true);
+        List<Pozadavky> pom = q1.getResultList();
+        for(Pozadavky poz: pom){
+            String jmeno = poz.getLetajici();
+            GregorianCalendar pomgc = new GregorianCalendar();
+            pomgc.setTime(poz.getDatum());
+            int den = pomgc.get(Calendar.DAY_OF_MONTH);
+            for(List<String> pl: podlePilotu){
+                if(jmeno.equals(pl.get(0))){
+                    pl.set(den, poz.getPozadavek());
+                }
+            }
+            for(List<String> pl: podlePalubaru){
+                if(jmeno.equals(pl.get(0))){
+                    pl.set(den, poz.getPozadavek());
+                }
+            }
+        }
         Query q = em.createNativeQuery("SELECT * FROM sluzby WHERE datum BETWEEN ? AND ? ORDER BY datum");
         q.setParameter(1, gc, TemporalType.DATE);
         q.setParameter(2, gc2, TemporalType.DATE);
@@ -147,12 +179,12 @@ public class PrehledyBean implements Serializable{
                             case 4:
                             case 5:
                             case 6:
-                                pl.set(den, "S");
+                                pl.set(den, "\u26AB");
                                 break;
                             case 7:
                             case 8:
                             case 9:
-                                pl.set(den, "H");
+                                pl.set(den, "\u271C");
                                 break;
                         }
                     }
@@ -163,12 +195,12 @@ public class PrehledyBean implements Serializable{
                             case 1:
                             case 2:
                             case 3:
-                                pl.set(den, "L");
+                                pl.set(den, "\u2731");
                                 break;
                             case 4:
                             case 5:
                             case 6:
-                                pl.set(den, "S");
+                                pl.set(den, "\u26AB");
                                 break;
                             case 7:
                             case 8:

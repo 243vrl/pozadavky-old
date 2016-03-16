@@ -30,8 +30,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Sluzby.findAll", query = "SELECT s FROM Sluzby s"),
-    @NamedQuery(name = "Sluzby.findByDatum", query = "SELECT s FROM Sluzby s WHERE s.datum = :datum")})
+    @NamedQuery(name = "Sluzby.findByDatum", query = "SELECT s FROM Sluzby s WHERE s.datum = :datum"),
+    @NamedQuery(name = "Sluzby.naMesic", query = "SELECT s FROM Sluzby s WHERE s.datum BETWEEN :od AND :do ORDER BY s.datum")})
 public class Sluzby implements Serializable {
+    @JoinColumn(name = "hd", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby hd;
+    @JoinColumn(name = "hk", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby hk;
+    @JoinColumn(name = "hp", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby hp;
+    @JoinColumn(name = "ld", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby ld;
+    @JoinColumn(name = "lk", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby lk;
+    @JoinColumn(name = "lp", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby lp;
+    @JoinColumn(name = "sd", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby sd;
+    @JoinColumn(name = "sk", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby sk;
+    @JoinColumn(name = "sp", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby sp;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -39,18 +67,6 @@ public class Sluzby implements Serializable {
     @Column(name = "datum")
     @Temporal(TemporalType.DATE)
     private Date datum;
-    @Column(name = "ld")
-    private String ld;
-    @Column(name = "lk")
-    private String lk;
-    @Column(name = "lp")
-    private String lp;
-    @Column(name = "sd")
-    private String sd;
-    @Column(name = "sk")
-    private String sk;
-    @Column(name = "sp")
-    private String sp;
 
     public Sluzby() {
     }
@@ -65,54 +81,6 @@ public class Sluzby implements Serializable {
 
     public void setDatum(Date datum) {
         this.datum = datum;
-    }
-
-    public String getLd() {
-        return ld;
-    }
-
-    public void setLd(String ld) {
-        this.ld = ld;
-    }
-
-    public String getLk() {
-        return lk;
-    }
-
-    public void setLk(String lk) {
-        this.lk = lk;
-    }
-
-    public String getLp() {
-        return lp;
-    }
-
-    public void setLp(String lp) {
-        this.lp = lp;
-    }
-
-    public String getSd() {
-        return sd;
-    }
-
-    public void setSd(String sd) {
-        this.sd = sd;
-    }
-
-    public String getSk() {
-        return sk;
-    }
-
-    public void setSk(String sk) {
-        this.sk = sk;
-    }
-
-    public String getSp() {
-        return sp;
-    }
-
-    public void setSp(String sp) {
-        this.sp = sp;
     }
 
     @Override
@@ -138,6 +106,78 @@ public class Sluzby implements Serializable {
     @Override
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby[ datum=" + datum + " ]";
+    }
+
+    public LetajiciSluzby getHd() {
+        return hd;
+    }
+
+    public void setHd(LetajiciSluzby hd) {
+        this.hd = hd;
+    }
+
+    public LetajiciSluzby getHk() {
+        return hk;
+    }
+
+    public void setHk(LetajiciSluzby hk) {
+        this.hk = hk;
+    }
+
+    public LetajiciSluzby getHp() {
+        return hp;
+    }
+
+    public void setHp(LetajiciSluzby hp) {
+        this.hp = hp;
+    }
+
+    public LetajiciSluzby getLd() {
+        return ld;
+    }
+
+    public void setLd(LetajiciSluzby ld) {
+        this.ld = ld;
+    }
+
+    public LetajiciSluzby getLk() {
+        return lk;
+    }
+
+    public void setLk(LetajiciSluzby lk) {
+        this.lk = lk;
+    }
+
+    public LetajiciSluzby getLp() {
+        return lp;
+    }
+
+    public void setLp(LetajiciSluzby lp) {
+        this.lp = lp;
+    }
+
+    public LetajiciSluzby getSd() {
+        return sd;
+    }
+
+    public void setSd(LetajiciSluzby sd) {
+        this.sd = sd;
+    }
+
+    public LetajiciSluzby getSk() {
+        return sk;
+    }
+
+    public void setSk(LetajiciSluzby sk) {
+        this.sk = sk;
+    }
+
+    public LetajiciSluzby getSp() {
+        return sp;
+    }
+
+    public void setSp(LetajiciSluzby sp) {
+        this.sp = sp;
     }
     
 }
