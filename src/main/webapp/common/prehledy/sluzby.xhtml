@@ -4,7 +4,9 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions" 
+    >
 
     <ui:composition template="/common/index.xhtml">
 
@@ -15,6 +17,7 @@
 
         <ui:define name="body">
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
+                
                 <p:panel id="sluzbyPanel" style="padding-left: 0 !important; padding-right: 0 !important;">
                     <f:facet name="header">
                         <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{prehledyBean.uberM()}">
@@ -28,10 +31,30 @@
                         </p:commandLink>
                     </f:facet>
                 </p:panel>
+                
                 <p:tabView id="sluzbyTab" dynamic="true" cache="true"
                            style="padding-left: 0 !important; padding-right: 0 !important;">
                     <p:tab title="Piloti"
                            style="padding-left: 0 !important; padding-right: 0 !important;">
+                        <h:panelGrid columns="5">
+                        <p:graphicImage value="/resources/images/xls.png"/>
+                        <p:commandButton id="oba" ajax="false" value="se zvýrazněním + s požadavky" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePilotu" fileName="podlePilotu" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                             postProcessor="#{prehledyBean.ppXLSsPozadavkysZvyraznenim}"/>  
+                        </p:commandButton>
+                        <p:commandButton id="bezZvyrazneni" ajax="false" value="bez zvýraznění + s požadavky" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePilotu" fileName="podlePilotu" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                             postProcessor="#{prehledyBean.ppXLSsPozadavky}"/>  
+                        </p:commandButton>
+                        <p:commandButton id="bezPozadavku" ajax="false" value="se zvýrazněním + bez požadavků" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePilotu" fileName="podlePilotu" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                             postProcessor="#{prehledyBean.ppXLSsZvyraznenim}"/>  
+                        </p:commandButton>  
+                        <p:commandButton id="nic" ajax="false" value="bez zvýraznění + bez požadavků" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePilotu" fileName="podlePilotu" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                         postProcessor="#{prehledyBean.ppXLS}"/>  
+                        </p:commandButton>
+                        </h:panelGrid>
                         <p:dataTable id="podlePilotu" value="#{prehledyBean.sluzbyPodlePilotu}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
@@ -55,12 +78,31 @@
                     </p:tab>
                     <p:tab title="Palubáři"
                            style="padding-left: 0 !important; padding-right: 0 !important;">
+                        <h:panelGrid columns="5">
+                        <p:graphicImage value="/resources/images/xls.png"/>
+                        <p:commandButton id="obapodlePalubaru" ajax="false" value="se zvýrazněním + s požadavky" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePalubaru" fileName="podlePalubaru" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                             postProcessor="#{prehledyBean.ppXLSsPozadavkysZvyraznenim}"/>  
+                        </p:commandButton>
+                        <p:commandButton id="bezZvyraznenipodlePalubaru" ajax="false" value="bez zvýraznění + s požadavky" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePalubaru" fileName="podlePalubaru" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                             postProcessor="#{prehledyBean.ppXLSsPozadavky}"/>  
+                        </p:commandButton>
+                        <p:commandButton id="bezPozadavkupodlePalubaru" ajax="false" value="se zvýrazněním + bez požadavků" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePalubaru" fileName="podlePalubaru" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                             postProcessor="#{prehledyBean.ppXLSsZvyraznenim}"/>  
+                        </p:commandButton>  
+                        <p:commandButton id="nicpodlePalubaru" ajax="false" value="bez zvýraznění + bez požadavků" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podlePalubaru" fileName="podlePalubaru" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                         postProcessor="#{prehledyBean.ppXLS}"/>  
+                        </p:commandButton>
+                        </h:panelGrid>
                         <p:dataTable id="podlePalubaru" value="#{prehledyBean.sluzbyPodlePalubaru}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
                                  rowStyleClass="#{item[0] == loggedBean.loginName?'prihlasen':'null'}"
                                  >
-                    
+                            
                             <p:columns id="sloupcePal" value="#{prehledyBean.columns}" var="column" columnIndexVar="colIndex"
                                width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
                                styleClass="#{prehledyBean.getStyle(colIndex)}">
@@ -76,6 +118,17 @@
                     </p:tab>
                     <p:tab title="Podle dnů"
                            style=" padding-left: 0 !important; padding-right: 0 !important;">
+                        <h:panelGrid columns="3">
+                        <p:graphicImage value="/resources/images/xls.png"/>
+                        <p:commandButton id="bezZvyraznenipodleDnu" ajax="false" value="bez zvýraznění" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podleDnu" fileName="podleDnu" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                         postProcessor="#{prehledyBean.ppXLSDny}"/>  
+                        </p:commandButton>
+                        <p:commandButton id="seZvyraznenimpodleDnu" ajax="false" value="se zvýrazněním" icon="ui-icon-disk">  
+                            <pe:exporter type="xlsx" target="podleDnu" fileName="podleDnu" tableTitle="Hotovosti na měsíc #{prehledyBean.proMesic()}"  
+                                         postProcessor="#{prehledyBean.ppXLSDnySeZvyraznenim}"/>  
+                        </p:commandButton>  
+                        </h:panelGrid>
                         <p:dataTable id="podleDnu" value="#{prehledyBean.sluzbyPodleDni}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
