@@ -15,6 +15,7 @@
 
         <ui:define name="body">
             <h:form id="ZpravyListForm">
+                <p:growl id="growl"/>
                 <p:dataTable id="datalist" value="#{zpravyController.items}" var="item"
                                  selectionMode="single" selection="#{zpravyController.selected}"
                                  paginator="true"
@@ -28,7 +29,7 @@
 
                         <p:column style="width:70px;">
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListZpravyTitle_datumOd}"/>
+                                <h:outputText value="Od"/>
                             </f:facet>
                             <h:outputText value="#{item.datumOd}">
                                 
@@ -36,7 +37,7 @@
                         </p:column>
                         <p:column style="width:70px;">
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListZpravyTitle_datumDo}"/>
+                                <h:outputText value="Do"/>
                             </f:facet>
                             <h:outputText value="#{item.datumDo}">
                                 
@@ -44,7 +45,7 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListZpravyTitle_textZpravy}"/>
+                                <h:outputText value="Text"/>
                             </f:facet>
                             <h:outputText value="#{item.textZpravy}"/>
                         </p:column>
@@ -57,8 +58,8 @@
                             </h:outputText>
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{zpravyController.prepareCreate}" update=":ZpravyCreateForm" disabled="#{loggedBean.loggedAsAdminSchedulerHead()? 'False':'True'}" oncomplete="PF('ZpravyCreateDialog').show()"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{zpravyController.destroy}" update=":growl,datalist" disabled="#{empty zpravyController.selected? 'True': loggedBean.loggedAsAdminSchedulerHead()? 'False':'True'}"/>
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Nová" actionListener="#{zpravyController.prepareCreate}" update=":ZpravyCreateForm" disabled="#{loggedBean.loggedAsAdminSchedulerHead()? 'False':'True'}" oncomplete="PF('ZpravyCreateDialog').show()"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="Smaž" actionListener="#{zpravyController.destroy}" update=":growl,datalist" disabled="#{empty zpravyController.selected? 'True': loggedBean.loggedAsAdminSchedulerHead()? 'False':'True'}"/>
                         </f:facet>
                 </p:dataTable>
             </h:form>
