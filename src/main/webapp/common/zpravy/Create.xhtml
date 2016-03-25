@@ -12,16 +12,16 @@
             <h:form id="ZpravyCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{zpravyController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateZpravyLabel_datumOd}" for="datumOd" />
-                        <p:calendar id="datumOd" pattern="MM/dd/yyyy" value="#{zpravyController.selected.datumOd}" title="#{bundle.EditZpravyTitle_datumOd}" required="true" requiredMessage="#{bundle.EditZpravyRequiredMessage_datumOd}" showOn="button"/>
-                        <p:outputLabel value="#{bundle.CreateZpravyLabel_datumDo}" for="datumDo" />
+                        <p:outputLabel value="Datum Od" for="datumOd" />
+                        <p:calendar id="datumOd" pattern="MM/dd/yyyy" value="#{zpravyController.selected.datumOd}" title="#{bundle.EditZpravyTitle_datumOd}" required="true" requiredMessage="Je třeba zadat datum od." showOn="button"/>
+                        <p:outputLabel value="Datum Do" for="datumDo" />
                         <p:calendar id="datumDo" pattern="MM/dd/yyyy" value="#{zpravyController.selected.datumDo}" title="#{bundle.EditZpravyTitle_datumDo}"  showOn="button"/>
-                        <p:outputLabel value="#{bundle.CreateZpravyLabel_textZpravy}" for="textZpravy" />
-                        <p:inputText id="textZpravy" value="#{zpravyController.selected.textZpravy}" title="#{bundle.CreateZpravyTitle_textZpravy}" required="true" requiredMessage="#{bundle.CreateZpravyRequiredMessage_textZpravy}"/>
+                        <p:outputLabel value="Text zprávy" for="textZpravy" />
+                        <p:inputText id="textZpravy" value="#{zpravyController.selected.textZpravy}" title="#{bundle.CreateZpravyTitle_textZpravy}" required="true" requiredMessage="Je třeba zadat text zprávy."/>
                         
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{zpravyController.create}" value="#{bundle.Save}" update="display,:ZpravyListForm:datalist,:growl" oncomplete="handleSubmit(args,'ZpravyCreateDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="ZpravyCreateDialog.hide()"/>
+                    <p:commandButton actionListener="#{zpravyController.create}" value="Ulož" update="display,:ZpravyListForm:datalist,:growl" oncomplete="handleSubmit(args,'ZpravyCreateDialog');"/>
+                    <p:commandButton value="Zruš" onclick="PF('ZpravyCreateDialog').hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

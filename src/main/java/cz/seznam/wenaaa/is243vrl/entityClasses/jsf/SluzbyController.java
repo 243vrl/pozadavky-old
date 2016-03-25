@@ -108,7 +108,7 @@ public class SluzbyController implements Serializable {
                 String hk = sl.getHk() == null ? "": sl.getHk().getLetajici();
                 String hd = sl.getHd() == null ? "": sl.getHd().getLetajici();
                 if(lk.equals(slPil.get(0)) || ld.equals(slPil.get(0))){
-                        slPil.set(den, "\u2731");
+                        slPil.set(den, "L");
                         sluzebPrirazeno++;
                         if(sluzebPrirazeno == 6) break;
                         continue;
@@ -120,7 +120,7 @@ public class SluzbyController implements Serializable {
                         continue;
                 }
                 if(hk.equals(slPil.get(0)) || hd.equals(slPil.get(0))){
-                        slPil.set(den, "H");
+                        slPil.set(den, "\u271C");
                         sluzebPrirazeno++;
                         if(sluzebPrirazeno == 6) break;
                 }
@@ -130,7 +130,7 @@ public class SluzbyController implements Serializable {
                 String sp = sl.getSp() == null ? "": sl.getSp().getLetajici();
                 String hp = sl.getHp() == null ? "": sl.getHp().getLetajici();
                 if(lp.equals(slPal.get(0))){
-                        slPal.set(den, "\u2731");
+                        slPal.set(den, "L");
                         sluzebPrirazeno++;
                         if(sluzebPrirazeno == 9) break;
                         continue;
@@ -142,7 +142,7 @@ public class SluzbyController implements Serializable {
                         continue;
                 }
                 if(hp.equals(slPal.get(0))){
-                        slPal.set(den, "H");
+                        slPal.set(den, "\u271C");
                         sluzebPrirazeno++;
                         if(sluzebPrirazeno == 9) break;
                 }
