@@ -74,7 +74,11 @@
         <h:body>
             #{loggedBean.prechodNeprihlasen()}
             <p:growl id="growl" life="3000" />
-
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+ 
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage value="/resources/images/ajaxloader.gif"/>
+            </p:dialog>
             
             <p:dialog position="center" widgetVar="dlg"
                       header="Plánuji..."
@@ -91,7 +95,7 @@
                              actionListener="#{planovaniBean.setvPlanovani(false)}"/>
                     <p:commandButton id="tlacitko1" disabled="#{planovaniBean.nenaplanovano?'False':'True'}" value="OK"
                              onclick="PF('dlg').hide()"/>
-                    <p:poll interval="1"  update="txt_area tlacitko tlacitko1" async="True"/>
+                    <p:poll interval="1"  update="txt_area tlacitko tlacitko1" async="True" global="false"/>
                 </h:form>
                 
             </p:dialog>
@@ -112,7 +116,7 @@
                                 <p:menuitem value="Administrace sloužících" rendered="#{loggedBean.loggedAsScheduler}" />
                                 <p:menuitem value="Požadavky"  rendered="#{loggedBean.loggedAsBFU}" outcome="/users/pozadavky/List"/>
                                 <p:menuitem value="Naplánuj" rendered="#{loggedBean.loggedAsScheduler}" outcome="/scheduler/pozadavky/prechodPlan"/>
-                                <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsAdminSchedulerHead()}" outcome="/head/sluzby/sluzby"/>
+                                <p:menuitem value="Změna služby"  rendered="#{loggedBean.loggedAsAdminSchedulerHead()}" outcome="/head/sluzby/sluzby2"/>
                             </p:submenu>
                             <p:submenu label="Přehledy" rendered="#{loggedBean.logged}">
                                 <p:menuitem value="Služby" outcome="/common/prehledy/sluzby"/>

@@ -1,11 +1,20 @@
 package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 
+import cz.seznam.wenaaa.is243vrl.beans.MyActionEvent;
+import cz.seznam.wenaaa.is243vrl.beans.MyActionListener;
 import cz.seznam.wenaaa.is243vrl.beans.PlanovaniBean;
+import cz.seznam.wenaaa.is243vrl.beans.SluzbyBean;
+import cz.seznam.wenaaa.is243vrl.beans.ViewListenerFactory;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
 import cz.seznam.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade;
+import cz.seznam.wenaaa.is243vrl.entityClasses.ModelListenerFactory;
+import cz.seznam.wenaaa.is243vrl.entityClasses.MyValueChangeEvent;
+import cz.seznam.wenaaa.is243vrl.entityClasses.MyValueChangeListener;
+import cz.seznam.wenaaa.is243vrl.entityClasses.SluzbyValueChangeEvent;
 import cz.seznam.wenaaa.utils.Kalendar;
+import java.io.IOException;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -19,18 +28,17 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
-import javax.persistence.Parameter;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import org.primefaces.event.CellEditEvent;
@@ -39,29 +47,39 @@ import org.primefaces.event.UnselectEvent;
 
 @Named("sluzbyController")
 @SessionScoped
-public class SluzbyController implements Serializable {
+public class SluzbyController implements Serializable, MyValueChangeListener, MyActionListener {
 
     @EJB
     private cz.seznam.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade ejbFacade;
     private Sluzby selected;
     private GregorianCalendar gc;
     private List<Sluzby> naMesic;
-    private List<List<String>> sluzbyPodlePilotu;
-    private List<List<String>> sluzbyPodlePalubaru;
+    //private List<List<String>> sluzbyPodlePilotu;
+    //private List<List<String>> sluzbyPodlePalubaru;
     @Inject
     private LetajiciSluzbyController lsc;
     @Inject
     private PlanovaniBean pb;
-    private List<ColumnModelIV> columns = new ArrayList<>();
+    //private List<ColumnModelIV> columns = new ArrayList<>();
+    private SluzbyValueChangeEvent svche;
+    private String zmeny;
     
     public SluzbyController() {
         
     }
     @PostConstruct
     private void poKonstruktu(){
+        ModelListenerFactory.registerListener(this, Sluzby.class.getName());
+        ViewListenerFactory.registerListener(this, SluzbyBean.class.getName());
+        zmeny = "";
         gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         nactiNaMesic();
+    }
+    @PreDestroy
+    private void predKoncem(){
+        ModelListenerFactory.unregisterListener(this);
+        ViewListenerFactory.unregisterListener(this);
     }
     private void nactiNaMesic() {
         GregorianCalendar pomgc = new GregorianCalendar();
@@ -75,7 +93,7 @@ public class SluzbyController implements Serializable {
         q.setParameter("od", gc, TemporalType.DATE);
         q.setParameter("do", pomgc, TemporalType.DATE);
         naMesic = q.getResultList();
-        sluzbyPodlePilotu = new ArrayList<>();
+        /*sluzbyPodlePilotu = new ArrayList<>();
         sluzbyPodlePalubaru = new ArrayList<>();
         //System.out.print("postconstruct nacitam pozadavky");
         List<String> letajici = lsc.getLetajici();
@@ -148,7 +166,7 @@ public class SluzbyController implements Serializable {
                 }
             }
         }
-        populateColumns();
+        populateColumns();*/
     }
     public void pridejMesic(){
         gc.add(Calendar.MONTH, 1);
@@ -174,54 +192,83 @@ public class SluzbyController implements Serializable {
         m.put(11, "Prosinec");
         return (String)m.get(gc.get(Calendar.MONTH))+" "+new SimpleDateFormat("yyyy").format(gc.getTime());
     }
-    public void onCellEdit(CellEditEvent event) {
-        Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
-        selected = naMesic.get(event.getRowIndex());
-        if(newValue != null && !newValue.equals(oldValue)) {
-            //update();
-            GregorianCalendar pomGC = new GregorianCalendar();
-            pomGC.setTime(selected.getDatum());
-            pb.ulozSluzbu(pomGC, "LK", selected.getLk().getLetajici());
-            pb.ulozSluzbu(pomGC, "LD", selected.getLd().getLetajici());
-            pb.ulozSluzbu(pomGC, "LP", selected.getLp().getLetajici());
-            pb.ulozSluzbu(pomGC, "SK", selected.getSk().getLetajici());
-            pb.ulozSluzbu(pomGC, "SD", selected.getSd().getLetajici());
-            pb.ulozSluzbu(pomGC, "SP", selected.getSp().getLetajici());
-            pb.ulozSluzbu(pomGC, "HK", selected.getHk().getLetajici());
-            pb.ulozSluzbu(pomGC, "HD", selected.getHd().getLetajici());
-            pb.ulozSluzbu(pomGC, "HP", selected.getHp().getLetajici());
-            nactiNaMesic();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void onCellEdit() {
+        Sluzby sluzba = svche.getSluzba();
+        String oldVal = svche.getStarySlouzici();
+        String newVal;
+        String typSluzby = svche.getTypSluzby();
+        GregorianCalendar pomGC = new GregorianCalendar();
+        pomGC.setTime(sluzba.getDatum());
+        switch(typSluzby){
+            case "LK":
+                newVal = sluzba.getLk().getLetajici();
+                break;
+            case "LD":
+                newVal = sluzba.getLd().getLetajici();
+                break;
+            case "LP":
+                newVal = sluzba.getLp().getLetajici();
+                break;
+            case "SK":
+                newVal = sluzba.getSk().getLetajici();
+                break;
+            case "SD":
+                newVal = sluzba.getSd().getLetajici();
+                break;
+            case "SP":
+                newVal = sluzba.getSp().getLetajici();
+                break;
+            case "HK":
+                newVal = sluzba.getHk().getLetajici();
+                break;
+            case "HD":
+                newVal = sluzba.getHd().getLetajici();
+                break;
+            case "HP":
+                newVal = sluzba.getHp().getLetajici();
+                break;
+            default:
+                System.out.println("spatny typ sluzby.");
+                return;
         }
+        pb.ulozSluzbu(pomGC, typSluzby, newVal);
+        zmeny += String.format("%d. %s %s: %s -> %s\n", pomGC.get(Calendar.DAY_OF_MONTH), proMesic(), typSluzby, oldVal, newVal);
+        svche = null;
+        nactiNaMesic();
+        //FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sluzba zmenena", "Old: " + oldVal + ", New:" + newVal);
+        //FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     public Sluzby getSelected() {
         return selected;
     }
 
+    public void setZmeny(String zmeny) {
+        this.zmeny = zmeny;
+    }
+    
+    public String getZmeny() {
+        return zmeny;
+    }
+    /*
     public List<List<String>> getSluzbyPodlePilotu() {
         return sluzbyPodlePilotu;
     }
 
     public List<List<String>> getSluzbyPodlePalubaru() {
         return sluzbyPodlePalubaru;
-    }
+    }*/
     
     public void setSelected(Sluzby selected) {
         
         this.selected = selected;
     }
     public void onRowSelect(SelectEvent event) {
-        FacesMessage msg = new FacesMessage("Car Selected", ((Sluzby) event.getObject()).getDatum().toString());
+        FacesMessage msg = new FacesMessage("Selected", ((Sluzby) event.getObject()).getDatum().toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     public void onRowUnselect(UnselectEvent event) {
-        FacesMessage msg = new FacesMessage("Car Unselected", ((Sluzby) event.getObject()).getDatum().toString());
+        FacesMessage msg = new FacesMessage("Unselected", ((Sluzby) event.getObject()).getDatum().toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-    public void rcListener(){
-        System.out.print("rc listener");
     }
     protected void setEmbeddableKeys() {
     }
@@ -277,9 +324,9 @@ public class SluzbyController implements Serializable {
     public Sluzby getSluzby(java.util.Date id) {
         return getFacade().find(id);
     }
-    public List<ColumnModelIV> getColumns() {
+    /*public List<ColumnModelIV> getColumns() {
         return columns;
-    }
+    }*/
     public String getStyle(int den){
         if (den == 0) return "null";
         //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
@@ -295,22 +342,38 @@ public class SluzbyController implements Serializable {
         //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         return vratka;
     }
+    /*
     private void populateColumns(){
         columns = new ArrayList<>();
         columns.add(new SluzbyController.ColumnModelIV("","letajici"));
         for(int i = 1; i <= Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);i++) {
             columns.add(new SluzbyController.ColumnModelIV(String.format("%d", i), String.format("%d", i)));
         }
-    }
-/*
+    }*/
+
     public List<Sluzby> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
     public List<Sluzby> getItemsAvailableSelectOne() {
         return getFacade().findAll();
-    }*/
+    }
 
+    @Override
+    public void onValueChanged(MyValueChangeEvent mvche) {
+        this.svche = (SluzbyValueChangeEvent) mvche;
+        //System.out.println("obdrzen valuechangeevent");
+        
+    }
+
+    @Override
+    public void onActionPerformed(MyActionEvent mae) {
+        //System.out.println("obdrzen MyActionEvent");
+        if(svche != null && mae.getClassSending().equals(SluzbyBean.class.getName())){
+            onCellEdit();
+        }
+    }
+    
     @FacesConverter(forClass = Sluzby.class)
     public static class SluzbyControllerConverter implements Converter {
 
@@ -351,7 +414,7 @@ public class SluzbyController implements Serializable {
         }
 
     }
-    
+    /*
     static public class ColumnModelIV implements Serializable {
         private String header;
         private String property;
@@ -365,5 +428,5 @@ public class SluzbyController implements Serializable {
         public String getProperty() {
             return property;
         }
-    }
+    }*/
 }

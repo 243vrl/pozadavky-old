@@ -16,9 +16,9 @@
         <ui:define name="body">
             
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
-                <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
-                <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
-                <p:remoteCommand name="rc_click" actionListener="#{planovaniBean.nastavAtribZmeny()}"/>
+                <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"  global="false"/>
+                <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"  global="false"/>
+                <p:remoteCommand name="rc_click" actionListener="#{planovaniBean.nastavAtribZmeny()}"  global="false"/>
                 <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
