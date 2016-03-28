@@ -32,7 +32,7 @@
                                 <h:outputText value="Od"/>
                             </f:facet>
                             <h:outputText value="#{item.datumOd}">
-                                
+                                <f:convertDateTime pattern="d.M.yyyy" timeZone="#{pozApplication.timeZone}"/>
                             </h:outputText>
                         </p:column>
                         <p:column style="width:70px;">
@@ -40,7 +40,7 @@
                                 <h:outputText value="Do"/>
                             </f:facet>
                             <h:outputText value="#{item.datumDo}">
-                                
+                                <f:convertDateTime pattern="d.M.yyyy" timeZone="#{pozApplication.timeZone}"/>
                             </h:outputText>
                         </p:column>
                         <p:column>

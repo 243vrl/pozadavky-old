@@ -16,8 +16,30 @@
         <ui:define name="body">
             
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
-                <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}"/>
-                <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"/>
+                <p:dataTable id="zpravy" value="#{pozadavkyBean.zpravyNaMesic}" var="item">
+                    <p:column style="width:70px;">
+                        <h:outputText value="#{item.datumOd}">
+                            <f:convertDateTime pattern="d.M.yyyy" timeZone="#{pozApplication.timeZone}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:70px;">
+                        <h:outputText value="#{item.datumDo}">
+                            <f:convertDateTime pattern="d.M.yyyy" timeZone="#{pozApplication.timeZone}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.textZpravy}"/>
+                    </p:column>
+                    <p:column style="width:50px;">
+                        <h:outputText value="#{item.podal}">
+                            
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+                <br/>
+                <br/>
+                <p:remoteCommand name="rc_mousedown" actionListener="#{pozadavkyBean.vyberZacatek()}" global="false"/>
+                <p:remoteCommand name="rc_mouseup" actionListener="#{pozadavkyBean.vyberKonec()}"  global="false"/>
                 <p:dataTable id="datalist" value="#{pozadavkyBean.pozadavkyNaMesic}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"
@@ -56,8 +78,8 @@
             <br/>
             <br/>
             <h:form id="PozadavkyListFormCalendar" style="font-size: 92% !important;">
-                <p:remoteCommand name="rc_mousedownII" actionListener="#{planovaniBean.vyberZacatek()}"/>
-                <p:remoteCommand name="rc_mouseupII" actionListener="#{planovaniBean.vyberKonec()}"/>
+                <p:remoteCommand name="rc_mousedownII" actionListener="#{planovaniBean.vyberZacatek()}"  global="false"/>
+                <p:remoteCommand name="rc_mouseupII" actionListener="#{planovaniBean.vyberKonec()}"  global="false"/>
                 <p:dataTable id="dnySvozu" value="#{planovaniBean.dnySvozu}" var="item"
                                  rowKey="#{item[0]}"
                                  rowIndexVar="rowIndex"

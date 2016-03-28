@@ -15,37 +15,27 @@
 
         <ui:define name="body">
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
-                <p:growl id="msgs" showDetail="true"/>
-                <p:panel id="sluzbyPanel" style="padding-left: 0 !important; padding-right: 0 !important;">
-                    <f:facet name="header">
-                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{sluzbyController.uberMesic()}">
-                            &laquo;
-                        </p:commandLink>
-                        &emsp;
-                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{sluzbyController.proMesic()}"/>
-                        &emsp;
-                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{sluzbyController.pridejMesic()}">
-                            &raquo;
-                        </p:commandLink>
-                    </f:facet>
-                </p:panel>
-                <p:tabView id="sluzbyTab" dynamic="true" cache="true"
-                           style="padding-left: 0 !important; padding-right: 0 !important;">
-                    <p:tab title="Podle dnů"
-                           style=" padding-left: 0 !important; padding-right: 0 !important;">
-                        <p:remoteCommand name="onCellEdit" action="#{sluzbyController.onCellEdit()}" update="sluzbyTab :PozadavkyListForm:msgs" />
-                        <p:dataTable id="podleDnu" value="#{sluzbyController.naMesic}" var="item"
+                <h:panelGrid columns="2" cellpadding="20">
+                <p:dataTable id="podleDnu" value="#{sluzbyBean.naMesic}" var="item"
                                      rowKey="#{item.datum}"
                                  rowIndexVar="rowIndex"
                                  resizableColumns="true"
                                  style="table-layout: fixed;  width: 550px; background-image: none"
                                  editable="true" editMode="cell"
-                                 rowStyleClass="#{sluzbyController.getStyle(rowIndex+1)}"
+                                 rowStyleClass="#{sluzbyBean.getStyle(rowIndex+1)}"
                                  >
-                            <p:ajax event="cellEdit" oncomplete="onCellEdit()"/>
+                    <p:ajax event="cellEdit" listener="#{sluzbyBean.onCellEdit}" update=":PozadavkyListForm:history"/>
                             <f:facet name="header" style="font-size: 110% !important;">
                                 <h:outputText value="Hotovosti na měsíc"/><br/>
-                                <h:outputText value="#{sluzbyController.proMesic()}"/>
+                                <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic podleDnu" actionListener="#{sluzbyBean.uberMesic()}">
+                            &laquo;
+                        </p:commandLink>
+                        &emsp;
+                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{sluzbyBean.proMesic()}"/>
+                        &emsp;
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic podleDnu" actionListener="#{sluzbyBean.pridejMesic()}">
+                            &raquo;
+                        </p:commandLink>
                             </f:facet>
                             <p:columnGroup type="header">
                                 <p:row>
@@ -71,7 +61,7 @@
                                     <h:outputText value="#{bundle.ListSluzbyTitle_datum}"/>
                                 </f:facet>
                                 <h:outputText value="#{item.datum}">
-                                    <f:convertDateTime pattern="d" timeZone="CET" />
+                                    <f:convertDateTime pattern="d" timeZone="#{pozApplication.timeZone}" />
                                 </h:outputText>
                             </p:column>
                             <p:column>
@@ -193,7 +183,7 @@
                                 <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.hp}"/></f:facet>
                                 <f:facet name="input">
-                                    <h:selectOneMenu value="#{item.sp}" style="width:100%">
+                                    <h:selectOneMenu value="#{item.hp}" style="width:100%">
                                         <f:converter converterId="lscConverter" />
                                         <f:selectItems value="#{letajiciSluzbyController.palubaci}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
@@ -201,52 +191,11 @@
                                 </p:cellEditor>
                             </p:column>
                         </p:dataTable>
-                    </p:tab>
-                    <p:tab title="Piloti"
-                           style="padding-left: 0 !important; padding-right: 0 !important;">
-                        <p:dataTable id="podlePilotu" value="#{sluzbyController.sluzbyPodlePilotu}" var="item"
-                                 rowKey="#{item[0]}"
-                                 rowIndexVar="rowIndex"
-                                 >
-                            <p:ajax event="cellEdit" listener="#{sluzbyController.onCellEdit}" 
-                                oncomplete="List" update=":PozadavkyListForm:msgs"/>
-                            <p:columns id="sloupce" value="#{sluzbyController.columns}" var="column" columnIndexVar="colIndex"
-                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               styleClass="#{sluzbyController.getStyle(colIndex)}">
-                                <f:facet name="header">
-                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item[colIndex]}" />
-                                <f:facet name="footer">
-                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
-                                </f:facet>
-                            </p:columns>
-                        </p:dataTable>
-                        
-                    </p:tab>
-                    <p:tab title="Palubáři"
-                           style="padding-left: 0 !important; padding-right: 0 !important;">
-                        <p:dataTable id="podlePalubaru" value="#{sluzbyController.sluzbyPodlePalubaru}" var="item"
-                                 rowKey="#{item[0]}"
-                                 rowIndexVar="rowIndex"
-                                 >
-                    
-                            <p:columns id="sloupcePal" value="#{sluzbyController.columns}" var="column" columnIndexVar="colIndex"
-                               width="#{pozadavkyBean.sirkaSloupce(colIndex)}"
-                               styleClass="#{sluzbyController.getStyle(colIndex)}">
-                                <f:facet name="header">
-                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
-                                </f:facet>
-                                <p:outputLabel value="#{item[colIndex]}"/>
-                                <f:facet name="footer">
-                                    <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
-                                </f:facet>
-                            </p:columns>
-                        </p:dataTable>
-                    </p:tab>
-                    
-                </p:tabView>
-                
+                    <h:panelGrid cols="1">
+                        <p:commandButton value="Vymaž historii" actionListener="#{sluzbyBean.vynulujZmeny()}" update="history"/>
+                        <p:inputTextarea id="history" readonly="true" value="#{sluzbyBean.zmeny}" cols="40" rows="50" autoResize="false"/>
+                    </h:panelGrid>
+                </h:panelGrid>
             </h:form>
 
         </ui:define>

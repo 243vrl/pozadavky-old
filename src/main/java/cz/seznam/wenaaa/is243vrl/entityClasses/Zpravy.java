@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Zpravy.findByDatumDo", query = "SELECT z FROM Zpravy z WHERE z.datumDo = :datumDo"),
     @NamedQuery(name = "Zpravy.findByTextZpravy", query = "SELECT z FROM Zpravy z WHERE z.textZpravy = :textZpravy"),
     @NamedQuery(name = "Zpravy.findByAutomaticky", query = "SELECT z FROM Zpravy z WHERE z.automaticky = :automaticky"),
-    @NamedQuery(name = "Zpravy.naMesic", query = "SELECT z FROM Zpravy z WHERE (z.automaticky = false) AND ((z.datumOd BETWEEN :od AND :do) OR (z.datumDo BETWEEN :od AND :do))")})
+    @NamedQuery(name = "Zpravy.naMesic", query = "SELECT z FROM Zpravy z WHERE (z.automaticky = false) AND ((z.datumOd BETWEEN :od AND :do) OR (z.datumDo BETWEEN :od AND :do) OR (z.datumOd < :od AND z.datumDo > :do))")})
 public class Zpravy implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

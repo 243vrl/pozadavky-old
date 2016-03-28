@@ -7,6 +7,7 @@ package cz.seznam.wenaaa.is243vrl.entityClasses;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -67,8 +68,10 @@ public class Sluzby implements Serializable {
     @Column(name = "datum")
     @Temporal(TemporalType.DATE)
     private Date datum;
-
+    
+    
     public Sluzby() {
+        
     }
 
     public Sluzby(Date datum) {
@@ -113,7 +116,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setHd(LetajiciSluzby hd) {
+        if(hd == this.hd) return;
+        String stary = this.hd == null?"":this.hd.getLetajici();
         this.hd = hd;
+        fireValueChanged("HD", stary);
     }
 
     public LetajiciSluzby getHk() {
@@ -121,7 +127,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setHk(LetajiciSluzby hk) {
+        if(hk == this.hk) return;
+        String stary = this.hk == null?"":this.hk.getLetajici();
         this.hk = hk;
+        fireValueChanged("HK", stary);
     }
 
     public LetajiciSluzby getHp() {
@@ -129,7 +138,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setHp(LetajiciSluzby hp) {
+        if(hp == this.hp) return;
+        String stary = this.hp == null?"":this.hp.getLetajici();
         this.hp = hp;
+        fireValueChanged("HP", stary);
     }
 
     public LetajiciSluzby getLd() {
@@ -137,7 +149,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setLd(LetajiciSluzby ld) {
+        if(ld == this.ld) return;
+        String stary = this.ld == null?"":this.ld.getLetajici();
         this.ld = ld;
+        fireValueChanged("LD", stary);
     }
 
     public LetajiciSluzby getLk() {
@@ -145,7 +160,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setLk(LetajiciSluzby lk) {
+        if(lk == this.lk) return;
+        String stary = this.lk == null?"":this.lk.getLetajici();
         this.lk = lk;
+        fireValueChanged("LK", stary);
     }
 
     public LetajiciSluzby getLp() {
@@ -153,7 +171,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setLp(LetajiciSluzby lp) {
+        if(lp == this.lp) return;
+        String stary = this.lp == null?"":this.lp.getLetajici();
         this.lp = lp;
+        fireValueChanged("LP", stary);
     }
 
     public LetajiciSluzby getSd() {
@@ -161,7 +182,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setSd(LetajiciSluzby sd) {
+        if(sd == this.sd) return;
+        String stary = this.sd == null?"":this.sd.getLetajici();
         this.sd = sd;
+        fireValueChanged("SD", stary);
     }
 
     public LetajiciSluzby getSk() {
@@ -169,7 +193,10 @@ public class Sluzby implements Serializable {
     }
 
     public void setSk(LetajiciSluzby sk) {
+        if(sk == this.sk) return;
+        String stary = this.sk == null?"":this.sk.getLetajici();
         this.sk = sk;
+        fireValueChanged("SK", stary);
     }
 
     public LetajiciSluzby getSp() {
@@ -177,7 +204,15 @@ public class Sluzby implements Serializable {
     }
 
     public void setSp(LetajiciSluzby sp) {
+       if(sp == this.sp) return;
+        String stary = this.sp == null?"":this.sp.getLetajici();
         this.sp = sp;
+        fireValueChanged("SP", stary);
     }
     
+    public void fireValueChanged(String typSluzby, String starySlouzici){
+        SluzbyValueChangeEvent svche = new SluzbyValueChangeEvent(this, typSluzby, starySlouzici);
+        ModelListenerFactory.valueChanged(svche);
+    }
+
 }
