@@ -5,9 +5,13 @@
  */
 package cz.seznam.wenaaa.is243vrl.beans;
 
+import cz.seznam.wenaaa.is243vrl.entityClasses.ModelListenerFactory;
+import cz.seznam.wenaaa.is243vrl.entityClasses.MyValueChangeEvent;
+import cz.seznam.wenaaa.is243vrl.entityClasses.MyValueChangeListener;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.seznam.wenaaa.is243vrl.entityClasses.PrumeryH120;
 import cz.seznam.wenaaa.is243vrl.entityClasses.PrumerySluzeb;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.io.Serializable;
@@ -20,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -47,7 +52,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 @Named(value = "prehledyBean")
 @SessionScoped
-public class PrehledyBean implements Serializable{
+public class PrehledyBean implements Serializable, MyValueChangeListener{
     
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
@@ -73,11 +78,16 @@ public class PrehledyBean implements Serializable{
     }
     @PostConstruct
     private void uvodniNacteni(){
+        ModelListenerFactory.registerListener(this, Sluzby.class.getName());
         gc.set(Calendar.DAY_OF_MONTH, 1);
         populateColumns();
         nactiPrumerySluzeb();
         nactiPrumeryH120();
         nactiSluzbyNaMesic();
+    }
+    @PreDestroy
+    private void predKoncem(){
+        ModelListenerFactory.unregisterListener(this);
     }
     private void nactiSluzbyNaMesic(){
         sluzbyPodlePilotu = new ArrayList<>();
@@ -103,7 +113,7 @@ public class PrehledyBean implements Serializable{
         }
         gc.set(Calendar.DAY_OF_MONTH, 1);
         sluzbyPodleDni = nactiSluzby_interni(sluzbyPodlePilotu, sluzbyPodlePalubaru);
-        //System.out.format("post konstrukt, podle dni: %d, podle lidi %d", sluzbyPodleDni.size(), sluzbyPodleLidi.size());
+        //System.out.format("prehledy, nacteno");
         populateColumns();
     }
     public void uberM(){
@@ -638,6 +648,11 @@ public class PrehledyBean implements Serializable{
 
     public List<ColumnModelIII> getColumns() {
         return columns;
+    }
+
+    @Override
+    public void onValueChanged(MyValueChangeEvent mvche) {
+        nactiSluzbyNaMesic();
     }
     
     static public class ColumnModelIII implements Serializable {
