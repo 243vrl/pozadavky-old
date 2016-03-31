@@ -1,9 +1,9 @@
 package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 
-import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade;
+import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzbyFacade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,10 +15,6 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -28,20 +24,20 @@ import javax.persistence.Query;
 public class LetajiciSluzbyController implements Serializable  {
 
     @EJB
-    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzbyFacade ejbFacade;
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade ejbFacade;
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
-    private List<LetajiciSluzby> items = null;
-    private LetajiciSluzby selected;
+    private List<LetajiciSluzby2> items = null;
+    private LetajiciSluzby2 selected;
 
     public LetajiciSluzbyController() {
     }
 
-    public LetajiciSluzby getSelected() {
+    public LetajiciSluzby2 getSelected() {
         return selected;
     }
 
-    public void setSelected(LetajiciSluzby selected) {
+    public void setSelected(LetajiciSluzby2 selected) {
         this.selected = selected;
     }
 
@@ -51,12 +47,12 @@ public class LetajiciSluzbyController implements Serializable  {
     protected void initializeEmbeddableKey() {
     }
 
-    private LetajiciSluzbyFacade getFacade() {
+    private LetajiciSluzby2Facade getFacade() {
         return ejbFacade;
     }
 
-    public LetajiciSluzby prepareCreate() {
-        selected = new LetajiciSluzby();
+    public LetajiciSluzby2 prepareCreate() {
+        selected = new LetajiciSluzby2();
         initializeEmbeddableKey();
         return selected;
     }
@@ -80,7 +76,7 @@ public class LetajiciSluzbyController implements Serializable  {
         }
     }
 
-    public List<LetajiciSluzby> getItems() {
+    public List<LetajiciSluzby2> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -93,12 +89,20 @@ public class LetajiciSluzbyController implements Serializable  {
         vratka.addAll(getPalubari());
         return vratka;
     }
-    public List<LetajiciSluzby> getPiloti(){
+    public List<LetajiciSluzby2> getPiloti(){
         Query q = em.createNamedQuery("LetajiciSluzby.findPiloti");
         return q.getResultList();
     }
-    public List<LetajiciSluzby> getPalubaci(){
+    public List<LetajiciSluzby2> getPalubaci(){
         Query q = em.createNamedQuery("LetajiciSluzby.findPalubari");
+        return q.getResultList();
+    }
+    public List<LetajiciSluzby2> getPilotiByName(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findPilotiByName");
+        return q.getResultList();
+    }
+    public List<LetajiciSluzby2> getPalubaciByName(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findPalubariByName");
         return q.getResultList();
     }
     public List<String> getLetajici(){
@@ -121,7 +125,9 @@ public class LetajiciSluzbyController implements Serializable  {
     public String getLetajici(int poradi){
         return getLetajici().get(poradi);
     }
-
+    public String getPalubari(int poradi){
+        return getPalubari().get(poradi);
+    }
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
             setEmbeddableKeys();
@@ -150,15 +156,15 @@ public class LetajiciSluzbyController implements Serializable  {
         }
     }
 
-    public LetajiciSluzby getLetajiciSluzby(java.lang.String id) {
+    public LetajiciSluzby2 getLetajiciSluzby(java.lang.String id) {
         return getFacade().find(id);
     }
 
-    public List<LetajiciSluzby> getItemsAvailableSelectMany() {
+    public List<LetajiciSluzby2> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<LetajiciSluzby> getItemsAvailableSelectOne() {
+    public List<LetajiciSluzby2> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 

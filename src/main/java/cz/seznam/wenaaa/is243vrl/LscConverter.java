@@ -5,7 +5,7 @@
  */
 package cz.seznam.wenaaa.is243vrl;
 
-import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby;
+import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,11 +48,11 @@ import javax.faces.convert.FacesConverter;
             if (object == null) {
                 return null;
             }
-            if (object instanceof LetajiciSluzby) {
-                LetajiciSluzby o = (LetajiciSluzby) object;
+            if (object instanceof LetajiciSluzby2) {
+                LetajiciSluzby2 o = (LetajiciSluzby2) object;
                 return getStringKey(o.getLetajici());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), LetajiciSluzby.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), LetajiciSluzby2.class.getName()});
                 return null;
             }
         }

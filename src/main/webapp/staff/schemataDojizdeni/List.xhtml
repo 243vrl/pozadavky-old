@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundleknicemu.ListSchemataDojizdeniTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundleknicemu.ListSchemataDojizdeniEmpty}" rendered="#{schemataDojizdeniController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{schemataDojizdeniController.items.rowCount > 0}">
+                    <h:outputText value="#{schemataDojizdeniController.pagination.pageFirstItem + 1}..#{schemataDojizdeniController.pagination.pageLastItem + 1}/#{schemataDojizdeniController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{schemataDojizdeniController.previous}" value="#{bundleknicemu.Previous} #{schemataDojizdeniController.pagination.pageSize}" rendered="#{schemataDojizdeniController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{schemataDojizdeniController.next}" value="#{bundleknicemu.Next} #{schemataDojizdeniController.pagination.pageSize}" rendered="#{schemataDojizdeniController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{schemataDojizdeniController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListSchemataDojizdeniTitle_dojizdeni}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dojizdeni}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{schemataDojizdeniController.prepareView}" value="#{bundleknicemu.ListSchemataDojizdeniViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{schemataDojizdeniController.prepareEdit}" value="#{bundleknicemu.ListSchemataDojizdeniEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{schemataDojizdeniController.destroy}" value="#{bundleknicemu.ListSchemataDojizdeniDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{schemataDojizdeniController.prepareCreate}" value="#{bundleknicemu.ListSchemataDojizdeniCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundleknicemu.ListSchemataDojizdeniIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

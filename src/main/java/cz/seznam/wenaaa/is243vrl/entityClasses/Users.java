@@ -36,7 +36,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByPasswd", query = "SELECT u FROM Users u WHERE u.passwd = :passwd")})
 public class Users implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
-    private LetajiciSluzby letajiciSluzby;
+    private LetajiciSluzby2 letajiciSluzby2;
+ /*   @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
+    private LetajiciSluzby2 letajiciSluzby;*/
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -97,13 +99,21 @@ public class Users implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.Users[ username=" + username + " ]";
     }
-
+/*
     public LetajiciSluzby getLetajiciSluzby() {
         return letajiciSluzby;
     }
 
     public void setLetajiciSluzby(LetajiciSluzby letajiciSluzby) {
         this.letajiciSluzby = letajiciSluzby;
+    }
+*/
+    public LetajiciSluzby2 getLetajiciSluzby2() {
+        return letajiciSluzby2;
+    }
+
+    public void setLetajiciSluzby2(LetajiciSluzby2 letajiciSluzby2) {
+        this.letajiciSluzby2 = letajiciSluzby2;
     }
 
 }

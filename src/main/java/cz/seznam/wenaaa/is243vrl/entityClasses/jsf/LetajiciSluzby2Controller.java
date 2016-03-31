@@ -1,9 +1,9 @@
-package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
+/*package cz.seznam.wenaaa.is243vrl.entityClasses.jsf;
 
-import cz.seznam.wenaaa.is243vrl.entityClasses.SchemataDojizdeni;
+import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.util.PaginationHelper;
-import cz.seznam.wenaaa.is243vrl.beans.entityClasses.SchemataDojizdeniFacade;
+import cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade;
 
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -18,29 +18,29 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
-@Named("schemataDojizdeniController")
+@Named("letajiciSluzby2Controller")
 @SessionScoped
-public class SchemataDojizdeniController implements Serializable {
+public class LetajiciSluzby2Controller implements Serializable {
 
-    private SchemataDojizdeni current;
+    private LetajiciSluzby2 current;
     private DataModel items = null;
     @EJB
-    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.SchemataDojizdeniFacade ejbFacade;
+    private cz.seznam.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
-    public SchemataDojizdeniController() {
+    public LetajiciSluzby2Controller() {
     }
 
-    public SchemataDojizdeni getSelected() {
+    public LetajiciSluzby2 getSelected() {
         if (current == null) {
-            current = new SchemataDojizdeni();
+            current = new LetajiciSluzby2();
             selectedItemIndex = -1;
         }
         return current;
     }
 
-    private SchemataDojizdeniFacade getFacade() {
+    private LetajiciSluzby2Facade getFacade() {
         return ejbFacade;
     }
 
@@ -68,13 +68,13 @@ public class SchemataDojizdeniController implements Serializable {
     }
 
     public String prepareView() {
-        current = (SchemataDojizdeni) getItems().getRowData();
+        current = (LetajiciSluzby2) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
     public String prepareCreate() {
-        current = new SchemataDojizdeni();
+        current = new LetajiciSluzby2();
         selectedItemIndex = -1;
         return "Create";
     }
@@ -82,7 +82,7 @@ public class SchemataDojizdeniController implements Serializable {
     public String create() {
         try {
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundleknicemu").getString("SchemataDojizdeniCreated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundleknicemu").getString("LetajiciSluzby2Created"));
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundleknicemu").getString("PersistenceErrorOccured"));
@@ -91,7 +91,7 @@ public class SchemataDojizdeniController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (SchemataDojizdeni) getItems().getRowData();
+        current = (LetajiciSluzby2) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
@@ -99,7 +99,7 @@ public class SchemataDojizdeniController implements Serializable {
     public String update() {
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundleknicemu").getString("SchemataDojizdeniUpdated"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundleknicemu").getString("LetajiciSluzby2Updated"));
             return "View";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundleknicemu").getString("PersistenceErrorOccured"));
@@ -108,7 +108,7 @@ public class SchemataDojizdeniController implements Serializable {
     }
 
     public String destroy() {
-        current = (SchemataDojizdeni) getItems().getRowData();
+        current = (LetajiciSluzby2) getItems().getRowData();
         selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
@@ -132,7 +132,7 @@ public class SchemataDojizdeniController implements Serializable {
     private void performDestroy() {
         try {
             getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundleknicemu").getString("SchemataDojizdeniDeleted"));
+            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundleknicemu").getString("LetajiciSluzby2Deleted"));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundleknicemu").getString("PersistenceErrorOccured"));
         }
@@ -188,21 +188,21 @@ public class SchemataDojizdeniController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    public SchemataDojizdeni getSchemataDojizdeni(java.lang.String id) {
+    public LetajiciSluzby2 getLetajiciSluzby2(java.lang.String id) {
         return ejbFacade.find(id);
     }
 
-    @FacesConverter(forClass = SchemataDojizdeni.class)
-    public static class SchemataDojizdeniControllerConverter implements Converter {
+    @FacesConverter(forClass = LetajiciSluzby2.class)
+    public static class LetajiciSluzby2ControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            SchemataDojizdeniController controller = (SchemataDojizdeniController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "schemataDojizdeniController");
-            return controller.getSchemataDojizdeni(getKey(value));
+            LetajiciSluzby2Controller controller = (LetajiciSluzby2Controller) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "letajiciSluzby2Controller");
+            return controller.getLetajiciSluzby2(getKey(value));
         }
 
         java.lang.String getKey(String value) {
@@ -222,14 +222,14 @@ public class SchemataDojizdeniController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof SchemataDojizdeni) {
-                SchemataDojizdeni o = (SchemataDojizdeni) object;
-                return getStringKey(o.getDojizdeni());
+            if (object instanceof LetajiciSluzby2) {
+                LetajiciSluzby2 o = (LetajiciSluzby2) object;
+                return getStringKey(o.getLetajici());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + SchemataDojizdeni.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + LetajiciSluzby2.class.getName());
             }
         }
 
     }
 
-}
+}*/

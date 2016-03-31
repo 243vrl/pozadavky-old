@@ -32,7 +32,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SchemataDojizdeni.findByDojizdeni", query = "SELECT s FROM SchemataDojizdeni s WHERE s.dojizdeni = :dojizdeni")})
 public class SchemataDojizdeni implements Serializable {
     @OneToMany(mappedBy = "dojizdeni")
-    private Collection<LetajiciSluzby> letajiciSluzbyCollection;
+    private Collection<LetajiciSluzby2> letajiciSluzby2Collection;
+ /*   @OneToMany(mappedBy = "dojizdeni")
+    private Collection<LetajiciSluzby2> letajiciSluzbyCollection;*/
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -81,14 +83,23 @@ public class SchemataDojizdeni implements Serializable {
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.SchemataDojizdeni[ dojizdeni=" + dojizdeni + " ]";
     }
-
+/*
     @XmlTransient
-    public Collection<LetajiciSluzby> getLetajiciSluzbyCollection() {
+    public Collection<LetajiciSluzby2> getLetajiciSluzbyCollection() {
         return letajiciSluzbyCollection;
     }
 
-    public void setLetajiciSluzbyCollection(Collection<LetajiciSluzby> letajiciSluzbyCollection) {
+    public void setLetajiciSluzbyCollection(Collection<LetajiciSluzby2> letajiciSluzbyCollection) {
         this.letajiciSluzbyCollection = letajiciSluzbyCollection;
+    }
+*/
+    @XmlTransient
+    public Collection<LetajiciSluzby2> getLetajiciSluzby2Collection() {
+        return letajiciSluzby2Collection;
+    }
+
+    public void setLetajiciSluzby2Collection(Collection<LetajiciSluzby2> letajiciSluzby2Collection) {
+        this.letajiciSluzby2Collection = letajiciSluzby2Collection;
     }
 
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundleknicemu.EditLetajiciSluzby2Title}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_letajici}" for="letajici" />
+                    <h:inputText id="letajici" value="#{letajiciSluzby2Controller.selected.letajici}" title="#{bundleknicemu.EditLetajiciSluzby2Title_letajici}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_letajici}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_poradi}" for="poradi" />
+                    <h:inputText id="poradi" value="#{letajiciSluzby2Controller.selected.poradi}" title="#{bundleknicemu.EditLetajiciSluzby2Title_poradi}" />
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetSluzeb}" for="pocetSluzeb" />
+                    <h:inputText id="pocetSluzeb" value="#{letajiciSluzby2Controller.selected.pocetSluzeb}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetSluzeb}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetSluzeb}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetVsednichSvatku}" for="pocetVsednichSvatku" />
+                    <h:inputText id="pocetVsednichSvatku" value="#{letajiciSluzby2Controller.selected.pocetVsednichSvatku}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetVsednichSvatku}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetVsednichSvatku}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetSobot}" for="pocetSobot" />
+                    <h:inputText id="pocetSobot" value="#{letajiciSluzby2Controller.selected.pocetSobot}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetSobot}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetSobot}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetNedeli}" for="pocetNedeli" />
+                    <h:inputText id="pocetNedeli" value="#{letajiciSluzby2Controller.selected.pocetNedeli}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetNedeli}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetNedeli}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetPatku}" for="pocetPatku" />
+                    <h:inputText id="pocetPatku" value="#{letajiciSluzby2Controller.selected.pocetPatku}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetPatku}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetPatku}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_doLiniSvozem}" for="doLiniSvozem" />
+                    <h:inputText id="doLiniSvozem" value="#{letajiciSluzby2Controller.selected.doLiniSvozem}" title="#{bundleknicemu.EditLetajiciSluzby2Title_doLiniSvozem}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_doLiniSvozem}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetSluzebH120}" for="pocetSluzebH120" />
+                    <h:inputText id="pocetSluzebH120" value="#{letajiciSluzby2Controller.selected.pocetSluzebH120}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetSluzebH120}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetSluzebH120}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetVsednichSvatkuH120}" for="pocetVsednichSvatkuH120" />
+                    <h:inputText id="pocetVsednichSvatkuH120" value="#{letajiciSluzby2Controller.selected.pocetVsednichSvatkuH120}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetVsednichSvatkuH120}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetVsednichSvatkuH120}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetSobotH120}" for="pocetSobotH120" />
+                    <h:inputText id="pocetSobotH120" value="#{letajiciSluzby2Controller.selected.pocetSobotH120}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetSobotH120}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetSobotH120}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetNedeliH120}" for="pocetNedeliH120" />
+                    <h:inputText id="pocetNedeliH120" value="#{letajiciSluzby2Controller.selected.pocetNedeliH120}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetNedeliH120}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetNedeliH120}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_pocetPatkuH120}" for="pocetPatkuH120" />
+                    <h:inputText id="pocetPatkuH120" value="#{letajiciSluzby2Controller.selected.pocetPatkuH120}" title="#{bundleknicemu.EditLetajiciSluzby2Title_pocetPatkuH120}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_pocetPatkuH120}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_dojizdeni}" for="dojizdeni" />
+                    <h:selectOneMenu id="dojizdeni" value="#{letajiciSluzby2Controller.selected.dojizdeni}" title="#{bundleknicemu.EditLetajiciSluzby2Title_dojizdeni}" >
+                        <f:selectItems value="#{schemataDojizdeniController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundleknicemu.EditLetajiciSluzby2Label_users}" for="users" />
+                    <h:selectOneMenu id="users" value="#{letajiciSluzby2Controller.selected.users}" title="#{bundleknicemu.EditLetajiciSluzby2Title_users}" required="true" requiredMessage="#{bundleknicemu.EditLetajiciSluzby2RequiredMessage_users}">
+                        <f:selectItems value="#{usersController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{letajiciSluzby2Controller.update}" value="#{bundleknicemu.EditLetajiciSluzby2SaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundleknicemu.EditLetajiciSluzby2ViewLink}"/>
+                <br />
+                <h:commandLink action="#{letajiciSluzby2Controller.prepareList}" value="#{bundleknicemu.EditLetajiciSluzby2ShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundleknicemu.EditLetajiciSluzby2IndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

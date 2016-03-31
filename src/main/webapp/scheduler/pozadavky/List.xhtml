@@ -68,10 +68,12 @@
                     <p:menuitem value="ŘD" actionListener="#{pozadavkyBean.ulozPozadavky('ŘD')}" update="datalist"/>
                     <p:menuitem value="SC" actionListener="#{pozadavkyBean.ulozPozadavky('SC')}" update="datalist"/>
                     <p:menuitem value="SV" actionListener="#{pozadavkyBean.ulozPozadavky('SV')}" update="datalist"/>
-                    <p:menuitem value="LK" actionListener="#{pozadavkyBean.ulozPozadavky('LK')}" update="datalist"/>
-                    <p:menuitem value="LD" actionListener="#{pozadavkyBean.ulozPozadavky('LD')}" update="datalist"/>
-                    <p:menuitem value="SK" actionListener="#{pozadavkyBean.ulozPozadavky('SK')}" update="datalist"/>
-                    <p:menuitem value="SD" actionListener="#{pozadavkyBean.ulozPozadavky('SD')}" update="datalist"/>
+                    <p:menuitem value="LK" actionListener="#{pozadavkyBean.ulozPozadavky('LK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="LD" actionListener="#{pozadavkyBean.ulozPozadavky('LD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="SK" actionListener="#{pozadavkyBean.ulozPozadavky('SK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="SD" actionListener="#{pozadavkyBean.ulozPozadavky('SD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="LP" actionListener="#{pozadavkyBean.ulozPozadavky('LP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
+                    <p:menuitem value="SP" actionListener="#{pozadavkyBean.ulozPozadavky('SP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
                     <p:menuitem value="Vynulovat" actionListener="#{pozadavkyBean.ulozPozadavky('')}" update="datalist"/>
                 </p:contextMenu>  
             </h:form>
@@ -110,7 +112,7 @@
             <br/>
             <h:form id="planovani">
                 <p:commandButton value="Naplánuj" actionListener="#{planovaniBean.naplanuj}" id="btNaplanuj"
-                                 onclick="PF('dlg').show()"/>
+                                 onclick="PF('dlg').show()" global="false"/>
                 
             </h:form>
         </ui:define>

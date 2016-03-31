@@ -596,7 +596,7 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     }
     
     private void nactiPrumeryH120() {
-        Query q = em.createNativeQuery("SELECT * FROM prumery_h120 WHERE pocet_sluzeb > 1 ORDER BY p_volne DESC");
+        Query q = em.createNativeQuery("SELECT * FROM prumery_h120 WHERE pocet_sluzeb_h120 > 1 ORDER BY p_volne DESC");
         h120 = new ArrayList<>();
         for(Object obj: q.getResultList()){
             Object[] pole = (Object[]) obj;
