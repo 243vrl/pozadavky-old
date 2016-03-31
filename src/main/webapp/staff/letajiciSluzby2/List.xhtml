@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundleknicemu.ListLetajiciSluzby2Empty}" rendered="#{letajiciSluzby2Controller.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{letajiciSluzby2Controller.items.rowCount > 0}">
+                    <h:outputText value="#{letajiciSluzby2Controller.pagination.pageFirstItem + 1}..#{letajiciSluzby2Controller.pagination.pageLastItem + 1}/#{letajiciSluzby2Controller.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{letajiciSluzby2Controller.previous}" value="#{bundleknicemu.Previous} #{letajiciSluzby2Controller.pagination.pageSize}" rendered="#{letajiciSluzby2Controller.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{letajiciSluzby2Controller.next}" value="#{bundleknicemu.Next} #{letajiciSluzby2Controller.pagination.pageSize}" rendered="#{letajiciSluzby2Controller.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{letajiciSluzby2Controller.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_letajici}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.letajici}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_poradi}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.poradi}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetSluzeb}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetSluzeb}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetVsednichSvatku}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetVsednichSvatku}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetSobot}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetSobot}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetNedeli}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetNedeli}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetPatku}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetPatku}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_doLiniSvozem}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.doLiniSvozem}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetSluzebH120}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetSluzebH120}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetVsednichSvatkuH120}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetVsednichSvatkuH120}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetSobotH120}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetSobotH120}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetNedeliH120}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetNedeliH120}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_pocetPatkuH120}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.pocetPatkuH120}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_dojizdeni}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dojizdeni}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleknicemu.ListLetajiciSluzby2Title_users}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.users}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{letajiciSluzby2Controller.prepareView}" value="#{bundleknicemu.ListLetajiciSluzby2ViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{letajiciSluzby2Controller.prepareEdit}" value="#{bundleknicemu.ListLetajiciSluzby2EditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{letajiciSluzby2Controller.destroy}" value="#{bundleknicemu.ListLetajiciSluzby2DestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{letajiciSluzby2Controller.prepareCreate}" value="#{bundleknicemu.ListLetajiciSluzby2CreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundleknicemu.ListLetajiciSluzby2IndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -5,6 +5,7 @@
  */
 package cz.seznam.wenaaa.is243vrl.beans;
 
+import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.HashedPasswordGenerator;
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,6 +39,8 @@ public class LoggedBean  implements Serializable{
     private EntityManager em;
     @Inject
     UserTransaction ut;
+    @Inject
+    LetajiciSluzbyController lsc;
     private String logged;
     private String notlogged;
     private String noveHeslo;
@@ -45,7 +48,9 @@ public class LoggedBean  implements Serializable{
     public String getNoveHeslo() {
         return "";
     }
-    
+    public boolean isLoggedAsMedved(){
+        return lsc.getPalubari().contains(getLoginName());
+    }
     public void setNoveHeslo(String noveHeslo) {
         try {
             String loginName = getLoginName();

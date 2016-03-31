@@ -30,13 +30,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "zpravy")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Zpravy.findAll", query = "SELECT z FROM Zpravy z"),
+    @NamedQuery(name = "Zpravy.findAll", query = "SELECT z FROM Zpravy z ORDER BY z.datumOd ASC"),
     @NamedQuery(name = "Zpravy.findById", query = "SELECT z FROM Zpravy z WHERE z.id = :id"),
     @NamedQuery(name = "Zpravy.findByDatumOd", query = "SELECT z FROM Zpravy z WHERE z.datumOd = :datumOd"),
     @NamedQuery(name = "Zpravy.findByDatumDo", query = "SELECT z FROM Zpravy z WHERE z.datumDo = :datumDo"),
     @NamedQuery(name = "Zpravy.findByTextZpravy", query = "SELECT z FROM Zpravy z WHERE z.textZpravy = :textZpravy"),
     @NamedQuery(name = "Zpravy.findByAutomaticky", query = "SELECT z FROM Zpravy z WHERE z.automaticky = :automaticky"),
-    @NamedQuery(name = "Zpravy.naMesic", query = "SELECT z FROM Zpravy z WHERE (z.automaticky = false) AND ((z.datumOd BETWEEN :od AND :do) OR (z.datumDo BETWEEN :od AND :do) OR (z.datumOd < :od AND z.datumDo > :do))")})
+    @NamedQuery(name = "Zpravy.naMesic", query = "SELECT z FROM Zpravy z WHERE (z.automaticky = false) AND ((z.datumOd BETWEEN :od AND :do) OR (z.datumDo BETWEEN :od AND :do) OR (z.datumOd < :od AND z.datumDo > :do)) ORDER BY z.datumOd ASC")})
 public class Zpravy implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

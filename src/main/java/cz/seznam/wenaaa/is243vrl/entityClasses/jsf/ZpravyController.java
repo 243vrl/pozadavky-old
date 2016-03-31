@@ -85,7 +85,8 @@ public class ZpravyController implements Serializable {
 
     public List<Zpravy> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            Query q = getFacade().getEntityManager().createNamedQuery("Zpravy.findAll");
+            items = q.getResultList();
         }
         return items;
     }

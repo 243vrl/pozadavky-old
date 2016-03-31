@@ -56,6 +56,8 @@ public class PlanovaniBean implements Serializable{
     private UserTransaction ut;
     @Inject
     LetajiciSluzbyController lsc;
+    @Inject
+    LoggedBean lb;
     private boolean[] dnySvozu;
     private boolean planuj; 
     private List<ColumnModelvII> columns = new ArrayList<>();
@@ -171,7 +173,11 @@ public class PlanovaniBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String,String> params = context.getExternalContext().getRequestParameterMap();
         //System.out.format("parametry %s / %s",params.get("jmeno"),params.get("den") );
-        jmenoProZmenu =lsc.getLetajici(Integer.parseInt(params.get("jmeno")));
+        if(lb.isLoggedAsMedved()){
+            jmenoProZmenu =lsc.getPalubari(Integer.parseInt(params.get("jmeno")));
+        }else{
+            jmenoProZmenu =lsc.getLetajici(Integer.parseInt(params.get("jmeno")));
+        }
         denProZmenu = Integer.parseInt(params.get("den"));
         //System.out.print("nastav atrib zmeny: "+jmenoProZmenu+"/"+String.valueOf(denProZmenu));
     }
@@ -445,13 +451,13 @@ public class PlanovaniBean implements Serializable{
                 }
                 List<Object> mozny_slouzici = null;
                 if(typ_sluzby.startsWith("L") && !dnySvozu[den]){
-                    Query qSvoz = em.createNativeQuery("SELECT ls.letajici FROM letajici_sluzby AS ls, povoleni_sluzeb AS ps WHERE ls.letajici = ps.letajici AND ps.typ_sluzby = ? AND ps.povoleno = true AND ls.do_lini_svozem = ?");
+                    Query qSvoz = em.createNativeQuery("SELECT ls.letajici FROM letajici_sluzby2 AS ls, povoleni_sluzeb AS ps WHERE ls.letajici = ps.letajici AND ps.typ_sluzby = ? AND ps.povoleno = true AND ls.do_lini_svozem = ?");
                     qSvoz.setParameter(1, typ_sluzby);
                     qSvoz.setParameter(2, dnySvozu[den]);
                     mozny_slouzici = qSvoz.getResultList();
                 }
                 else{
-                    Query q2 = em.createNativeQuery("SELECT ls.letajici FROM letajici_sluzby AS ls, povoleni_sluzeb AS ps WHERE ls.letajici = ps.letajici AND ps.typ_sluzby = ? AND ps.povoleno = true");
+                    Query q2 = em.createNativeQuery("SELECT ls.letajici FROM letajici_sluzby2 AS ls, povoleni_sluzeb AS ps WHERE ls.letajici = ps.letajici AND ps.typ_sluzby = ? AND ps.povoleno = true");
                     q2.setParameter(1, typ_sluzby);
                     mozny_slouzici = q2.getResultList();
                 }
@@ -483,10 +489,16 @@ public class PlanovaniBean implements Serializable{
     }
     private List<String> dejPoradiSluzeb(){
         List<String> vratka = new ArrayList<>();
-        vratka.add("LD");
-        vratka.add("SD");
-        vratka.add("LK");
-        vratka.add("SK");
+        if(lb.isLoggedAsMedved()){
+            vratka.add("LP");
+            vratka.add("SP");
+        }
+        else{
+            vratka.add("LD");
+            vratka.add("SD");
+            vratka.add("LK");
+            vratka.add("SK");
+        }
         return vratka;
     }
     private List<Integer> dejPoradiDnu(){
@@ -569,10 +581,11 @@ public class PlanovaniBean implements Serializable{
         GregorianCalendar pomGC = new GregorianCalendar();
         pomGC.set(Calendar.DAY_OF_MONTH, 1);
         pomGC.add(Calendar.MONTH, 2);
+        String prip = lb.isLoggedAsMedved()?"Palubaci":"Piloti";
         try {
             ut.begin();
             em.joinTransaction();
-            Query qUpd = em.createNativeQuery("UPDATE pomtab SET pozadavkyod = ?");
+            Query qUpd = em.createNativeQuery("UPDATE pomtab SET pozadavkyod"+prip+" = ?");
             qUpd.setParameter(1, pomGC, TemporalType.DATE);
             qUpd.executeUpdate();
             ut.commit();
@@ -739,7 +752,7 @@ public class PlanovaniBean implements Serializable{
         gc1.add(Calendar.DAY_OF_MONTH, -1);
         int dnuVmesici = gc1.get(Calendar.DAY_OF_MONTH);
         //prvni nacteni slouzicich a jejich rozdeleni do skupin
-        Query q3 = em.createNativeQuery("SELECT ls.letajici, ls.dojizdeni, ps.typ_sluzby FROM letajici_sluzby as ls, povoleni_sluzeb as ps WHERE ls.letajici = ps.letajici AND ps.povoleno = TRUE ORDER BY ps.typ_sluzby");
+        Query q3 = em.createNativeQuery("SELECT ls.letajici, ls.dojizdeni, ps.typ_sluzby FROM letajici_sluzby2 as ls, povoleni_sluzeb as ps WHERE ls.letajici = ps.letajici AND ps.povoleno = TRUE ORDER BY ps.typ_sluzby");
         for(Object letajiciDojizdeniSluzba: q3.getResultList()){
             Object[] lds = (Object[])letajiciDojizdeniSluzba;
             String letajici = (String)lds[0];
@@ -911,7 +924,7 @@ public class PlanovaniBean implements Serializable{
         Query qLast = em.createNativeQuery("SELECT letajici FROM pozadavky WHERE datum BETWEEN ? AND ?  AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) AND letajici NOT IN (SELECT letajici FROM povoleni_sluzeb WHERE povoleno = true) GROUP BY letajici");
         qLast.setParameter(1, gc, TemporalType.DATE);
         qLast.setParameter(2, gc1, TemporalType.DATE);
-        Query q2 = em.createNativeQuery("SELECT dojizdeni FROM letajici_sluzby WHERE letajici = ?");
+        Query q2 = em.createNativeQuery("SELECT dojizdeni FROM letajici_sluzby2 WHERE letajici = ?");
         for(Object lt : qLast.getResultList()){
             String jmeno = (String)lt;
             q2.setParameter(1, jmeno);
@@ -944,7 +957,7 @@ public class PlanovaniBean implements Serializable{
             pom = pom.getNahoru();
         }
         if(letajici.equals("")) return "";
-        Query q = em.createNativeQuery("SELECT dojizdeni FROM letajici_sluzby WHERE letajici = ?");
+        Query q = em.createNativeQuery("SELECT dojizdeni FROM letajici_sluzby2 WHERE letajici = ?");
         q.setParameter(1, letajici);
         try{
             return (String)q.getSingleResult();
@@ -1080,11 +1093,12 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             hodnotySluzby = dejHodnotySluzby(gc);
-            String tabulka = "letajici_sluzby";
+            String tabulka = "letajici_sluzby2";
+            String prip = "";
             if(typSluzby.toLowerCase().startsWith("h")){
-                tabulka = "h120";
+                prip = "_h120";
             }
-            Query qHodnoty = em.createNativeQuery("SELECT pocet_sluzeb, pocet_patku, pocet_sobot, pocet_nedeli, pocet_vsednich_svatku FROM "+tabulka+" WHERE letajici = ?");
+            Query qHodnoty = em.createNativeQuery("SELECT pocet_sluzeb"+prip+", pocet_patku"+prip+", pocet_sobot"+prip+", pocet_nedeli"+prip+", pocet_vsednich_svatku"+prip+" FROM "+tabulka+" WHERE letajici = ?");
             if(staryLetajici != null){
                 qHodnoty.setParameter(1, staryLetajici);
                 result = (Object[])qHodnoty.getSingleResult();
@@ -1097,7 +1111,7 @@ public class PlanovaniBean implements Serializable{
             for(int i=0;i<hodnotySluzby.length;i++){
                 hodnotyNovy[i] = (int)result[i] + hodnotySluzby[i];
             }
-            Query qUpdate = em.createNativeQuery("UPDATE "+tabulka+" SET pocet_sluzeb = ?, pocet_patku = ?, pocet_sobot = ?, pocet_nedeli = ?, pocet_vsednich_svatku = ? WHERE letajici  = ?");
+            Query qUpdate = em.createNativeQuery("UPDATE "+tabulka+" SET pocet_sluzeb"+prip+" = ?, pocet_patku"+prip+" = ?, pocet_sobot"+prip+" = ?, pocet_nedeli"+prip+" = ?, pocet_vsednich_svatku"+prip+" = ? WHERE letajici  = ?");
             if(staryLetajici != null){
                 for(int i = 0; i<hodnotyStary.length;i++){
                     qUpdate.setParameter(i+1, hodnotyStary[i]);

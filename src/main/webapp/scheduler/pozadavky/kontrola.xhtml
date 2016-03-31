@@ -50,11 +50,12 @@
                     </p:column>
                 </p:dataTable>
                 <p:contextMenu id="cmenu" for="PozadavkyListForm">
-                    <p:menuitem value="LK" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LK')}" update="datalist"/>
-                    <p:menuitem value="LD" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LD')}" update="datalist"/>
-                    <p:menuitem value="SK" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SK')}" update="datalist"/>
-                    <p:menuitem value="SD" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SD')}" update="datalist"/>
-                    
+                    <p:menuitem value="LK" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="LD" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="SK" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="SD" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="LP" actionListener="#{planovaniBean.zmenSluzbuZKontroly('LP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
+                    <p:menuitem value="SP" actionListener="#{planovaniBean.zmenSluzbuZKontroly('SP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
                 </p:contextMenu>  
             </h:form>
             <br/>

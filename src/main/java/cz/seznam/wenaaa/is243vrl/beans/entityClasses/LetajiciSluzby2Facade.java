@@ -2,10 +2,10 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- 
+ */
 package cz.seznam.wenaaa.is243vrl.beans.entityClasses;
 
-import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby;
+import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,9 +13,9 @@ import javax.persistence.PersistenceContext;
 /**
  *
  * @author vena
-
+ */
 @Stateless
-public class LetajiciSluzbyFacade extends AbstractFacade<LetajiciSluzby> {
+public class LetajiciSluzby2Facade extends AbstractFacade<LetajiciSluzby2> {
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
 
@@ -24,8 +24,8 @@ public class LetajiciSluzbyFacade extends AbstractFacade<LetajiciSluzby> {
         return em;
     }
 
-    public LetajiciSluzbyFacade() {
-        super(LetajiciSluzby.class);
+    public LetajiciSluzby2Facade() {
+        super(LetajiciSluzby2.class);
     }
     
-} */
+}

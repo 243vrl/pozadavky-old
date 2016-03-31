@@ -56,6 +56,8 @@ public class PozadavkyBean implements Serializable{
     LetajiciSluzbyController lsc;
     @Inject
     ZpravyController zc;
+    @Inject
+    LoggedBean lb;
     private int zacatek;
     private int konec;
     private String vybranyTypPozadavku;
@@ -112,7 +114,7 @@ public class PozadavkyBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String,String> params = context.getExternalContext().getRequestParameterMap();
         String myName1 = params.get("jmeno");
-        System.out.print(myName1);
+        //System.out.print(myName1);
         String myName2 = params.get("den");
         setZacatek(Integer.parseInt(myName2));
         setKonec(Integer.parseInt(myName2));
@@ -236,7 +238,8 @@ public class PozadavkyBean implements Serializable{
         setZpravyNaMesic();
     }
     public void prenastavMesic(){
-        Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
+        String prip = lb.isLoggedAsMedved()?"Palubaci":"Piloti";
+        Query q1 = em.createNativeQuery("SELECT max(pozadavkyod"+prip+") FROM pomtab");
         GregorianCalendar pomGC = new GregorianCalendar();
         pomGC.setTime((Date) q1.getSingleResult());
         //System.out.println("prenastav mesic");
@@ -250,7 +253,8 @@ public class PozadavkyBean implements Serializable{
         setZpravyNaMesic();
     }
     public boolean renderedCommnandLink(){
-        Query q1 = em.createNativeQuery("SELECT max(pozadavkyod) FROM pomtab");
+        String prip = lb.isLoggedAsMedved()?"Palubaci":"Piloti";
+        Query q1 = em.createNativeQuery("SELECT max(pozadavkyod"+prip+") FROM pomtab");
         GregorianCalendar pomGC = new GregorianCalendar();
         pomGC.setTime((Date) q1.getSingleResult());
         return this.gc.get(Calendar.MONTH)>pomGC.get(Calendar.MONTH);
@@ -367,7 +371,11 @@ public class PozadavkyBean implements Serializable{
     private void nactiPozadavkyNaMesic(){
         List<List<String>> vratka = new ArrayList<>();
         //System.out.print("postconstruct nacitam pozadavky");
-        letajici = lsc.getLetajici();
+        if(lb.isLoggedAsMedved()){
+            letajici = lsc.getPalubari();
+        }else{
+            letajici = lsc.getLetajici();
+        }
         for(String l: letajici){
             vratka.add(pozadavkyPro(l));
         }

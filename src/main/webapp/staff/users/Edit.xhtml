@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundleknicemu.EditUsersTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundleknicemu.EditUsersLabel_username}" for="username" />
+                    <h:inputText id="username" value="#{usersController.selected.username}" title="#{bundleknicemu.EditUsersTitle_username}" required="true" requiredMessage="#{bundleknicemu.EditUsersRequiredMessage_username}"/>
+                    <h:outputLabel value="#{bundleknicemu.EditUsersLabel_passwd}" for="passwd" />
+                    <h:inputText id="passwd" value="#{usersController.selected.passwd}" title="#{bundleknicemu.EditUsersTitle_passwd}" />
+                    <h:outputLabel value="#{bundleknicemu.EditUsersLabel_letajiciSluzby}" for="letajiciSluzby" />
+                    <h:selectOneMenu id="letajiciSluzby" value="#{usersController.selected.letajiciSluzby}" title="#{bundleknicemu.EditUsersTitle_letajiciSluzby}" >
+                        <f:selectItems value="#{}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundleknicemu.EditUsersLabel_letajiciSluzby2}" for="letajiciSluzby2" />
+                    <h:selectOneMenu id="letajiciSluzby2" value="#{usersController.selected.letajiciSluzby2}" title="#{bundleknicemu.EditUsersTitle_letajiciSluzby2}" >
+                        <f:selectItems value="#{letajiciSluzby2Controller.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{usersController.update}" value="#{bundleknicemu.EditUsersSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundleknicemu.EditUsersViewLink}"/>
+                <br />
+                <h:commandLink action="#{usersController.prepareList}" value="#{bundleknicemu.EditUsersShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundleknicemu.EditUsersIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  *
  * @author vena
- */
+ 
 @Entity
 @Table(name = "letajici_sluzby")
 @XmlRootElement
@@ -33,6 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "LetajiciSluzby.findAll", query = "SELECT l FROM LetajiciSluzby l  ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findPiloti", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi < 1000 ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findPalubari", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.poradi ASC"),
+    @NamedQuery(name = "LetajiciSluzby.findPilotiByName", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi < 1000 ORDER BY l.letajici ASC"),
+    @NamedQuery(name = "LetajiciSluzby.findPalubariByName", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.letajici ASC"),
     @NamedQuery(name = "LetajiciSluzby.findByLetajici", query = "SELECT l FROM LetajiciSluzby l WHERE l.letajici = :letajici"),
     @NamedQuery(name = "LetajiciSluzby.findByPoradi", query = "SELECT l FROM LetajiciSluzby l WHERE l.poradi = :poradi"),
     @NamedQuery(name = "LetajiciSluzby.findByPocetSluzeb", query = "SELECT l FROM LetajiciSluzby l WHERE l.pocetSluzeb = :pocetSluzeb"),
@@ -303,3 +305,4 @@ public class LetajiciSluzby implements Serializable {
     }
     
 }
+*/

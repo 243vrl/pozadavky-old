@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Title}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_letajici}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.letajici}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_letajici}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_poradi}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.poradi}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_poradi}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetSluzeb}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetSluzeb}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetSluzeb}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetVsednichSvatku}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetVsednichSvatku}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetVsednichSvatku}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetSobot}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetSobot}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetSobot}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetNedeli}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetNedeli}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetNedeli}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetPatku}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetPatku}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetPatku}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_doLiniSvozem}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.doLiniSvozem}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_doLiniSvozem}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetSluzebH120}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetSluzebH120}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetSluzebH120}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetVsednichSvatkuH120}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetVsednichSvatkuH120}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetVsednichSvatkuH120}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetSobotH120}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetSobotH120}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetSobotH120}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetNedeliH120}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetNedeliH120}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetNedeliH120}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_pocetPatkuH120}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.pocetPatkuH120}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_pocetPatkuH120}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_dojizdeni}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.dojizdeni}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_dojizdeni}"/>
+                    <h:outputText value="#{bundleknicemu.ViewLetajiciSluzby2Label_users}"/>
+                    <h:outputText value="#{letajiciSluzby2Controller.selected.users}" title="#{bundleknicemu.ViewLetajiciSluzby2Title_users}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{letajiciSluzby2Controller.destroyAndView}" value="#{bundleknicemu.ViewLetajiciSluzby2DestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundleknicemu.ViewLetajiciSluzby2EditLink}"/>
+                <br />
+                <h:commandLink action="#{letajiciSluzby2Controller.prepareCreate}" value="#{bundleknicemu.ViewLetajiciSluzby2CreateLink}" />
+                <br />
+                <h:commandLink action="#{letajiciSluzby2Controller.prepareList}" value="#{bundleknicemu.ViewLetajiciSluzby2ShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundleknicemu.ViewLetajiciSluzby2IndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
