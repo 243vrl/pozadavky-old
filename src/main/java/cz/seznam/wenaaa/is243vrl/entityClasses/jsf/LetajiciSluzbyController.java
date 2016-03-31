@@ -107,7 +107,7 @@ public class LetajiciSluzbyController implements Serializable  {
     }
     public List<String> getLetajici(){
         List<String> vratka = new ArrayList<>();
-        Query q = em.createNativeQuery("SELECT letajici FROM letajici_sluzby WHERE poradi < 1000 ORDER BY poradi");
+        Query q = em.createNativeQuery("SELECT letajici FROM letajici_sluzby2 WHERE poradi < 1000 ORDER BY poradi");
         for( Object pom : q.getResultList()){
             vratka.add((String)pom);
         }
@@ -116,7 +116,7 @@ public class LetajiciSluzbyController implements Serializable  {
     
     public List<String> getPalubari(){
         List<String> vratka = new ArrayList<>();
-        Query q = em.createNativeQuery("SELECT letajici FROM letajici_sluzby WHERE poradi > 1000 AND poradi < 10000 ORDER BY poradi ");
+        Query q = em.createNativeQuery("SELECT letajici FROM letajici_sluzby2 WHERE poradi > 1000 AND poradi < 10000 ORDER BY poradi ");
         for( Object pom : q.getResultList()){
             vratka.add((String)pom);
         }
