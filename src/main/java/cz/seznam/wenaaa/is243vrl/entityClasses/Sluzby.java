@@ -160,6 +160,7 @@ public class Sluzby implements Serializable {
     }
 
     public void setLk(LetajiciSluzby2 lk) {
+        //System.out.format("obdrzen lk: %s", lk.getLetajici());
         if(lk == this.lk) return;
         String stary = this.lk == null?"":this.lk.getLetajici();
         this.lk = lk;

@@ -72,6 +72,7 @@
                                 <f:facet name="output"><h:outputText value="#{item.lk}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.lk}" style="width:100%">
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
                                         <f:converter converterId="lscConverter" />
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
