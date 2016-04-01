@@ -557,6 +557,9 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         m.put(11, "Prosinec");
         return (String)m.get(gc.get(Calendar.MONTH))+" "+new SimpleDateFormat("yyyy").format(gc.getTime());
     }
+    public String proMesic_yy_MM(){
+        return new SimpleDateFormat("yy-MM").format(gc.getTime());
+    }
     public String cellColor(int den){
         String vratka = "#ffffff";
         if (den == 0) return vratka;
