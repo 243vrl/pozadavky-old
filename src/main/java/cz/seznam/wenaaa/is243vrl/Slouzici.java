@@ -54,7 +54,7 @@ public class Slouzici {
             if((pom & 1) == 1){
                 vratka++;
             }
-            pom = pom>>1;
+            pom = pom>>>1;
         }
         return vratka;
     }

@@ -7,6 +7,7 @@ package cz.seznam.wenaaa.is243vrl.beans;
 
 import cz.seznam.wenaaa.is243vrl.Slouzici;
 import cz.seznam.wenaaa.is243vrl.SluzboDen;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.io.BufferedReader;
@@ -235,6 +236,7 @@ public class PlanovaniBean implements Serializable{
             vPlanovani = false;
             return;
         }
+        
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH,1);
@@ -247,6 +249,8 @@ public class PlanovaniBean implements Serializable{
                 mezSv = 1;
                 break;
         }
+        text = text+String.format("\nNačítám služby z konce předešlého měsíce...");
+        List<Sluzby> minulyMesic= nactiMinulyMesic(gc);
         //uvodni hledani
         while(vysledek == null){
             if(mezPaSoNe > 5){
@@ -263,7 +267,7 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d >", (int)mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(250,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani);
+            vysledek = naplanuj(250,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani,minulyMesic);
             if(vysledek == null){
                 /*if(mezPresMiru < 2){
                     mezPresMiru += 0.5;
@@ -286,7 +290,7 @@ public class PlanovaniBean implements Serializable{
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(250,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani);
+            SluzboDen pom = naplanuj(250,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani, minulyMesic);
             if (pom != null){
                 vysledek = pom;
                 ukonci = false;
@@ -302,7 +306,7 @@ public class PlanovaniBean implements Serializable{
         text = text+String.format("\ndone");
         naplanovano = true;
     }
-    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku,List<Slouzici> neplanovani){
+    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku,List<Slouzici> neplanovani, List<Sluzby> minMesic){
         //text += "\nvstup do naplanujII";
         List<SluzboDen> sluzbodny = new ArrayList<>();
         for(String letajici: dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
@@ -320,6 +324,7 @@ public class PlanovaniBean implements Serializable{
                 }
             }
             SluzboDen pom = new SluzboDen(poradiSD.get(0).den,poradiSD.get(0).typSluzby,null,pomSl);
+            pom.setMinulyMesic(minMesic);
             if(pom.isValid(pomSl)){
                 sluzbodny.add(pom);
             }
@@ -1133,6 +1138,13 @@ public class PlanovaniBean implements Serializable{
         catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private List<Sluzby> nactiMinulyMesic(GregorianCalendar gc) {
+        Query q = em.createNamedQuery("Sluzby.konecMesice");
+        q.setParameter("datum", gc, TemporalType.DATE);
+        text += "done";
+        return q.getResultList();
     }
     static public class ColumnModelvII implements Serializable {
         private String header;

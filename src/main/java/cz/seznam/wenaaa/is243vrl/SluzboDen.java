@@ -6,6 +6,7 @@
 package cz.seznam.wenaaa.is243vrl;
 
 import cz.seznam.wenaaa.is243vrl.beans.PlanovaniBean;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,6 +19,7 @@ import java.util.Objects;
  * @author vena
  */
 public class SluzboDen {
+
     GregorianCalendar datum;
     char typdne;
     String typsluzby;
@@ -28,11 +30,16 @@ public class SluzboDen {
     private int maxpocetnedel;
     private int maxpocetpatku;
     SluzboDen nahoru;
+    List<Sluzby> minulyMesic;//6 poslednich dni
     int hloubka;
     //SluzboDen dolu;
 
     public String getTypsluzby() {
         return typsluzby;
+    }
+
+    public void setMinulyMesic(List<Sluzby> minulyMesic) {
+        this.minulyMesic = minulyMesic;
     }
 
     public void setTypsluzby(String typsluzby) {
@@ -46,22 +53,25 @@ public class SluzboDen {
     public String getSlouzici() {
         return slouzici;
     }
-    public void setSlouzici(String slouzici){
+
+    public void setSlouzici(String slouzici) {
         this.slouzici = slouzici;
     }
-    public int getDen(){
+
+    public int getDen() {
         return datum.get(Calendar.DAY_OF_MONTH);
     }
-    
-    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici){
+
+    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici) {
         this.slouzici = slouzici.getJmeno();
+        this.minulyMesic = null;
         GregorianCalendar gc = new GregorianCalendar();
         gc.add(Calendar.MONTH, 1);
         gc.set(Calendar.DAY_OF_MONTH, den);
         this.datum = new GregorianCalendar();
         this.datum.add(Calendar.MONTH, 1);
         this.datum.set(Calendar.DAY_OF_MONTH, den);
-        switch(gc.get(Calendar.DAY_OF_WEEK)){
+        switch (gc.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.SATURDAY:
                 this.typdne = 'C';
                 break;
@@ -70,14 +80,14 @@ public class SluzboDen {
             case Calendar.WEDNESDAY:
             case Calendar.THURSDAY:
                 this.typdne = 'F';
-                if(Kalendar.jeSvatek(gc)){
+                if (Kalendar.jeSvatek(gc)) {
                     this.typdne = 'B';
                 }
                 gc.add(Calendar.DAY_OF_MONTH, 1);
-                if(Kalendar.jeSvatek(gc)){
-                    if(this.typdne == 'B'){
+                if (Kalendar.jeSvatek(gc)) {
+                    if (this.typdne == 'B') {
                         this.typdne = 'A';
-                    }else{
+                    } else {
                         this.typdne = 'B';
                     }
                 }
@@ -85,14 +95,14 @@ public class SluzboDen {
                 break;
             case Calendar.FRIDAY:
                 this.typdne = 'E';
-                if(Kalendar.jeSvatek(gc)){
+                if (Kalendar.jeSvatek(gc)) {
                     this.typdne = 'B';
                 }
                 break;
             case Calendar.SUNDAY:
                 this.typdne = 'D';
                 gc.add(Calendar.DAY_OF_MONTH, 1);
-                if(Kalendar.jeSvatek(gc)){
+                if (Kalendar.jeSvatek(gc)) {
                     this.typdne = 'B';
                 }
                 gc.add(Calendar.DAY_OF_MONTH, -1);
@@ -105,7 +115,7 @@ public class SluzboDen {
         int pocetNedel = 0;
         int pocetPatku = 0;
         int pocetSluzeb = 1;
-        switch(this.typdne){
+        switch (this.typdne) {
             case 'A':
                 pocetSvatku = 2;
                 break;
@@ -122,19 +132,19 @@ public class SluzboDen {
                 pocetPatku = 1;
                 break;
         }
-        if(nahoru != null){
+        if (nahoru != null) {
             hloubka = nahoru.hloubka + 1;
             maxsluzebpresmiru = nahoru.maxsluzebpresmiru;
             maxpocetsvatku = nahoru.maxpocetsvatku;
             maxpocetsobot = nahoru.maxpocetsobot;
             maxpocetnedel = nahoru.maxpocetnedel;
             maxpocetpatku = nahoru.maxpocetpatku;
-            
+
             SluzboDen pom = nahoru;
-            while(pom != null){
-                if(pom.slouzici.equals(this.slouzici)){
+            while (pom != null) {
+                if (pom.slouzici.equals(this.slouzici)) {
                     pocetSluzeb++;
-                    switch(pom.typdne){
+                    switch (pom.typdne) {
                         case 'A':
                             pocetSvatku += 2;
                             break;
@@ -154,14 +164,24 @@ public class SluzboDen {
                 }
                 pom = pom.nahoru;
             }
-            if(pocetSvatku > this.maxpocetsvatku) this.maxpocetsvatku = pocetSvatku;
-            if(pocetSobot > this.maxpocetsobot) this.maxpocetsobot = pocetSobot;
-            if(pocetNedel > this.maxpocetnedel) this.maxpocetnedel = pocetNedel;
-            if(pocetPatku > this.maxpocetpatku) this.maxpocetpatku = pocetPatku;
-            float pocetSluzebPresMiru = (pocetSluzeb>slouzici.getPlanujSluzeb())?pocetSluzeb - slouzici.getPlanujSluzeb():0;
-            pocetSluzebPresMiru = pocetSluzeb>PlanovaniBean.getMAX_PLANOVAT()?pocetSluzeb:pocetSluzebPresMiru;
-            if(pocetSluzebPresMiru > this.maxsluzebpresmiru )this.maxsluzebpresmiru = pocetSluzebPresMiru;
-        }else{
+            if (pocetSvatku > this.maxpocetsvatku) {
+                this.maxpocetsvatku = pocetSvatku;
+            }
+            if (pocetSobot > this.maxpocetsobot) {
+                this.maxpocetsobot = pocetSobot;
+            }
+            if (pocetNedel > this.maxpocetnedel) {
+                this.maxpocetnedel = pocetNedel;
+            }
+            if (pocetPatku > this.maxpocetpatku) {
+                this.maxpocetpatku = pocetPatku;
+            }
+            float pocetSluzebPresMiru = (pocetSluzeb > slouzici.getPlanujSluzeb()) ? pocetSluzeb - slouzici.getPlanujSluzeb() : 0;
+            pocetSluzebPresMiru = pocetSluzeb > PlanovaniBean.getMAX_PLANOVAT() ? pocetSluzeb : pocetSluzebPresMiru;
+            if (pocetSluzebPresMiru > this.maxsluzebpresmiru) {
+                this.maxsluzebpresmiru = pocetSluzebPresMiru;
+            }
+        } else {
             maxsluzebpresmiru = 0;
             maxpocetsvatku = pocetSvatku;
             maxpocetsobot = pocetSobot;
@@ -169,65 +189,91 @@ public class SluzboDen {
             maxpocetpatku = pocetPatku;
             hloubka = 0;
         }
-        
+
     }
-    
-    public boolean isValid(Slouzici slouzici){
+
+    public boolean isValid(Slouzici slouzici) {
         //System.out.println("kontrola isValid...");
         //System.out.print(this);
         long nemuze = slouzici.getPlneVolneDny();
         long novaSluzba = (long) Math.pow(2, datum.get(Calendar.DAY_OF_MONTH));
-        if((novaSluzba & nemuze) != 0) {
+        if ((novaSluzba & nemuze) != 0) {
             //System.out.print("nemuze na pozadavek");
             return false;
         }// ze ma volny pozadavek
         SluzboDen pom = this.nahoru;
         long slouzi = 0;
-        while(pom != null){
-            if(this.slouzici.equals(pom.slouzici)){
+        while (pom != null) {
+            if (this.slouzici.equals(pom.slouzici)) {
                 slouzi += (long) Math.pow(2, pom.datum.get(Calendar.DAY_OF_MONTH));
             }
             pom = pom.nahoru;
         }
         long denPo = novaSluzba << 1;
         long denPred = novaSluzba >> 1;
-        if((novaSluzba & slouzi) != 0) {
+        if ((novaSluzba & slouzi) != 0) {
             //System.out.print("nemuze na ten samy den");
             return false;
         }//ze neslouzi ten samy den
-        if((denPo & slouzi) != 0) {
+        if ((denPo & slouzi) != 0) {
             //System.out.print("nemuze na den po");
             return false;
         }//den po
-        if((denPred & slouzi) != 0) {
+        if ((denPred & slouzi) != 0) {
             //System.out.print("nemuze na den pred");
             return false;
         }//den pred
         slouzi = slouzi | novaSluzba;
-        do{
-            if((slouzi & 85)==85) {
+        //pro konecne sluzby z minuleho mesice, jsou v sestupnem poradi
+        //nastavim nulty bit na 1 pokud slouzi
+        if (minulyMesic != null) {
+            for (Sluzby sl : minulyMesic) {
+                boolean jeVeSluzbe = false;
+                if(sl.getLd().getLetajici().equals(this.slouzici))
+                    jeVeSluzbe = true;
+                if(sl.getSd().getLetajici().equals(this.slouzici))
+                    jeVeSluzbe = true;
+                if(sl.getLk().getLetajici().equals(this.slouzici))
+                    jeVeSluzbe = true;
+                if(sl.getSk().getLetajici().equals(this.slouzici))
+                    jeVeSluzbe = true;
+                if(sl.getLp().getLetajici().equals(this.slouzici))
+                    jeVeSluzbe = true;
+                if(sl.getSp().getLetajici().equals(this.slouzici))
+                    jeVeSluzbe = true;
+                if(jeVeSluzbe){
+                    //nastaveni nulteho bitu na jedna
+                    slouzi |= 1;
+                }
+                slouzi <<= 1;
+            }
+        }
+        do {
+            if ((slouzi & 85) == 85) {
                 //System.out.print("nemuze na obdenky");
                 return false;
             }//85d = 1010101b
-            slouzi = slouzi>>1;
-        }while(slouzi != 0);
+            slouzi = slouzi >> 1;
+        } while (slouzi != 0);
         //System.out.print("ok");
         return true;
     }
-    
-    
-    public boolean jeMensiNezParam(SluzboDen sd){
+
+    public boolean jeMensiNezParam(SluzboDen sd) {
         return this.hloubka > sd.hloubka;
     }
+
     public int getHloubka() {
         return hloubka;
     }
-    public String toStringII(){
+
+    public String toStringII() {
         return String.format("%s:%d", this.typsluzby, this.datum.get(Calendar.DAY_OF_MONTH));
     }
+
     @Override
     public String toString() {
-        return "SluzboDen{" + new SimpleDateFormat("dd").format(this.datum.getTime())+ ", " + typsluzby + ", " + slouzici+ "," + hloubka + '}';
+        return "SluzboDen{" + new SimpleDateFormat("dd").format(this.datum.getTime()) + ", " + typsluzby + ", " + slouzici + "," + hloubka + '}';
     }
 
     @Override
@@ -326,8 +372,5 @@ public class SluzboDen {
     public int getMaxpocetpatku() {
         return maxpocetpatku;
     }
-    
-    
-    
-    
+
 }
