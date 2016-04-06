@@ -23,7 +23,7 @@ public class SluzboDen {
     GregorianCalendar datum;
     char typdne;
     String typsluzby;
-    String slouzici;
+    Slouzici slouzici;
     private float maxsluzebpresmiru;
     private int maxpocetsvatku;
     private int maxpocetsobot;
@@ -50,11 +50,11 @@ public class SluzboDen {
         return nahoru;
     }
 
-    public String getSlouzici() {
+    public Slouzici getSlouzici() {
         return slouzici;
     }
 
-    public void setSlouzici(String slouzici) {
+    public void setSlouzici(Slouzici slouzici) {
         this.slouzici = slouzici;
     }
 
@@ -63,7 +63,7 @@ public class SluzboDen {
     }
 
     public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici) {
-        this.slouzici = slouzici.getJmeno();
+        this.slouzici = slouzici;
         this.minulyMesic = null;
         GregorianCalendar gc = new GregorianCalendar();
         gc.add(Calendar.MONTH, 1);
@@ -192,7 +192,7 @@ public class SluzboDen {
 
     }
 
-    public boolean isValid(Slouzici slouzici) {
+    public boolean isValid() {
         //System.out.println("kontrola isValid...");
         //System.out.print(this);
         long nemuze = slouzici.getPlneVolneDny();
@@ -229,17 +229,17 @@ public class SluzboDen {
         if (minulyMesic != null) {
             for (Sluzby sl : minulyMesic) {
                 boolean jeVeSluzbe = false;
-                if(sl.getLd().getLetajici().equals(this.slouzici))
+                if(sl.getLd().getLetajici().equals(this.slouzici.getJmeno()))
                     jeVeSluzbe = true;
-                if(sl.getSd().getLetajici().equals(this.slouzici))
+                if(sl.getSd().getLetajici().equals(this.slouzici.getJmeno()))
                     jeVeSluzbe = true;
-                if(sl.getLk().getLetajici().equals(this.slouzici))
+                if(sl.getLk().getLetajici().equals(this.slouzici.getJmeno()))
                     jeVeSluzbe = true;
-                if(sl.getSk().getLetajici().equals(this.slouzici))
+                if(sl.getSk().getLetajici().equals(this.slouzici.getJmeno()))
                     jeVeSluzbe = true;
-                if(sl.getLp().getLetajici().equals(this.slouzici))
+                if(sl.getLp().getLetajici().equals(this.slouzici.getJmeno()))
                     jeVeSluzbe = true;
-                if(sl.getSp().getLetajici().equals(this.slouzici))
+                if(sl.getSp().getLetajici().equals(this.slouzici.getJmeno()))
                     jeVeSluzbe = true;
                 if(jeVeSluzbe){
                     //nastaveni nulteho bitu na jedna
