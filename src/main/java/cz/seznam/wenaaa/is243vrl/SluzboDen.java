@@ -39,6 +39,9 @@ public class SluzboDen {
     }
 
     public void setMinulyMesic(List<Sluzby> minulyMesic) {
+        if (minulyMesic.size() != 6) {
+            throw new IllegalArgumentException("požadováno 6 služeb z minulého měsíce obdrženo " + minulyMesic.size());
+        }
         this.minulyMesic = minulyMesic;
     }
 
@@ -62,15 +65,8 @@ public class SluzboDen {
         return datum.get(Calendar.DAY_OF_MONTH);
     }
 
-    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici) {
-        this.slouzici = slouzici;
-        this.minulyMesic = null;
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.add(Calendar.MONTH, 1);
-        gc.set(Calendar.DAY_OF_MONTH, den);
-        this.datum = new GregorianCalendar();
-        this.datum.add(Calendar.MONTH, 1);
-        this.datum.set(Calendar.DAY_OF_MONTH, den);
+    private void setTypDne() {
+        GregorianCalendar gc = new GregorianCalendar(datum.get(Calendar.YEAR), datum.get(Calendar.MONTH), datum.get(Calendar.DAY_OF_MONTH));
         switch (gc.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.SATURDAY:
                 this.typdne = 'C';
@@ -108,8 +104,9 @@ public class SluzboDen {
                 gc.add(Calendar.DAY_OF_MONTH, -1);
                 break;
         }
-        this.typsluzby = typSluzby;
-        this.nahoru = nahoru;
+    }
+
+    private void setMaxHodnoty() {
         int pocetSvatku = 0;
         int pocetSobot = 0;
         int pocetNedel = 0;
@@ -189,7 +186,20 @@ public class SluzboDen {
             maxpocetpatku = pocetPatku;
             hloubka = 0;
         }
+    }
 
+    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici) {
+        this.slouzici = slouzici;
+        this.minulyMesic = null;
+        this.datum = new GregorianCalendar();
+        this.datum.set(Calendar.DAY_OF_MONTH, 1);
+        this.datum.add(Calendar.MONTH, 1);
+        this.datum.set(Calendar.DAY_OF_MONTH, den);
+        this.typsluzby = typSluzby;
+        this.nahoru = nahoru;
+
+        setTypDne();
+        setMaxHodnoty();
     }
 
     public boolean isValid() {
@@ -201,20 +211,14 @@ public class SluzboDen {
             //System.out.print("nemuze na pozadavek");
             return false;
         }// ze ma volny pozadavek
-        SluzboDen pom = this.nahoru;
-        long slouzi = 0;
-        while (pom != null) {
-            if (this.slouzici.equals(pom.slouzici)) {
-                slouzi += (long) Math.pow(2, pom.datum.get(Calendar.DAY_OF_MONTH));
-            }
-            pom = pom.nahoru;
-        }
+        long slouzi = kdySlouzi();
         long denPo = novaSluzba << 1;
         long denPred = novaSluzba >> 1;
         if ((novaSluzba & slouzi) != 0) {
             //System.out.print("nemuze na ten samy den");
             return false;
         }//ze neslouzi ten samy den
+        /*
         if ((denPo & slouzi) != 0) {
             //System.out.print("nemuze na den po");
             return false;
@@ -223,40 +227,95 @@ public class SluzboDen {
             //System.out.print("nemuze na den pred");
             return false;
         }//den pred
+        */
         slouzi = slouzi | novaSluzba;
+        slouzi = posunSlouziOMinulyMesic(slouzi);
+        do {
+            if ((slouzi & 85) == 85) {
+                //System.out.print("nemuze na obdenky");
+                return false;
+            }//85d = 1010101b
+            if ((slouzi & 0b11) == 0b11) {
+                return false;// na den po/pred
+            }
+            slouzi = slouzi >> 1;
+        } while (slouzi != 0);
+        //System.out.print("ok");
+        return true;
+    }
+
+    private long posunSlouziOMinulyMesic(long slouzi) {
         //pro konecne sluzby z minuleho mesice, jsou v sestupnem poradi
         //nastavim nulty bit na 1 pokud slouzi
-        if (minulyMesic != null) {
-            for (Sluzby sl : minulyMesic) {
+        SluzboDen pom = this;
+        while (pom.getNahoru() != null) {
+            pom = pom.getNahoru();
+        }
+        if (pom.minulyMesic != null) {
+            for (Sluzby sl : pom.minulyMesic) {
                 boolean jeVeSluzbe = false;
-                if(sl.getLd().getLetajici().equals(this.slouzici.getJmeno()))
-                    jeVeSluzbe = true;
-                if(sl.getSd().getLetajici().equals(this.slouzici.getJmeno()))
-                    jeVeSluzbe = true;
-                if(sl.getLk().getLetajici().equals(this.slouzici.getJmeno()))
-                    jeVeSluzbe = true;
-                if(sl.getSk().getLetajici().equals(this.slouzici.getJmeno()))
-                    jeVeSluzbe = true;
-                if(sl.getLp().getLetajici().equals(this.slouzici.getJmeno()))
-                    jeVeSluzbe = true;
-                if(sl.getSp().getLetajici().equals(this.slouzici.getJmeno()))
-                    jeVeSluzbe = true;
-                if(jeVeSluzbe){
+                try {
+                    if (sl.getLd().getLetajici().equals(this.slouzici.getJmeno())) {
+                        jeVeSluzbe = true;
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                try {
+                    if (sl.getSd().getLetajici().equals(this.slouzici.getJmeno())) {
+                        jeVeSluzbe = true;
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                try {
+                    if (sl.getLk().getLetajici().equals(this.slouzici.getJmeno())) {
+                        jeVeSluzbe = true;
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                try {
+                    if (sl.getSk().getLetajici().equals(this.slouzici.getJmeno())) {
+                        jeVeSluzbe = true;
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                try {
+                    if (sl.getLp().getLetajici().equals(this.slouzici.getJmeno())) {
+                        jeVeSluzbe = true;
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                try {
+                    if (sl.getSp().getLetajici().equals(this.slouzici.getJmeno())) {
+                        jeVeSluzbe = true;
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                if (jeVeSluzbe) {
                     //nastaveni nulteho bitu na jedna
                     slouzi |= 1;
                 }
                 slouzi <<= 1;
             }
         }
-        do {
-            if ((slouzi & 85) == 85) {
-                //System.out.print("nemuze na obdenky");
-                return false;
-            }//85d = 1010101b
-            slouzi = slouzi >> 1;
-        } while (slouzi != 0);
-        //System.out.print("ok");
-        return true;
+        return slouzi;
+    }
+
+    private long kdySlouzi() {
+        SluzboDen pom = this.nahoru;
+        long slouzi = 0;
+        while (pom != null) {
+            if (this.slouzici.equals(pom.slouzici)) {
+                slouzi += (long) Math.pow(2, pom.datum.get(Calendar.DAY_OF_MONTH));
+            }
+            pom = pom.nahoru;
+        }
+        return slouzi;
     }
 
     public boolean jeMensiNezParam(SluzboDen sd) {

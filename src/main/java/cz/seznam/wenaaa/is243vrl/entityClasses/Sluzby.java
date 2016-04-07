@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Sluzby.findAll", query = "SELECT s FROM Sluzby s"),
     @NamedQuery(name = "Sluzby.findByDatum", query = "SELECT s FROM Sluzby s WHERE s.datum = :datum"),
-    @NamedQuery(name = "Sluzby.konecMesice", query = "SELECT s FROM Sluzby s WHERE s.datum < :datum ORDER BY s.datum DESC LIMIT 6"),
+    @NamedQuery(name = "Sluzby.konecMesice", query = "SELECT s FROM Sluzby s WHERE s.datum < :datum ORDER BY s.datum DESC "),
     @NamedQuery(name = "Sluzby.naMesic", query = "SELECT s FROM Sluzby s WHERE s.datum BETWEEN :od AND :do ORDER BY s.datum")})
 public class Sluzby implements Serializable {
     @JoinColumn(name = "hd", referencedColumnName = "letajici")

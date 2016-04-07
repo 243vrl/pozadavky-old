@@ -1142,6 +1142,7 @@ public class PlanovaniBean implements Serializable{
 
     private List<Sluzby> nactiMinulyMesic(GregorianCalendar gc) {
         Query q = em.createNamedQuery("Sluzby.konecMesice");
+        q.setMaxResults(6);
         q.setParameter("datum", gc, TemporalType.DATE);
         text += "done";
         return q.getResultList();
