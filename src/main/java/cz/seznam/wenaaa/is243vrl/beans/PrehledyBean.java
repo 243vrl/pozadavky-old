@@ -12,7 +12,9 @@ import cz.seznam.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.seznam.wenaaa.is243vrl.entityClasses.PrumeryH120;
 import cz.seznam.wenaaa.is243vrl.entityClasses.PrumerySluzeb;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Zpravy;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
+import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.ZpravyController;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.io.Serializable;
 import java.sql.Date;
@@ -62,6 +64,8 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     LetajiciSluzbyController lsc;
     @Inject
     LoggedBean lb;
+    @Inject
+    ZpravyController zc;
     private final GregorianCalendar gc;
     private List<List<String>> sluzbyPodleDni;
     private List<List<String>> sluzbyPodlePilotu;
@@ -69,6 +73,14 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     private List<PrumeryH120> h120 = null;
     private List<ColumnModelIII> columns = new ArrayList<>();
     private List<PrumerySluzeb> prumeryLS = null;
+    private List<Zpravy> zpravyNaMesic;
+
+    
+    
+    public List<Zpravy> getZpravyNaMesic() {
+        return zpravyNaMesic;
+    }
+    
     
     /**
      * Creates a new instance of PrehledyBean
@@ -84,6 +96,7 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         nactiPrumerySluzeb();
         nactiPrumeryH120();
         nactiSluzbyNaMesic();
+        nactiZpravyNaMesic();
     }
     @PreDestroy
     private void predKoncem(){
@@ -121,12 +134,14 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         gc.add(Calendar.MONTH, -1);
         //populateColumns();
         nactiSluzbyNaMesic();
+        nactiZpravyNaMesic();
     }
     public void pridejM(){
         gc.set(Calendar.DAY_OF_MONTH,1);
         gc.add(Calendar.MONTH, 1);
         //populateColumns();
         nactiSluzbyNaMesic();
+        nactiZpravyNaMesic();
     }
     private void populateColumns(){
         columns = new ArrayList<>();
@@ -656,6 +671,10 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     @Override
     public void onValueChanged(MyValueChangeEvent mvche) {
         nactiSluzbyNaMesic();
+    }
+
+    private void nactiZpravyNaMesic() {
+        zpravyNaMesic = zc.getNaMesic(gc);
     }
     
     static public class ColumnModelIII implements Serializable {

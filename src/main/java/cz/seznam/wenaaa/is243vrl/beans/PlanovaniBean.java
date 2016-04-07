@@ -7,6 +7,7 @@ package cz.seznam.wenaaa.is243vrl.beans;
 
 import cz.seznam.wenaaa.is243vrl.Slouzici;
 import cz.seznam.wenaaa.is243vrl.SluzboDen;
+import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.Kalendar;
 import java.io.BufferedReader;
@@ -59,7 +60,7 @@ public class PlanovaniBean implements Serializable{
     @Inject
     LoggedBean lb;
     private boolean[] dnySvozu;
-    private boolean planuj; 
+    private final boolean planuj; 
     private List<ColumnModelvII> columns = new ArrayList<>();
     private int zacatek;
     private int konec;
@@ -103,7 +104,7 @@ public class PlanovaniBean implements Serializable{
         vratka[0] = 0;
         vratka[1] = 0;
         while(pom != null){
-            if(pom.getSlouzici().equals(letajici)){
+            if(pom.getSlouzici().getJmeno().equals(letajici)){
                 if(pom.getTypsluzby().startsWith("L")){
                     vratka[0]++;
                 }
@@ -186,7 +187,7 @@ public class PlanovaniBean implements Serializable{
         SluzboDen pom = navrhSluzeb;
         while(pom != null){
             if(pom.getDen()==denProZmenu && pom.getTypsluzby().equals(typSluzby)){
-                pom.setSlouzici(jmenoProZmenu);
+                pom.setSlouzici(new Slouzici(jmenoProZmenu,"",""));
                 //System.out.print("zmenneno");
                 break;
             }
@@ -197,7 +198,7 @@ public class PlanovaniBean implements Serializable{
         String vratka = "";
         SluzboDen pom = navrhSluzeb;
         while(pom != null){
-            if(pom.getSlouzici().equals(slouzici) && den == pom.getDen()){
+            if(pom.getSlouzici().getJmeno().equals(slouzici) && den == pom.getDen()){
                 vratka += pom.getTypsluzby();
             }
             pom = pom.getNahoru();
@@ -215,7 +216,7 @@ public class PlanovaniBean implements Serializable{
         int mezPaSoNe = 1;
         int mezSv;
         float mezPresMiru = 8;
-        List<PomSDClass> poradiSD = null;
+        List<PomSDClass> poradiSD;
         nenaplanovano = false;
         naplanovano = false;
         navrhSluzeb = null;
@@ -235,6 +236,7 @@ public class PlanovaniBean implements Serializable{
             vPlanovani = false;
             return;
         }
+        
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH,1);
@@ -247,6 +249,8 @@ public class PlanovaniBean implements Serializable{
                 mezSv = 1;
                 break;
         }
+        text = text+String.format("\nNačítám služby z konce předešlého měsíce...");
+        List<Sluzby> minulyMesic= nactiMinulyMesic(gc);
         //uvodni hledani
         while(vysledek == null){
             if(mezPaSoNe > 5){
@@ -263,7 +267,7 @@ public class PlanovaniBean implements Serializable{
                 return;
             }
             text = text+"\n"+String.format("uvodni hledani> presMiru: %d, PaSoNe: %d, Sv: %d >", (int)mezPresMiru, mezPaSoNe, mezSv);
-            vysledek = naplanuj(250,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani);
+            vysledek = naplanuj(250,mezPresMiru, mezPaSoNe, mezSv,seznamSlouzicich, poradiSD,true,neplanovani,minulyMesic);
             if(vysledek == null){
                 /*if(mezPresMiru < 2){
                     mezPresMiru += 0.5;
@@ -286,7 +290,7 @@ public class PlanovaniBean implements Serializable{
         while(true){
             boolean ukonci = true;
             text = text + "\n"+String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(250,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani);
+            SluzboDen pom = naplanuj(250,(int)mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD,true, neplanovani, minulyMesic);
             if (pom != null){
                 vysledek = pom;
                 ukonci = false;
@@ -302,7 +306,7 @@ public class PlanovaniBean implements Serializable{
         text = text+String.format("\ndone");
         naplanovano = true;
     }
-    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku,List<Slouzici> neplanovani){
+    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD,boolean naHloubku,List<Slouzici> neplanovani, List<Sluzby> minMesic){
         //text += "\nvstup do naplanujII";
         List<SluzboDen> sluzbodny = new ArrayList<>();
         for(String letajici: dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")){
@@ -320,7 +324,8 @@ public class PlanovaniBean implements Serializable{
                 }
             }
             SluzboDen pom = new SluzboDen(poradiSD.get(0).den,poradiSD.get(0).typSluzby,null,pomSl);
-            if(pom.isValid(pomSl)){
+            pom.setMinulyMesic(minMesic);
+            if(pom.isValid()){
                 sluzbodny.add(pom);
             }
         }   
@@ -392,7 +397,7 @@ public class PlanovaniBean implements Serializable{
                 if (pom.getMaxpocetnedel()>mezPaSoNeSv) continue;
                 if (pom.getMaxpocetpatku()>mezPaSoNeSv) continue;
                 //System.out.print("prosel pres meze");
-                if(pom.isValid(pomSl)){
+                if(pom.isValid()){
                     boolean nevlozen = true;
                     for(int j = 0; j < sluzbodny.size();j++){
                         if(pom.jeMensiNezParam(sluzbodny.get(j))){
@@ -449,7 +454,7 @@ public class PlanovaniBean implements Serializable{
                 } catch(NoResultException e){
                     //nic
                 }
-                List<Object> mozny_slouzici = null;
+                List<Object> mozny_slouzici;
                 if(typ_sluzby.startsWith("L") && !dnySvozu[den]){
                     Query qSvoz = em.createNativeQuery("SELECT ls.letajici FROM letajici_sluzby2 AS ls, povoleni_sluzeb AS ps WHERE ls.letajici = ps.letajici AND ps.typ_sluzby = ? AND ps.povoleno = true AND ls.do_lini_svozem = ?");
                     qSvoz.setParameter(1, typ_sluzby);
@@ -951,7 +956,7 @@ public class PlanovaniBean implements Serializable{
         String letajici = "";
         while(pom != null){
             if((pom.getDen()==den)&&(pom.getTypsluzby().equals(pomS))){
-                letajici = pom.getSlouzici();
+                letajici = pom.getSlouzici().getJmeno();
                 break;
             }
             pom = pom.getNahoru();
@@ -1008,7 +1013,7 @@ public class PlanovaniBean implements Serializable{
             SluzboDen pom = navrhSluzeb;
             while(pom != null){
                 gc.set(Calendar.DAY_OF_MONTH, pom.getDen());
-                ulozSluzbu(gc, pom.getTypsluzby(), pom.getSlouzici());
+                ulozSluzbu(gc, pom.getTypsluzby(), pom.getSlouzici().getJmeno());
                 pom = pom.getNahoru();
             }
         }
@@ -1060,11 +1065,11 @@ public class PlanovaniBean implements Serializable{
         }
     }
     public void ulozSluzbu(GregorianCalendar gc, String typSluzby, String letajici){
-        String staryLetajici = null;
-        int[] hodnotySluzby = null;
+        String staryLetajici;
+        int[] hodnotySluzby;
         int[] hodnotyStary = new int[5];
         int[] hodnotyNovy = new int[5];
-        Object[] result = null;
+        Object[] result;
         try {
             ut.begin();
             em.joinTransaction();
@@ -1134,9 +1139,17 @@ public class PlanovaniBean implements Serializable{
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    private List<Sluzby> nactiMinulyMesic(GregorianCalendar gc) {
+        Query q = em.createNamedQuery("Sluzby.konecMesice");
+        q.setMaxResults(6);
+        q.setParameter("datum", gc, TemporalType.DATE);
+        text += "done";
+        return q.getResultList();
+    }
     static public class ColumnModelvII implements Serializable {
-        private String header;
-        private String property;
+        private final String header;
+        private final String property;
         public ColumnModelvII(String header, String property) {
             this.header = header;
             this.property = property;

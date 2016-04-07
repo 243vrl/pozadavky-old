@@ -7,7 +7,6 @@ package cz.seznam.wenaaa.is243vrl.entityClasses;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Sluzby.findAll", query = "SELECT s FROM Sluzby s"),
     @NamedQuery(name = "Sluzby.findByDatum", query = "SELECT s FROM Sluzby s WHERE s.datum = :datum"),
+    @NamedQuery(name = "Sluzby.konecMesice", query = "SELECT s FROM Sluzby s WHERE s.datum < :datum ORDER BY s.datum DESC "),
     @NamedQuery(name = "Sluzby.naMesic", query = "SELECT s FROM Sluzby s WHERE s.datum BETWEEN :od AND :do ORDER BY s.datum")})
 public class Sluzby implements Serializable {
     @JoinColumn(name = "hd", referencedColumnName = "letajici")

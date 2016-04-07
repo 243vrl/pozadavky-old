@@ -16,59 +16,59 @@
         <ui:define name="body">
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
                 <h:panelGrid columns="2" cellpadding="20">
-                <p:dataTable id="podleDnu" value="#{sluzbyBean.naMesic}" var="item"
-                                     rowKey="#{item.datum}"
+                    <p:dataTable id="podleDnu" value="#{sluzbyBean.naMesic}" var="item"
+                                 rowKey="#{item.datum}"
                                  rowIndexVar="rowIndex"
                                  resizableColumns="true"
                                  style="table-layout: fixed;  width: 550px; background-image: none"
                                  editable="true" editMode="cell"
                                  rowStyleClass="#{sluzbyBean.getStyle(rowIndex+1)}"
                                  >
-                    <p:ajax event="cellEdit" listener="#{sluzbyBean.onCellEdit}" update=":PozadavkyListForm:history"/>
-                            <f:facet name="header" style="font-size: 110% !important;">
-                                <h:outputText value="Hotovosti na měsíc"/><br/>
-                                <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic podleDnu" actionListener="#{sluzbyBean.uberMesic()}">
-                            &laquo;
-                        </p:commandLink>
-                        &emsp;
-                        <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{sluzbyBean.proMesic()}"/>
-                        &emsp;
-                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic podleDnu" actionListener="#{sluzbyBean.pridejMesic()}">
-                            &raquo;
-                        </p:commandLink>
+                        <p:ajax event="cellEdit" listener="#{sluzbyBean.onCellEdit}" update=":PozadavkyListForm:history"/>
+                        <f:facet name="header" style="font-size: 110% !important;">
+                            <h:outputText value="Hotovosti na měsíc"/><br/>
+                            <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic podleDnu" actionListener="#{sluzbyBean.uberMesic()}">
+                                &laquo;
+                            </p:commandLink>
+                            &emsp;
+                            <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{sluzbyBean.proMesic()}"/>
+                            &emsp;
+                            <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic podleDnu" actionListener="#{sluzbyBean.pridejMesic()}">
+                                &raquo;
+                            </p:commandLink>
+                        </f:facet>
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column rowspan="2" headerText=" " />
+                                <p:column colspan="3" headerText="LZS Plzeň" />
+                                <p:column colspan="3" headerText="SAR Kbely" />
+                                <p:column colspan="3" headerText="H 120" />
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="KV"/>
+                                <p:column headerText="PL"/>
+                                <p:column headerText="PT"/>
+                                <p:column headerText="KV"/>
+                                <p:column headerText="PL"/>
+                                <p:column headerText="PT"/>
+                                <p:column headerText="KV"/>
+                                <p:column headerText="PL"/>
+                                <p:column headerText="PT"/>
+                            </p:row>
+                        </p:columnGroup>
+                        <p:column width="5%">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_datum}"/>
                             </f:facet>
-                            <p:columnGroup type="header">
-                                <p:row>
-                                    <p:column rowspan="2" headerText=" " />
-                                    <p:column colspan="3" headerText="LZS Plzeň" />
-                                    <p:column colspan="3" headerText="SAR Kbely" />
-                                    <p:column colspan="3" headerText="H 120" />
-                                </p:row>
-                                <p:row>
-                                    <p:column headerText="KV"/>
-                                    <p:column headerText="PL"/>
-                                    <p:column headerText="PT"/>
-                                    <p:column headerText="KV"/>
-                                    <p:column headerText="PL"/>
-                                    <p:column headerText="PT"/>
-                                    <p:column headerText="KV"/>
-                                    <p:column headerText="PL"/>
-                                    <p:column headerText="PT"/>
-                                </p:row>
-                            </p:columnGroup>
-                            <p:column width="5%">
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_datum}"/>
-                                </f:facet>
-                                <h:outputText value="#{item.datum}">
-                                    <f:convertDateTime pattern="d" timeZone="#{pozApplication.timeZone}" />
-                                </h:outputText>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_lk}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            <h:outputText value="#{item.datum}">
+                                <f:convertDateTime pattern="d" timeZone="#{pozApplication.timeZone}" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_lk}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.lk}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.lk}" style="width:100%">
@@ -77,13 +77,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_ld}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_ld}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.ld}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.ld}" style="width:100%">
@@ -91,13 +91,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_lp}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_lp}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.lp}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.lp}" style="width:100%">
@@ -105,13 +105,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.palubaciByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_sk}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_sk}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.sk}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.sk}" style="width:100%">
@@ -119,13 +119,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_sd}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_sd}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.sd}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.sd}" style="width:100%">
@@ -133,13 +133,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_sp}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_sp}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.sp}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.sp}" style="width:100%">
@@ -147,13 +147,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.palubaciByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_hk}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_hk}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.hk}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.hk}" style="width:100%">
@@ -161,13 +161,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_hd}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_hd}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.hd}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.hd}" style="width:100%">
@@ -175,13 +175,13 @@
                                         <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSluzbyTitle_hp}"/>
-                                </f:facet>
-                                <p:cellEditor>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_hp}"/>
+                            </f:facet>
+                            <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{item.hp}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.hp}" style="width:100%">
@@ -189,9 +189,9 @@
                                         <f:selectItems value="#{letajiciSluzbyController.palubaciByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>
                                 </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                        </p:dataTable>
+                            </p:cellEditor>
+                        </p:column>
+                    </p:dataTable>
                     <h:panelGrid cols="1">
                         <p:commandButton value="Vymaž historii" actionListener="#{sluzbyBean.vynulujZmeny()}" update="history"/>
                         <p:inputTextarea id="history" readonly="true" value="#{sluzbyBean.zmeny}" cols="40" rows="50" autoResize="false"/>
