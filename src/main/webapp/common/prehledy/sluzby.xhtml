@@ -17,16 +17,37 @@
 
         <ui:define name="body">
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
-                
+                <p:dataTable id="zpravy" value="#{prehledyBean.zpravyNaMesic}" var="item">
+                    <p:column style="width:70px;">
+                        <h:outputText value="#{item.datumOd}">
+                            <f:convertDateTime pattern="d.M.yyyy" timeZone="#{pozApplication.timeZone}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:70px;">
+                        <h:outputText value="#{item.datumDo}">
+                            <f:convertDateTime pattern="d.M.yyyy" timeZone="#{pozApplication.timeZone}"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.textZpravy}"/>
+                    </p:column>
+                    <p:column style="width:50px;">
+                        <h:outputText value="#{item.podal}">
+                            
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+                <br/>
+                <br/>
                 <p:panel id="sluzbyPanel" style="padding-left: 0 !important; padding-right: 0 !important;">
                     <f:facet name="header">
-                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{prehledyBean.uberM()}">
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="uberM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab PozadavkyListForm:zpravy" actionListener="#{prehledyBean.uberM()}">
                             &laquo;
                         </p:commandLink>
                         &emsp;
                         <p:outputLabel style="font-weight: bold; font-size: 110% !important;" id="headerMesic" value="#{prehledyBean.proMesic()}"/>
                         &emsp;
-                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab" actionListener="#{prehledyBean.pridejM()}">
+                        <p:commandLink style="font-weight: bold; font-size: 110% !important;" id="pridejM" update="headerMesic sluzbyPanel PozadavkyListForm:sluzbyTab PozadavkyListForm:zpravy" actionListener="#{prehledyBean.pridejM()}">
                             &raquo;
                         </p:commandLink>
                     </f:facet>
