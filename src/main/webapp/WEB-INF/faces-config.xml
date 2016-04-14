@@ -67,5 +67,9 @@
             <base-name>/Bundleknicemu</base-name>
             <var>bundleknicemu</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>/BundleAdministraceUzivatele</base-name>
+            <var>bundleAdministraceUzivatele</var>
+        </resource-bundle>
     </application>
 </faces-config>

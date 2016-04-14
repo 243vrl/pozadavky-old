@@ -431,7 +431,9 @@ public class PlanovaniBean implements Serializable{
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         for(Integer den: dejPoradiDnu()){
+            //System.out.println("den: "+den );
             for(String typ_sluzby: dejPoradiSluzeb()){
+                //System.out.println("sluzba: "+typ_sluzby);
                 int volnych = 0;
                 gc.set(Calendar.DAY_OF_MONTH, den);
                 Query q1 = em.createNativeQuery("SELECT letajici FROM pozadavky WHERE datum = ? AND pozadavek = ?");
@@ -450,7 +452,9 @@ public class PlanovaniBean implements Serializable{
                             break;
                         }
                     }
+                    //System.out.println("prideleno "+(String)pom);
                     continue;
+                //javax.persistence.NonUniqueResultException: result returns more than one elements
                 } catch(NoResultException e){
                     //nic
                 }
@@ -466,6 +470,7 @@ public class PlanovaniBean implements Serializable{
                     q2.setParameter(1, typ_sluzby);
                     mozny_slouzici = q2.getResultList();
                 }
+                //System.out.println("Moznych slouzicich: "+mozny_slouzici.size());
                 for(Object pom: mozny_slouzici){
                     int intpom = seznamSlouzicich.indexOf(new Slouzici((String) pom,"",""));
                     long volneDny = seznamSlouzicich.get(intpom).getPlneVolneDny();

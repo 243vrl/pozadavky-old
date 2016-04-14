@@ -7,16 +7,18 @@ package cz.seznam.wenaaa.is243vrl;
 
 import cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
-import java.awt.BorderLayout;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
@@ -27,7 +29,7 @@ import org.mockito.MockitoAnnotations;
  *
  * @author vena
  */
-public class SluzboDenTest { 
+public class SluzboDenTest {    
     
     private static final String LK = "LK";
     private static final String LD = "LD";
@@ -46,8 +48,6 @@ public class SluzboDenTest {
     private LetajiciSluzby2 lsVlastni;
     @Mock
     private LetajiciSluzby2 lsCizi;
-    
-    
     
     public SluzboDenTest() {
     }
@@ -83,8 +83,6 @@ public class SluzboDenTest {
         expResult = LD;
         assertEquals(expResult, result);
     }
-    
-    
 
     /**
      * Test of getNahoru method, of class SluzboDen.
@@ -108,7 +106,7 @@ public class SluzboDenTest {
         Slouzici expResult = sl;
         Slouzici result = instance.getSlouzici();
         assertEquals(expResult, result);
-        sl = new Slouzici(JA+"on", LK, LK);
+        sl = new Slouzici(JA + "on", LK, LK);
         instance.setSlouzici(sl);
         expResult = sl;
         result = instance.getSlouzici();
@@ -133,7 +131,7 @@ public class SluzboDenTest {
     public void testIsValidNaPozadavek() {
         final int den = 2;
         instance = new SluzboDen(den, LK, null, slouzici);
-        when(slouzici.getPlneVolneDny()).thenReturn(0b001100L,0b001000L);
+        when(slouzici.getPlneVolneDny()).thenReturn(0b001100L, 0b001000L);
         boolean expResult = false;
         boolean result = instance.isValid();
         assertEquals(expResult, result);
@@ -153,29 +151,29 @@ public class SluzboDenTest {
         instance = new SluzboDen(den, LK, sd, slouzici);
         boolean expresult = false;
         boolean result = instance.isValid();
-        assertEquals("nemuze na ten samy den",expresult, result);
+        assertEquals("nemuze na ten samy den", expresult, result);
         
-        instance = new SluzboDen(den+1, LK, sd, slouzici);
+        instance = new SluzboDen(den + 1, LK, sd, slouzici);
         expresult = false;
         result = instance.isValid();
-        assertEquals("nemuze na den po",expresult, result);
+        assertEquals("nemuze na den po", expresult, result);
         
-        instance = new SluzboDen(den-1, LK, sd, slouzici);
+        instance = new SluzboDen(den - 1, LK, sd, slouzici);
         expresult = false;
         result = instance.isValid();
-        assertEquals("nemuze na den pred",expresult, result);
+        assertEquals("nemuze na den pred", expresult, result);
         
-        instance = new SluzboDen(den-2, LK, sd, slouzici);
+        instance = new SluzboDen(den - 2, LK, sd, slouzici);
         expresult = true;
         result = instance.isValid();
-        assertEquals("muze na 2 dny pred",expresult, result);
+        assertEquals("muze na 2 dny pred", expresult, result);
         
-        instance = new SluzboDen(den+2, LK, sd, slouzici);
+        instance = new SluzboDen(den + 2, LK, sd, slouzici);
         expresult = true;
         result = instance.isValid();
-        assertEquals("muze na 2 dny po",expresult, result);
+        assertEquals("muze na 2 dny po", expresult, result);
     }
-    
+
     /**
      * Test of isValid method, of class SluzboDen.
      */
@@ -188,32 +186,32 @@ public class SluzboDenTest {
         instance = new SluzboDen(1, LK, sd, slouzici);
         boolean expresult = false;
         boolean result = instance.isValid();
-        assertEquals("nemuze na obden zacatek",expresult, result);
+        assertEquals("nemuze na obden zacatek", expresult, result);
         
         instance = new SluzboDen(9, LK, sd, slouzici);
         expresult = false;
         result = instance.isValid();
-        assertEquals("nemuze na obden konec",expresult, result);
+        assertEquals("nemuze na obden konec", expresult, result);
         
         instance = new SluzboDen(10, LK, sd, slouzici);
         expresult = true;
         result = instance.isValid();
-        assertEquals("muze - pauza dva dny",expresult, result);
+        assertEquals("muze - pauza dva dny", expresult, result);
         
         sd = vytvorstrukturu(0b000101000100);
         
         instance = new SluzboDen(5, LK, sd, slouzici);
         expresult = false;
         result = instance.isValid();
-        assertEquals("nemuze na prostredni obdenku",expresult, result);
+        assertEquals("nemuze na prostredni obdenku", expresult, result);
         
         sd = vytvorstrukturu(0b0001010000100);
         instance = new SluzboDen(5, LK, sd, slouzici);
         expresult = true;
         result = instance.isValid();
-        assertEquals("muze na prostredni - dva dny pauza",expresult, result);
+        assertEquals("muze na prostredni - dva dny pauza", expresult, result);
     }
-    
+
     /**
      * Test of isValid method, of class SluzboDen.
      */
@@ -228,7 +226,7 @@ public class SluzboDenTest {
         SluzboDen sd = vytvorstrukturu(0b1000000);
         List<Sluzby> minMesiv = vytvorMinulyMesic(0b101010);
         SluzboDen pom = sd;
-        while(pom.nahoru != null){
+        while (pom.nahoru != null) {
             pom = pom.nahoru;
         }
         pom.setMinulyMesic(minMesiv);
@@ -237,12 +235,12 @@ public class SluzboDenTest {
         boolean result = instance.isValid();
         verify(slouzici, Mockito.atLeastOnce()).getJmeno();
         verify(lsVlastni, Mockito.atLeastOnce()).getLetajici();
-        assertEquals("nemuze na obden zacatek (1. novy + 3 obden v minulem)",expresult, result);
+        assertEquals("nemuze na obden zacatek (1. novy + 3 obden v minulem)", expresult, result);
         
         sd = vytvorstrukturu(0b101000);
         minMesiv = vytvorMinulyMesic(0b1);
         pom = sd;
-        while(pom.nahoru != null){
+        while (pom.nahoru != null) {
             pom = pom.nahoru;
         }
         pom.setMinulyMesic(minMesiv);
@@ -251,12 +249,12 @@ public class SluzboDenTest {
         result = instance.isValid();
         verify(slouzici, Mockito.atLeastOnce()).getJmeno();
         verify(lsVlastni, Mockito.atLeastOnce()).getLetajici();
-        assertEquals("nemuze na obden zacatek (2 4 6 novy + posledni v minulem)",expresult, result);
+        assertEquals("nemuze na obden zacatek (2 4 6 novy + posledni v minulem)", expresult, result);
         
         sd = vytvorstrukturu(0b100);
         minMesiv = vytvorMinulyMesic(0b1010);
         pom = sd;
-        while(pom.nahoru != null){
+        while (pom.nahoru != null) {
             pom = pom.nahoru;
         }
         pom.setMinulyMesic(minMesiv);
@@ -265,12 +263,12 @@ public class SluzboDenTest {
         result = instance.isValid();
         verify(slouzici, Mockito.atLeastOnce()).getJmeno();
         verify(lsVlastni, Mockito.atLeastOnce()).getLetajici();
-        assertEquals("nemuze na obden zacatek (1 3 novy + -2 -4 v minulem)",expresult, result);
+        assertEquals("nemuze na obden zacatek (1 3 novy + -2 -4 v minulem)", expresult, result);
         
         sd = vytvorstrukturu(0b1000);
         minMesiv = vytvorMinulyMesic(0b1010);
         pom = sd;
-        while(pom.nahoru != null){
+        while (pom.nahoru != null) {
             pom = pom.nahoru;
         }
         pom.setMinulyMesic(minMesiv);
@@ -279,13 +277,12 @@ public class SluzboDenTest {
         result = instance.isValid();
         verify(slouzici, Mockito.atLeastOnce()).getJmeno();
         verify(lsVlastni, Mockito.atLeastOnce()).getLetajici();
-        assertEquals("muze na obden zacatek (2 4 novy + -2 -4 v minulem)",expresult, result);
-        
+        assertEquals("muze na obden zacatek (2 4 novy + -2 -4 v minulem)", expresult, result);
         
         sd = vytvorstrukturu(0b1000000);
         minMesiv = vytvorMinulyMesic(0b000001);
         pom = sd;
-        while(pom.nahoru != null){
+        while (pom.nahoru != null) {
             pom = pom.nahoru;
         }
         pom.setMinulyMesic(minMesiv);
@@ -294,23 +291,55 @@ public class SluzboDenTest {
         result = instance.isValid();
         verify(slouzici, Mockito.atLeastOnce()).getJmeno();
         verify(lsVlastni, Mockito.atLeastOnce()).getLetajici();
-        assertEquals("nemuze na posledniho+prvniho zacatek",expresult, result);
+        assertEquals("nemuze na posledniho+prvniho zacatek", expresult, result);
     }
-    
+
     /**
      * Test of jeMensiNezParam method, of class SluzboDen.
      */
     @Test
     public void testJeMensiNezParam() {
-       
+        instance = new SluzboDen(1, LK, null, slouzici);
+        SluzboDen pom = new SluzboDen(1, LK, null, slouzici);
+        boolean expResult = false;
+        assertEquals(expResult, instance.jeMensiNezParam(pom));
+        instance = new SluzboDen(1, LK, pom, slouzici);
+        assertEquals(expResult, pom.jeMensiNezParam(instance));
+        assertEquals(expResult, instance.jeMensiNezParam(instance));
+        expResult = true;
+        assertEquals(expResult, instance.jeMensiNezParam(pom));
     }
-
+    /**
+     * Test of setMinulyMesic of class SluzboDen
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetMinulymesicThrowsIllegalArgumentException(){
+        Random rand = new Random();
+        List<Sluzby> mm = vytvorMinulyMesic(rand.nextInt(0b111111));
+        instance = new SluzboDen(1, LK, null, slouzici);
+        Sluzby sl = mm.remove(0);
+        instance.setMinulyMesic(mm);
+    }
+    /**
+     * Test of setMinulyMesic of class SluzboDen
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetMinulymesicThrowsIllegalArgumentExceptionII(){
+        Random rand = new Random();
+        List<Sluzby> mm = vytvorMinulyMesic(rand.nextInt(0b111111));
+        instance = new SluzboDen(1, LK, null, slouzici);
+        mm.add(new Sluzby());
+        instance.setMinulyMesic(mm);
+    }
     /**
      * Test of getHloubka method, of class SluzboDen.
      */
     @Test
     public void testGetHloubka() {
-       
+        instance = new SluzboDen(1, LK, null, slouzici);
+        SluzboDen pom = new SluzboDen(1, LK, instance, slouzici);
+        assertEquals(0, instance.getHloubka());
+        assertEquals(1, pom.getHloubka());
     }
 
     /**
@@ -318,7 +347,15 @@ public class SluzboDenTest {
      */
     @Test
     public void testToStringII() {
-        
+        final int den = 3;
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        gc.add(Calendar.MONTH, 1);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        instance = new SluzboDen(den, LK, null, slouzici);
+        String expected = String.format("%s:%d", LK, gc.get(Calendar.DAY_OF_MONTH));
+        String result = String.format("%s:%d", instance.typsluzby, instance.datum.get(Calendar.DAY_OF_MONTH));
+        assertEquals(expected, result);
     }
 
     /**
@@ -326,7 +363,16 @@ public class SluzboDenTest {
      */
     @Test
     public void testToString() {
-        
+        final int den = 3;
+        when(slouzici.toString()).thenReturn(JA);
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        gc.add(Calendar.MONTH, 1);
+        gc.set(Calendar.DAY_OF_MONTH, den);
+        instance = new SluzboDen(den, LK, null, slouzici);
+        String expected = "SluzboDen{" + new SimpleDateFormat("dd").format(gc.getTime()) + ", " + LK + ", " + slouzici + "," + 0 + '}';
+        String result = "SluzboDen{" + new SimpleDateFormat("dd").format(instance.datum.getTime()) + ", " + instance.typsluzby + ", " + instance.slouzici + "," + instance.hloubka + '}';
+        assertEquals(expected, result);
     }
 
     /**
@@ -384,16 +430,15 @@ public class SluzboDenTest {
     public void testGetMaxpocetpatku() {
         
     }
-
+    
     private SluzboDen vytvorstrukturu(int dnykdyslouzi) {
         SluzboDen sd = null;
         int i = 1;
-        while(dnykdyslouzi != 0){
+        while (dnykdyslouzi != 0) {
             SluzboDen pom = null;
-            if((dnykdyslouzi & 1) == 1){
+            if ((dnykdyslouzi & 1) == 1) {
                 pom = new SluzboDen(i++, LK, sd, slouzici);
-            }
-            else{
+            } else {
                 pom = new SluzboDen(i++, LK, sd, slCizi);
             }
             sd = pom;
@@ -401,18 +446,18 @@ public class SluzboDenTest {
         }
         return sd;
     }
+
     /**
-     * 
+     *
      * @param slouzi v binarni tvaru nejnizsi bit je posledni sluzba v mesici
-     * @return 
+     * @return
      */
     private List<Sluzby> vytvorMinulyMesic(int slouzi) {
         List<Sluzby> vratka = new ArrayList<>();
-        for(int i = 0; i < 6; i++){
-            if((slouzi & 1) == 1){
+        for (int i = 0; i < 6; i++) {
+            if ((slouzi & 1) == 1) {
                 vratka.add(sluzbaVlastni);
-            }
-            else{
+            } else {
                 vratka.add(sluzbaCizi);
             }
             slouzi >>= 1;
