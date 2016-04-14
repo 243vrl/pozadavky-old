@@ -35,9 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
     @NamedQuery(name = "Users.findByPasswd", query = "SELECT u FROM Users u WHERE u.passwd = :passwd")})
 public class Users implements Serializable {
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
+    /*@OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
     private LetajiciSluzby2 letajiciSluzby2;
- /*   @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
     private LetajiciSluzby2 letajiciSluzby;*/
     private static final long serialVersionUID = 1L;
     @Id
@@ -64,6 +64,7 @@ public class Users implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+        fireValueChanged();
     }
 
     public String getPasswd() {
@@ -72,6 +73,7 @@ public class Users implements Serializable {
 
     public void setPasswd(String passwd) {
         this.passwd = HashedPasswordGenerator.generateHash(passwd);
+        fireValueChanged();
     }
 
 
@@ -97,7 +99,12 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "cz.seznam.wenaaa.is243vrl.entityClasses.Users[ username=" + username + " ]";
+        return username;
+    }
+    
+    public void fireValueChanged(){
+        UsersValueChangeEvent uvche = new UsersValueChangeEvent(this);
+        ModelListenerFactory.valueChanged(uvche);
     }
 /*
     public LetajiciSluzby getLetajiciSluzby() {
@@ -107,7 +114,7 @@ public class Users implements Serializable {
     public void setLetajiciSluzby(LetajiciSluzby letajiciSluzby) {
         this.letajiciSluzby = letajiciSluzby;
     }
-*/
+
     public LetajiciSluzby2 getLetajiciSluzby2() {
         return letajiciSluzby2;
     }
@@ -115,5 +122,5 @@ public class Users implements Serializable {
     public void setLetajiciSluzby2(LetajiciSluzby2 letajiciSluzby2) {
         this.letajiciSluzby2 = letajiciSluzby2;
     }
-
+*/
 }

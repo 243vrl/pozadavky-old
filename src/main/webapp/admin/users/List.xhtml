@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/common/index.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundleAdministraceUzivatele.ListUsersTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <p:separator/>
+            <h:form id="UsersSelectForm">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel value="Vyber uživatele: " />
+                    <p:selectOneMenu id="users" value="#{usersController.selected}">
+                        <f:selectItem itemLabel="Vyber uživatele" itemValue="" />
+                        <f:selectItems value="#{usersController.items}" var="user"
+                                       itemValue="#{user}"/>
+                        <p:ajax event="change" execute="@this" update=":usernameChangeForm :passwordChangeForm"/>
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </h:form>
+            <p:separator />
+            <h:form id="usernameChangeForm">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel value="Změna jména :"/>
+                    <p:inputText value="#{usersController.selected.username}"
+                                 maxlength="6" />
+                    <p:commandButton value="Ulož" actionListener="#{usersController.zmenaJmena}"
+                                     disabled="true"/>
+                </h:panelGrid>
+            </h:form>
+            <p:separator />
+            <h:form id="passwordChangeForm">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel value="Reset hesla :"/>
+                    <p:inputText value="heslo" disabled="true" style="color: #000000"
+                                 maxlength="6"/>
+                    <p:commandButton value="Reset" actionListener="#{usersController.resetHesla}"
+                                     disabled="#{usersController.selected eq null?'true':'false'}"/>
+                </h:panelGrid>
+            </h:form>    
+        </ui:define>
+    </ui:composition>
+
+</html>

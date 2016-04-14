@@ -107,9 +107,7 @@
                     <h:form>
                         <p:menu>
                             <p:submenu label="Administrace" rendered="#{loggedBean.loggedAsAdmin}">
-                                <p:menuitem value="Uživatelé" />
-                                <p:menuitem value="Odstranění uživatele"/>
-                                <p:menuitem value="Změna uživatele"/>
+                                <p:menuitem value="Uživatelé" outcome="/admin/users/List"/>
                                 
                             </p:submenu>
                             <p:submenu label="Plánování" rendered="#{loggedBean.logged}">
