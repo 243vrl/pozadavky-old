@@ -32,8 +32,8 @@
                     <p:outputLabel value="Změna jména :"/>
                     <p:inputText value="#{usersController.selected.username}"
                                  maxlength="6" />
-                    <p:commandButton value="Ulož" actionListener="#{usersController.zmenaJmena}"
-                                     disabled="true"/>
+                    <p:commandButton value="Ulož" update=":UsersSelectForm"
+                                     disabled="#{usersController.selected eq null?'true':'false'}"/>
                 </h:panelGrid>
             </h:form>
             <p:separator />
