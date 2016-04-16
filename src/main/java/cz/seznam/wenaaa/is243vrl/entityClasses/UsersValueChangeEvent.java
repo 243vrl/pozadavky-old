@@ -12,16 +12,25 @@ package cz.seznam.wenaaa.is243vrl.entityClasses;
 public class UsersValueChangeEvent extends MyValueChangeEvent {
     
     private final Users user;
+    private final String stareJmeno;
     
-    
-    public UsersValueChangeEvent(Users user) {
+    public UsersValueChangeEvent(Users user, String stareJmeno) {
         super(user.getClass().getName());
         this.user = user;
-        
+        this.stareJmeno = stareJmeno;
     }
 
     public Users getUser() {
         return user;
+    }
+
+    public String getStareJmeno() {
+        return stareJmeno;
+    }
+
+    @Override
+    public String toString() {
+        return "UsersValueChangeEvent{" + "user=" + user + ", stareJmeno=" + stareJmeno + '}';
     }
 
     

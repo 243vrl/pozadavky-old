@@ -24,7 +24,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 @Named("usersController")
 @SessionScoped
@@ -34,24 +42,25 @@ public class UsersController implements Serializable, MyValueChangeListener {
     private cz.seznam.wenaaa.is243vrl.beans.entityClasses.UsersFacade ejbFacade;
     private List<Users> items = null;
     private Users selected;
-    private boolean jeVeZmene = false;
+    @Inject
+    UserTransaction ut;
 
     public UsersController() {
     }
+
     @PostConstruct
-    private void uvodniNacteni(){
+    private void uvodniNacteni() {
         ModelListenerFactory.registerListener(this, Users.class.getName());
-        jeVeZmene = false;
     }
+
     public Users getSelected() {
         return selected;
     }
 
     public void setSelected(Users selected) {
-        jeVeZmene = false;
         this.selected = selected;
     }
-    
+
     protected void setEmbeddableKeys() {
     }
 
@@ -77,7 +86,7 @@ public class UsersController implements Serializable, MyValueChangeListener {
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleAdministraceUzivatele").getString("UsersUpdated"));
-        
+
     }
 
     public void destroy() {
@@ -134,21 +143,45 @@ public class UsersController implements Serializable, MyValueChangeListener {
     public List<Users> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
-    
-    public void zmenaJmena(ActionEvent ev){
-        jeVeZmene = true;
-    }
-    public void resetHesla(ActionEvent ev){
-        jeVeZmene = true;
+
+    public void resetHesla(ActionEvent ev) {
         selected.setPasswd("heslo");
-        
     }
+
     @Override
     public void onValueChanged(MyValueChangeEvent mvche) {
-        UsersValueChangeEvent uvche = ( UsersValueChangeEvent) mvche;
-        if(jeVeZmene && uvche.getUser().equals(selected)){
-            update();
-            jeVeZmene = false;
+        UsersValueChangeEvent uvche = (UsersValueChangeEvent) mvche;
+        if (uvche.getUser().equals(selected)) {
+            if (!uvche.getUser().getUsername().equals(uvche.getStareJmeno())) {
+                try {
+                    EntityManager em = this.getFacade().getEntityManager();
+                    ut.begin();
+                    em.joinTransaction();
+                    Query query = this.getFacade().getEntityManager().createNativeQuery("UPDATE users SET username=? WHERE username=?");
+                    query.setParameter(1, uvche.getUser().getUsername());
+                    query.setParameter(2, uvche.getStareJmeno());
+                    query.executeUpdate();
+                    ut.commit();
+                    items = null;    // Invalidate list of items to trigger re-query.
+                } catch (NotSupportedException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SystemException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RollbackException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (HeuristicMixedException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (HeuristicRollbackException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalStateException ex) {
+                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                update();
+            }
+
         }
     }
 

@@ -63,8 +63,9 @@ public class Users implements Serializable {
     }
 
     public void setUsername(String username) {
+        String stareJmeno = this.username;
         this.username = username;
-        fireValueChanged();
+        fireValueChanged(stareJmeno);
     }
 
     public String getPasswd() {
@@ -73,7 +74,7 @@ public class Users implements Serializable {
 
     public void setPasswd(String passwd) {
         this.passwd = HashedPasswordGenerator.generateHash(passwd);
-        fireValueChanged();
+        fireValueChanged(this.username);
     }
 
 
@@ -102,8 +103,8 @@ public class Users implements Serializable {
         return username;
     }
     
-    public void fireValueChanged(){
-        UsersValueChangeEvent uvche = new UsersValueChangeEvent(this);
+    public void fireValueChanged(String stareJmeno){
+        UsersValueChangeEvent uvche = new UsersValueChangeEvent(this, stareJmeno);
         ModelListenerFactory.valueChanged(uvche);
     }
 /*
