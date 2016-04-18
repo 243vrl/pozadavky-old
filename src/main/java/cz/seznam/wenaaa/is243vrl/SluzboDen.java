@@ -5,6 +5,12 @@
  */
 package cz.seznam.wenaaa.is243vrl;
 
+import static cz.seznam.wenaaa.is243vrl.TypyDne.NEDELE;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.PATEK;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.SOBOTA;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.VSEDNI;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.VSEDNI_DVOJSVATEK;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.VSEDNI_SVATEK;
 import cz.seznam.wenaaa.is243vrl.beans.PlanovaniBean;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.utils.Kalendar;
@@ -21,7 +27,7 @@ import java.util.Objects;
 public class SluzboDen {
 
     GregorianCalendar datum;
-    char typdne;
+    TypyDne typdne;
     String typsluzby;
     Slouzici slouzici;
     private float maxsluzebpresmiru;
@@ -69,37 +75,37 @@ public class SluzboDen {
         GregorianCalendar gc = new GregorianCalendar(datum.get(Calendar.YEAR), datum.get(Calendar.MONTH), datum.get(Calendar.DAY_OF_MONTH));
         switch (gc.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.SATURDAY:
-                this.typdne = 'C';
+                this.typdne = SOBOTA;
                 break;
             case Calendar.MONDAY:
             case Calendar.TUESDAY:
             case Calendar.WEDNESDAY:
             case Calendar.THURSDAY:
-                this.typdne = 'F';
+                this.typdne = VSEDNI;
                 if (Kalendar.jeSvatek(gc)) {
-                    this.typdne = 'B';
+                    this.typdne = VSEDNI_SVATEK;
                 }
                 gc.add(Calendar.DAY_OF_MONTH, 1);
                 if (Kalendar.jeSvatek(gc)) {
-                    if (this.typdne == 'B') {
-                        this.typdne = 'A';
+                    if (this.typdne == VSEDNI_SVATEK) {
+                        this.typdne = VSEDNI_DVOJSVATEK;
                     } else {
-                        this.typdne = 'B';
+                        this.typdne = VSEDNI_SVATEK;
                     }
                 }
                 gc.add(Calendar.DAY_OF_MONTH, -1);
                 break;
             case Calendar.FRIDAY:
-                this.typdne = 'E';
+                this.typdne = PATEK;
                 if (Kalendar.jeSvatek(gc)) {
-                    this.typdne = 'B';
+                    this.typdne = VSEDNI_SVATEK;
                 }
                 break;
             case Calendar.SUNDAY:
-                this.typdne = 'D';
+                this.typdne = NEDELE;
                 gc.add(Calendar.DAY_OF_MONTH, 1);
                 if (Kalendar.jeSvatek(gc)) {
-                    this.typdne = 'B';
+                    this.typdne = VSEDNI_SVATEK;
                 }
                 gc.add(Calendar.DAY_OF_MONTH, -1);
                 break;
@@ -113,19 +119,19 @@ public class SluzboDen {
         int pocetPatku = 0;
         int pocetSluzeb = 1;
         switch (this.typdne) {
-            case 'A':
+            case VSEDNI_DVOJSVATEK:
                 pocetSvatku = 2;
                 break;
-            case 'B':
+            case VSEDNI_SVATEK:
                 pocetSvatku = 1;
                 break;
-            case 'C':
+            case SOBOTA:
                 pocetSobot = 1;
                 break;
-            case 'D':
+            case NEDELE:
                 pocetNedel = 1;
                 break;
-            case 'E':
+            case PATEK:
                 pocetPatku = 1;
                 break;
         }
@@ -142,19 +148,19 @@ public class SluzboDen {
                 if (pom.slouzici.equals(this.slouzici)) {
                     pocetSluzeb++;
                     switch (pom.typdne) {
-                        case 'A':
+                        case VSEDNI_DVOJSVATEK:
                             pocetSvatku += 2;
                             break;
-                        case 'B':
+                        case VSEDNI_SVATEK:
                             pocetSvatku++;
                             break;
-                        case 'C':
+                        case SOBOTA:
                             pocetSobot++;
                             break;
-                        case 'D':
+                        case NEDELE:
                             pocetNedel++;
                             break;
-                        case 'E':
+                        case PATEK:
                             pocetPatku++;
                             break;
                     }
@@ -337,20 +343,17 @@ public class SluzboDen {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.datum);
-        hash = 37 * hash + this.typdne;
-        hash = 37 * hash + Objects.hashCode(this.typsluzby);
-        hash = 37 * hash + Objects.hashCode(this.slouzici);
-        hash = 37 * hash + Float.floatToIntBits(this.getMaxsluzebpresmiru());
-        hash = 37 * hash + this.getMaxpocetsvatku();
-        hash = 37 * hash + this.getMaxpocetsobot();
-        hash = 37 * hash + this.getMaxpocetnedel();
-        hash = 37 * hash + this.getMaxpocetpatku();
-        hash = 37 * hash + Objects.hashCode(this.nahoru);
-        hash = 37 * hash + this.hloubka;
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.datum);
+        hash = 89 * hash + Objects.hashCode(this.typdne);
+        hash = 89 * hash + Objects.hashCode(this.typsluzby);
+        hash = 89 * hash + Objects.hashCode(this.slouzici);
+        hash = 89 * hash + Objects.hashCode(this.nahoru);
+        hash = 89 * hash + this.hloubka;
         return hash;
     }
+
+   
 
     @Override
     public boolean equals(Object obj) {

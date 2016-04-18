@@ -7,6 +7,12 @@ package cz.seznam.wenaaa.is243vrl.beans;
 
 import cz.seznam.wenaaa.is243vrl.Slouzici;
 import cz.seznam.wenaaa.is243vrl.SluzboDen;
+import cz.seznam.wenaaa.is243vrl.TypyDne;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.NEDELE;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.PATEK;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.SOBOTA;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.VSEDNI;
+import static cz.seznam.wenaaa.is243vrl.TypyDne.VSEDNI_SVATEK;
 import cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.seznam.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
 import cz.seznam.wenaaa.utils.Kalendar;
@@ -646,6 +652,7 @@ public class PlanovaniBean implements Serializable{
             paramDojizdeni = true;
             prvni = false;
         }
+        TypyDne typDne = VSEDNI;
         switch(gc.get(Calendar.DAY_OF_WEEK)){
             case Calendar.MONDAY:
             case Calendar.TUESDAY:
@@ -655,6 +662,7 @@ public class PlanovaniBean implements Serializable{
                     if(prvni)zaklad += " "+podleSvatku;
                     else zaklad += " , "+podleSvatku;
                     prvni = false;
+                    typDne = VSEDNI_SVATEK;
                 }
                 break;
             case Calendar.FRIDAY:
@@ -662,28 +670,33 @@ public class PlanovaniBean implements Serializable{
                     if(prvni)zaklad += " "+podleSvatku;
                     else zaklad += " , "+podleSvatku;
                     prvni = false;
+                    typDne = VSEDNI_SVATEK;
                 }
                 else {
                     if(prvni)zaklad += " "+podlePatku;
                     else zaklad += " , "+podlePatku;
                     prvni = false;
+                    typDne = PATEK;
                 }
                 break;
             case Calendar.SATURDAY:
                 if(prvni)zaklad += " "+podleSobot;
                 else zaklad += " , "+podleSobot;
                 prvni = false;
+                typDne = SOBOTA;
                 break;
             case Calendar.SUNDAY:
                 if(vsedniSvatek(gc.get(Calendar.DAY_OF_MONTH))){
                     if(prvni)zaklad += " "+podleSvatku;
                     else zaklad += " , "+podleSvatku;
                     prvni = false;
+                    typDne = VSEDNI_SVATEK;
                 }
                 else{
                     if(prvni)zaklad += " "+podleNedel;
                     else zaklad += " , "+podleNedel;
                     prvni = false;
+                    typDne = NEDELE;
                 }
                 break;
         }
@@ -705,6 +718,9 @@ public class PlanovaniBean implements Serializable{
             ut.commit();
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(typDne != VSEDNI){
+            
         }
         return vratka;
     }
