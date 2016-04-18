@@ -33,6 +33,7 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
@@ -229,9 +230,9 @@ public class PlanovaniBean implements Serializable{
             text = text+String.format("\nNačítám službodny...");
             poradiSD = dejPoradiSluzbodnu(seznamSlouzicich);
             
-        }catch(NoResultException ex){
+        }catch(Exception ex){
             text = text+"\n"+ex.getMessage();
-            System.out.print(ex.getMessage());
+            //System.out.print(ex.getMessage());
             nenaplanovano = true;
             vPlanovani = false;
             return;
@@ -457,6 +458,8 @@ public class PlanovaniBean implements Serializable{
                 //javax.persistence.NonUniqueResultException: result returns more than one elements
                 } catch(NoResultException e){
                     //nic
+                } catch(NonUniqueResultException e){
+                    throw new NonUniqueResultException(String.format("WARNING: na den %d. naplánován víc jak jeden létající do služby %s", den, typ_sluzby));
                 }
                 List<Object> mozny_slouzici;
                 if(typ_sluzby.startsWith("L") && !dnySvozu[den]){
