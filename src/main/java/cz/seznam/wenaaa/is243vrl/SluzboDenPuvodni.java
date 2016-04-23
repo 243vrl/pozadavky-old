@@ -24,7 +24,7 @@ import java.util.Objects;
  *
  * @author vena
  */
-public class SluzboDen {
+public class SluzboDenPuvodni {
 
     GregorianCalendar datum;
     TypyDne typdne;
@@ -35,7 +35,7 @@ public class SluzboDen {
     private int maxpocetsobot;
     private int maxpocetnedel;
     private int maxpocetpatku;
-    SluzboDen nahoru;
+    SluzboDenPuvodni nahoru;
     List<Sluzby> minulyMesic;//6 poslednich dni
     int hloubka;
     //SluzboDen dolu;
@@ -55,7 +55,7 @@ public class SluzboDen {
         this.typsluzby = typsluzby;
     }
 
-    public SluzboDen getNahoru() {
+    public SluzboDenPuvodni getNahoru() {
         return nahoru;
     }
 
@@ -143,7 +143,7 @@ public class SluzboDen {
             maxpocetnedel = nahoru.maxpocetnedel;
             maxpocetpatku = nahoru.maxpocetpatku;
 
-            SluzboDen pom = nahoru;
+            SluzboDenPuvodni pom = nahoru;
             while (pom != null) {
                 if (pom.slouzici.equals(this.slouzici)) {
                     pocetSluzeb++;
@@ -194,7 +194,7 @@ public class SluzboDen {
         }
     }
 
-    public SluzboDen(int den, String typSluzby, SluzboDen nahoru, Slouzici slouzici) {
+    public SluzboDenPuvodni(int den, String typSluzby, SluzboDenPuvodni nahoru, Slouzici slouzici) {
         this.slouzici = slouzici;
         this.minulyMesic = null;
         this.datum = new GregorianCalendar();
@@ -253,7 +253,7 @@ public class SluzboDen {
     private long posunSlouziOMinulyMesic(long slouzi) {
         //pro konecne sluzby z minuleho mesice, jsou v sestupnem poradi
         //nastavim nulty bit na 1 pokud slouzi
-        SluzboDen pom = this;
+        SluzboDenPuvodni pom = this;
         while (pom.getNahoru() != null) {
             pom = pom.getNahoru();
         }
@@ -313,7 +313,7 @@ public class SluzboDen {
     }
 
     private long kdySlouzi() {
-        SluzboDen pom = this.nahoru;
+        SluzboDenPuvodni pom = this.nahoru;
         long slouzi = 0;
         while (pom != null) {
             if (this.slouzici.equals(pom.slouzici)) {
@@ -324,7 +324,7 @@ public class SluzboDen {
         return slouzi;
     }
 
-    public boolean jeMensiNezParam(SluzboDen sd) {
+    public boolean jeMensiNezParam(SluzboDenPuvodni sd) {
         return this.hloubka > sd.hloubka;
     }
 
@@ -363,7 +363,7 @@ public class SluzboDen {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SluzboDen other = (SluzboDen) obj;
+        final SluzboDenPuvodni other = (SluzboDenPuvodni) obj;
         if (!Objects.equals(this.datum, other.datum)) {
             return false;
         }

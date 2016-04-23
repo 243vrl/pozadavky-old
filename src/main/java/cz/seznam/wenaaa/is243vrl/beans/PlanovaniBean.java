@@ -6,7 +6,7 @@
 package cz.seznam.wenaaa.is243vrl.beans;
 
 import cz.seznam.wenaaa.is243vrl.Slouzici;
-import cz.seznam.wenaaa.is243vrl.SluzboDen;
+import cz.seznam.wenaaa.is243vrl.SluzboDenPuvodni;
 import cz.seznam.wenaaa.is243vrl.TypyDne;
 import static cz.seznam.wenaaa.is243vrl.TypyDne.NEDELE;
 import static cz.seznam.wenaaa.is243vrl.TypyDne.PATEK;
@@ -75,7 +75,7 @@ public class PlanovaniBean implements Serializable {
     private boolean naplanovano;
     private boolean nenaplanovano;
     private boolean vPlanovani;
-    private SluzboDen navrhSluzeb;
+    private SluzboDenPuvodni navrhSluzeb;
     private String jmenoProZmenu;
     private int denProZmenu;
     private static final int MAX_PLANOVAT = 7;
@@ -108,8 +108,8 @@ public class PlanovaniBean implements Serializable {
         return String.format("%d: %d+%d", pom[0] + pom[1], pom[0], pom[1]);
     }
 
-    public int[] pocetSluzeb(String letajici, SluzboDen sd) {
-        SluzboDen pom = sd;
+    public int[] pocetSluzeb(String letajici, SluzboDenPuvodni sd) {
+        SluzboDenPuvodni pom = sd;
         int[] vratka = new int[2];
         vratka[0] = 0;
         vratka[1] = 0;
@@ -211,7 +211,7 @@ public class PlanovaniBean implements Serializable {
 
     public void zmenSluzbuZKontroly(String typSluzby) {
         //System.out.print("menim sluzbu");
-        SluzboDen pom = navrhSluzeb;
+        SluzboDenPuvodni pom = navrhSluzeb;
         while (pom != null) {
             if (pom.getDen() == denProZmenu && pom.getTypsluzby().equals(typSluzby)) {
                 pom.setSlouzici(new Slouzici(jmenoProZmenu, "", ""));
@@ -224,7 +224,7 @@ public class PlanovaniBean implements Serializable {
 
     public String dejSluzbuProKontrolu(String slouzici, int den) {
         String vratka = "";
-        SluzboDen pom = navrhSluzeb;
+        SluzboDenPuvodni pom = navrhSluzeb;
         while (pom != null) {
             if (pom.getSlouzici().getJmeno().equals(slouzici) && den == pom.getDen()) {
                 vratka += pom.getTypsluzby();
@@ -242,7 +242,7 @@ public class PlanovaniBean implements Serializable {
 
         vPlanovani = true;
         int zvysovani = 0;
-        SluzboDen vysledek = null;
+        SluzboDenPuvodni vysledek = null;
         int mezPaSoNe = 1;
         int mezSv;
         float mezPresMiru = 8;
@@ -313,7 +313,7 @@ public class PlanovaniBean implements Serializable {
         while (true) {
             boolean ukonci = true;
             text = text + "\n" + String.format("vylepšování> presMiru: %f, PaSoNe: %d, Sv: %d >", mezPresMiru, mezPaSoNe, mezSv);
-            SluzboDen pom = naplanuj(250, (int) mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD, true, neplanovani, minulyMesic);
+            SluzboDenPuvodni pom = naplanuj(250, (int) mezPresMiru, mezPaSoNe, mezSv, seznamSlouzicich, poradiSD, true, neplanovani, minulyMesic);
             if (pom != null) {
                 vysledek = pom;
                 ukonci = false;
@@ -332,9 +332,9 @@ public class PlanovaniBean implements Serializable {
 
     }
 
-    private SluzboDen naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD, boolean naHloubku, List<Slouzici> neplanovani, List<Sluzby> minMesic) {
+    private SluzboDenPuvodni naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD, boolean naHloubku, List<Slouzici> neplanovani, List<Sluzby> minMesic) {
         //text += "\nvstup do naplanujII";
-        List<SluzboDen> sluzbodny = new ArrayList<>();
+        List<SluzboDenPuvodni> sluzbodny = new ArrayList<>();
         for (String letajici : dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")) {
             Slouzici pomSl = null;
             for (Slouzici sl : seznamSlouzicich) {
@@ -349,13 +349,13 @@ public class PlanovaniBean implements Serializable {
                     }
                 }
             }
-            SluzboDen pom = new SluzboDen(poradiSD.get(0).den, poradiSD.get(0).typSluzby, null, pomSl);
+            SluzboDenPuvodni pom = new SluzboDenPuvodni(poradiSD.get(0).den, poradiSD.get(0).typSluzby, null, pomSl);
             pom.setMinulyMesic(minMesic);
             if (pom.isValid()) {
                 sluzbodny.add(pom);
             }
         }
-        SluzboDen rozvijeny = null;
+        SluzboDenPuvodni rozvijeny = null;
         //for(int i = 0; i < 1000; i++){
         int i = 0;
         while (true) {
@@ -371,7 +371,7 @@ public class PlanovaniBean implements Serializable {
             rozvijeny = sluzbodny.get(0);
             //System.out.print("----------------------------");
 
-            /*for(SluzboDen pom: sluzbodny){
+            /*for(SluzboDenPuvodni pom: sluzbodny){
              if(pom.jeMensiNezParam(rozvijeny,naHloubku,seznamSlouzicich)){
              rozvijeny = pom;
              }
@@ -383,7 +383,7 @@ public class PlanovaniBean implements Serializable {
             }
             int novaHloubka = rozvijeny.getHloubka() + 1;
             String dojizdeni = dejSchemaDojizdeni(rozvijeny, poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den);
-            SluzboDen predchozi = rozvijeny;
+            SluzboDenPuvodni predchozi = rozvijeny;
             //text += String.format("\nrozbaluji: %s", rozvijeny);
             //String sDalsi = String.format("%s:%d",poradiSD.get(novaHloubka).typSluzby,poradiSD.get(novaHloubka).den);
             try {
@@ -412,7 +412,7 @@ public class PlanovaniBean implements Serializable {
                         }
                     }
                 }
-                SluzboDen pom = new SluzboDen(poradiSD.get(novaHloubka).den, poradiSD.get(novaHloubka).typSluzby, predchozi, pomSl);
+                SluzboDenPuvodni pom = new SluzboDenPuvodni(poradiSD.get(novaHloubka).den, poradiSD.get(novaHloubka).typSluzby, predchozi, pomSl);
                 //System.out.print(pom);
                 if (pom.getMaxsluzebpresmiru() >= mezPresMiru) {
                     continue;
@@ -704,9 +704,6 @@ public class PlanovaniBean implements Serializable {
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (typDne != VSEDNI) {
-
-        }
         return vratka;
     }
 
@@ -963,7 +960,7 @@ public class PlanovaniBean implements Serializable {
         return vratka;
     }
 
-    private String dejSchemaDojizdeni(SluzboDen sd, String typSluzby, int den) {
+    private String dejSchemaDojizdeni(SluzboDenPuvodni sd, String typSluzby, int den) {
         String pomS = "";
         if (typSluzby.equals("LD")) {
             pomS = "LK";
@@ -977,7 +974,7 @@ public class PlanovaniBean implements Serializable {
         if (typSluzby.equals("SK")) {
             pomS = "SD";
         }
-        SluzboDen pom = sd;
+        SluzboDenPuvodni pom = sd;
         String letajici = "";
         while (pom != null) {
             if ((pom.getDen() == den) && (pom.getTypsluzby().equals(pomS))) {
@@ -998,7 +995,7 @@ public class PlanovaniBean implements Serializable {
         }
     }
 
-    private void vypisKolik(SluzboDen vysledek, List<Slouzici> seznamSlouzicich) {
+    private void vypisKolik(SluzboDenPuvodni vysledek, List<Slouzici> seznamSlouzicich) {
         for (Slouzici ss : seznamSlouzicich) {
             int[] pom = pocetSluzeb(ss.getJmeno(), vysledek);
             float zmena = ss.getPlanujSluzeb() - pom[0] - pom[1];
@@ -1049,7 +1046,7 @@ public class PlanovaniBean implements Serializable {
             GregorianCalendar gc = new GregorianCalendar();
             gc.set(Calendar.DAY_OF_MONTH, 1);
             gc.add(Calendar.MONTH, 1);
-            SluzboDen pom = navrhSluzeb;
+            SluzboDenPuvodni pom = navrhSluzeb;
             while (pom != null) {
                 gc.set(Calendar.DAY_OF_MONTH, pom.getDen());
                 ulozSluzbu(gc, pom.getTypsluzby(), pom.getSlouzici().getJmeno());
