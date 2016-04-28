@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import cz.wenaaa.is243vrl.planovani.Slouzici;
 /**
  *
  * @author vena
@@ -28,6 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "letajici_sluzby2")
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "LetajiciSluzby.findClassSlouziciPalubari", query = "SELECT new Slouzici(l.letajici, l.dojizdeni) FROM LetajiciSluzby2 l  WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.poradi ASC"),
+    @NamedQuery(name = "LetajiciSluzby.findClassSlouziciPiloti", query = "SELECT new Slouzici(l.letajici, l.dojizdeni) FROM LetajiciSluzby2 l  WHERE l.poradi < 1000 ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findAll", query = "SELECT l FROM LetajiciSluzby2 l  ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findPiloti", query = "SELECT l FROM LetajiciSluzby2 l WHERE l.poradi < 1000 ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findPalubari", query = "SELECT l FROM LetajiciSluzby2 l WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.poradi ASC"),

@@ -163,19 +163,7 @@ public class UsersController implements Serializable, MyValueChangeListener {
                     query.executeUpdate();
                     ut.commit();
                     items = null;    // Invalidate list of items to trigger re-query.
-                } catch (NotSupportedException ex) {
-                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SystemException ex) {
-                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (RollbackException ex) {
-                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (HeuristicMixedException ex) {
-                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (HeuristicRollbackException ex) {
-                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SecurityException ex) {
-                    Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalStateException ex) {
+                } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
                     Logger.getLogger(UsersController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {

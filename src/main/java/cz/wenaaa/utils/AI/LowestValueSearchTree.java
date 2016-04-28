@@ -40,9 +40,7 @@ public class LowestValueSearchTree<F extends NodeItemFactory, N> implements Call
     public ProcessInfo<N> getProcessInfo() {
         return processInfo;
     }
-    
-    
-    
+
     @Override
     public List<N> call() throws Exception {
         List<Node> leafs = new ArrayList<>();
@@ -68,57 +66,45 @@ public class LowestValueSearchTree<F extends NodeItemFactory, N> implements Call
 
             });
             Node rozvijeny = leafs.remove(0);
-            
+
             leafsEvolved++;
-            
-            if(processInfo != null){
+
+            if (processInfo != null) {
                 passInfo(rozvijeny, leafs, leafsEvolved);
             }
-            
-            if (nodeFactory.isAim(rozvijeny.getItem())) {
-                vratka = vytvorVratku(rozvijeny);
+
+            if (nodeFactory.isAim(rozvijeny.getPath())) {
+                vratka = rozvijeny.getPath();
                 break;
             }
-            
-            List<N> noveUzly = nodeFactory.getNexts(rozvijeny.getItem());
+
+            List<N> noveUzly = nodeFactory.getNexts(rozvijeny.getPath());
             leafs.addAll(nodeItemsToNodes(noveUzly, rozvijeny));
-            
-            
+
         }
         return vratka;
     }
 
     private void passInfo(Node rozvijeny, List<Node> leafs, long leafsEvolved) {
-        if(processInfo.getLock().tryLock()){
-            try{
+        if (processInfo.getLock().tryLock()) {
+            try {
                 processInfo.setActualNodeItem(rozvijeny.getItem());
                 processInfo.setLeafsCount(leafs.size());
                 processInfo.setLeafsEvolved(leafsEvolved);
-            }finally{
+            } finally {
                 processInfo.getLock().unlock();
             }
         }
     }
 
-    private List<N> vytvorVratku(Node rozvijeny) {
-        List<N> vratka = new ArrayList<>();
-        Node pom = rozvijeny;
-        while (pom != null) {
-            vratka.add(0, (N) pom.getItem());
-            pom = pom.previous;
-        }
-        return vratka;
-    }
-
     private ArrayList<Node> nodeItemsToNodes(List<N> uvodniUzly, Node previous) {
         ArrayList<Node> vratka = new ArrayList<>();
         for (N pol : uvodniUzly) {
-                vratka.add(new Node(pol, previous));
+            vratka.add(new Node(pol, previous));
         }
         return vratka;
     }
 
-    
     /**
      *
      * @author vena
@@ -146,39 +132,36 @@ public class LowestValueSearchTree<F extends NodeItemFactory, N> implements Call
                 throw new IllegalArgumentException("Argument should be the same class.");
             }
             int vratka;
-            double valuetThisItem = nodeFactory.getNodeItemValue(this.item);
-            double valueOtherItem = nodeFactory.getNodeItemValue(((Node) o).item);
+            double valuetThisItem = nodeFactory.getPathValue(this.getPath());
+            double valueOtherItem = nodeFactory.getPathValue(((Node) o).getPath());
             if (valuetThisItem == valueOtherItem) {
-                if(depthFirst){
+                if (depthFirst) {
                     int depthThis = getDepth(this);
                     int depthOther = getDepth((Node) o);
-                    if(depthOther == depthThis){
+                    if (depthOther == depthThis) {
                         vratka = 0;
+                    } else {
+                        vratka = (depthThis > depthOther) ? -1 : 1;
                     }
-                    else{
-                        vratka = (depthThis > depthOther)?-1:1;
-                    }
-                }
-                else{
+                } else {
                     vratka = 0;
                 }
-            }
-            else{
+            } else {
                 vratka = (valuetThisItem > valueOtherItem) ? 1 : -1;
             }
             //System.out.println("comparing "+this.item+"["+valuetThisItem+"] with "+((Node) o).item+"["+valueOtherItem+"]"+" with result: "+vratka);
-            
+
             return vratka;
         }
 
         private int getDepth(Node node) {
             Node pom = node;
             int depth = 0;
-            while(pom != null){
+            while (pom != null) {
                 pom = pom.previous;
                 depth++;
             }
-            return  depth;
+            return depth;
         }
 
         Node getPrevious() {
@@ -189,6 +172,15 @@ public class LowestValueSearchTree<F extends NodeItemFactory, N> implements Call
             return item;
         }
 
+        private List<N> getPath() {
+            List<N> vratka = new ArrayList<>();
+            Node pom = this;
+            while (pom != null) {
+                vratka.add(0, (N) pom.getItem());
+                pom = pom.previous;
+            }
+            return vratka;
+        }
     }
 
 }

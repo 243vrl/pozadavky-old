@@ -16,9 +16,9 @@ public interface NodeItemFactory<N> {
 
     List<N> getInitialNodes();
 
-    List<N> getNexts(N toEvolve);
+    List<N> getNexts(List<N> actualPath);
 
-    boolean isAim(N nodeItem);
+    boolean isAim(List<N> actualPath);
     
-    double getNodeItemValue(N nodeItem);
+    double getPathValue(List<N> actualPath);
 }

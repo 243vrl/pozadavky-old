@@ -6,9 +6,11 @@
 package cz.wenaaa.is243vrl.beans.entityClasses;
 
 import cz.wenaaa.is243vrl.entityClasses.PovoleniSluzeb;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,4 +30,9 @@ public class PovoleniSluzebFacade extends AbstractFacade<PovoleniSluzeb> {
         super(PovoleniSluzeb.class);
     }
     
+    public List<PovoleniSluzeb> getByName(String name){
+        Query q = em.createNativeQuery("PovoleniSluzeb.findByLetajici");
+        q.setParameter("letajici",name);
+        return q.getResultList();
+    }
 }

@@ -29,7 +29,7 @@ public class SluzboDenPuvodni {
     GregorianCalendar datum;
     TypyDne typdne;
     String typsluzby;
-    Slouzici slouzici;
+    SlouziciPuvodni slouzici;
     private float maxsluzebpresmiru;
     private int maxpocetsvatku;
     private int maxpocetsobot;
@@ -59,11 +59,11 @@ public class SluzboDenPuvodni {
         return nahoru;
     }
 
-    public Slouzici getSlouzici() {
+    public SlouziciPuvodni getSlouzici() {
         return slouzici;
     }
 
-    public void setSlouzici(Slouzici slouzici) {
+    public void setSlouzici(SlouziciPuvodni slouzici) {
         this.slouzici = slouzici;
     }
 
@@ -194,7 +194,7 @@ public class SluzboDenPuvodni {
         }
     }
 
-    public SluzboDenPuvodni(int den, String typSluzby, SluzboDenPuvodni nahoru, Slouzici slouzici) {
+    public SluzboDenPuvodni(int den, String typSluzby, SluzboDenPuvodni nahoru, SlouziciPuvodni slouzici) {
         this.slouzici = slouzici;
         this.minulyMesic = null;
         this.datum = new GregorianCalendar();

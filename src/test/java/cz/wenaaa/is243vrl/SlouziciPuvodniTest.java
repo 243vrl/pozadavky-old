@@ -5,7 +5,7 @@
  */
 package cz.wenaaa.is243vrl;
 
-import cz.wenaaa.is243vrl.Slouzici;
+import cz.wenaaa.is243vrl.SlouziciPuvodni;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,14 +19,14 @@ import static org.mockito.Matchers.any;
  *
  * @author vena
  */
-public class SlouziciTest {
+public class SlouziciPuvodniTest {
     
-    private Slouzici instance;
+    private SlouziciPuvodni instance;
     private static final String DOJIZDENI = "dojizdeni";
     private static final String SKUPINA = "skupina";
     private static final String JMENO = "jmeno";
     
-    public SlouziciTest() {
+    public SlouziciPuvodniTest() {
     }
     
     @BeforeClass
@@ -39,7 +39,7 @@ public class SlouziciTest {
     
     @Before
     public void setUp() {
-        instance = new Slouzici(JMENO, SKUPINA, DOJIZDENI);
+        instance = new SlouziciPuvodni(JMENO, SKUPINA, DOJIZDENI);
     }
     
     @After
@@ -47,7 +47,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of hashCode method, of class Slouzici.
+     * Test of hashCode method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testHashCodeReturnsNotNull() {
@@ -56,11 +56,11 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of equals method, of class Slouzici.
+     * Test of equals method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testEquals() {
-        Slouzici pom = null;
+        SlouziciPuvodni pom = null;
         //null returns false
         boolean result = instance.equals(pom);
         assertFalse("slouzici equals> null > false", result);
@@ -71,18 +71,18 @@ public class SlouziciTest {
         assertFalse("slouzici equals> different class > false", result);
         
         //stejne jmeno > true
-        pom = new Slouzici(JMENO, SKUPINA+"rrr", DOJIZDENI+"rrr");
+        pom = new SlouziciPuvodni(JMENO, SKUPINA+"rrr", DOJIZDENI+"rrr");
         result = instance.equals(pom);
         assertTrue("slouzici equals> stejne jmeno > true", result);
         
         //ruzne jmeno > false
-        pom = new Slouzici(JMENO+"rrr", SKUPINA, DOJIZDENI);
+        pom = new SlouziciPuvodni(JMENO+"rrr", SKUPINA, DOJIZDENI);
         result = instance.equals(pom);
         assertFalse("slouzici equals> ruzne jmeno > false", result);
     }
 
     /**
-     * Test of pridejSluzbuDoSkupiny method, of class Slouzici.
+     * Test of pridejSluzbuDoSkupiny method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testPridejSluzbuDoSkupiny() {
@@ -93,7 +93,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of getPocetPlnychDnu method, of class Slouzici.
+     * Test of getPocetPlnychDnu method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetPocetPlnychDnu() {
@@ -111,7 +111,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of getDojizdeni method, of class Slouzici.
+     * Test of getDojizdeni method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetDojizdeni() {
@@ -119,7 +119,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of getPlneVolneDny method, of class Slouzici.
+     * Test of getPlneVolneDny method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetSetPlneVolneDny() {
@@ -133,7 +133,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of getMaxPocetSluzeb method, of class Slouzici.
+     * Test of getMaxPocetSluzeb method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetMaxPocetSluzeb() {
@@ -147,7 +147,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of getPlanujSluzeb method, of class Slouzici.
+     * Test of getPlanujSluzeb method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetPlanujSluzeb() {
@@ -159,14 +159,14 @@ public class SlouziciTest {
         result = instance.getPlanujSluzeb();
         assertEquals(expResult, result, 0.0);
         //pro skupinu "" ma byt 9 sluzeb
-        Slouzici pom = new Slouzici(JMENO, "", DOJIZDENI);
+        SlouziciPuvodni pom = new SlouziciPuvodni(JMENO, "", DOJIZDENI);
         result = pom.getPlanujSluzeb();
         expResult = 9F;
         assertEquals(expResult, result, 0.0);
     }
 
     /**
-     * Test of getJmeno method, of class Slouzici.
+     * Test of getJmeno method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetJmeno() {
@@ -176,7 +176,7 @@ public class SlouziciTest {
     }
 
     /**
-     * Test of getSkupina method, of class Slouzici.
+     * Test of getSkupina method, of class SlouziciPuvodni.
      */
     @org.junit.Test
     public void testGetSkupina() {

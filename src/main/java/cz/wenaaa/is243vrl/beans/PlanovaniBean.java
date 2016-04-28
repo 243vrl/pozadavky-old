@@ -5,7 +5,7 @@
  */
 package cz.wenaaa.is243vrl.beans;
 
-import cz.wenaaa.is243vrl.Slouzici;
+import cz.wenaaa.is243vrl.SlouziciPuvodni;
 import cz.wenaaa.is243vrl.SluzboDenPuvodni;
 import cz.wenaaa.is243vrl.TypyDne;
 import static cz.wenaaa.is243vrl.TypyDne.NEDELE;
@@ -213,7 +213,7 @@ public class PlanovaniBean implements Serializable {
         SluzboDenPuvodni pom = navrhSluzeb;
         while (pom != null) {
             if (pom.getDen() == denProZmenu && pom.getTypsluzby().equals(typSluzby)) {
-                pom.setSlouzici(new Slouzici(jmenoProZmenu, "", ""));
+                pom.setSlouzici(new SlouziciPuvodni(jmenoProZmenu, "", ""));
                 //System.out.print("zmenneno");
                 break;
             }
@@ -250,10 +250,10 @@ public class PlanovaniBean implements Serializable {
         naplanovano = false;
         navrhSluzeb = null;
         text = String.format("Uzaviram db...");
-        uzavriDB();
-        text = text + String.format("\nNačítám seznam sloužících...");
-        List<Slouzici> neplanovani = nactiNeplanovane();
-        List<Slouzici> seznamSlouzicich = nactiSlouzici();
+        //uzavriDB();
+        text = text + String.format("\nNačítám seznam sloužících...")
+        List<SlouziciPuvodni> neplanovani = nactiNeplanovane();
+        List<SlouziciPuvodni> seznamSlouzicich = nactiSlouzici();
         try {
             text = text + String.format("\nNačítám službodny...");
             poradiSD = dejPoradiSluzbodnu(seznamSlouzicich);
@@ -279,7 +279,7 @@ public class PlanovaniBean implements Serializable {
                 break;
         }
         text = text + String.format("\nNačítám služby z konce předešlého měsíce...");
-        List<Sluzby> minulyMesic = nactiMinulyMesic(gc);
+        List<Sluzby> minulyMesic = null;//nactiMinulyMesic(gc);
         //uvodni hledani
         while (vysledek == null) {
             if (mezPaSoNe > 5) {
@@ -331,18 +331,18 @@ public class PlanovaniBean implements Serializable {
 
     }
 
-    private SluzboDenPuvodni naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<Slouzici> seznamSlouzicich, List<PomSDClass> poradiSD, boolean naHloubku, List<Slouzici> neplanovani, List<Sluzby> minMesic) {
+    private SluzboDenPuvodni naplanuj(int trvani, float mezPresMiru, int mezPaSoNeSv, int mezSv, List<SlouziciPuvodni> seznamSlouzicich, List<PomSDClass> poradiSD, boolean naHloubku, List<SlouziciPuvodni> neplanovani, List<Sluzby> minMesic) {
         //text += "\nvstup do naplanujII";
         List<SluzboDenPuvodni> sluzbodny = new ArrayList<>();
         for (String letajici : dejPoradiLetajicich(poradiSD.get(0).typSluzby, poradiSD.get(0).den, "")) {
-            Slouzici pomSl = null;
-            for (Slouzici sl : seznamSlouzicich) {
+            SlouziciPuvodni pomSl = null;
+            for (SlouziciPuvodni sl : seznamSlouzicich) {
                 if (sl.getJmeno().equals(letajici)) {
                     pomSl = sl;
                 }
             }
             if (pomSl == null) {
-                for (Slouzici sl : neplanovani) {
+                for (SlouziciPuvodni sl : neplanovani) {
                     if (sl.getJmeno().equals(letajici)) {
                         pomSl = sl;
                     }
@@ -398,14 +398,14 @@ public class PlanovaniBean implements Serializable {
             }
             boolean nenalezeno = true;
             for (String letajici : dejPoradiLetajicich(poradiSD.get(novaHloubka).typSluzby, poradiSD.get(novaHloubka).den, dojizdeni)) {
-                Slouzici pomSl = null;
-                for (Slouzici sl : seznamSlouzicich) {
+                SlouziciPuvodni pomSl = null;
+                for (SlouziciPuvodni sl : seznamSlouzicich) {
                     if (sl.getJmeno().equals(letajici)) {
                         pomSl = sl;
                     }
                 }
                 if (pomSl == null) {
-                    for (Slouzici sl : neplanovani) {
+                    for (SlouziciPuvodni sl : neplanovani) {
                         if (sl.getJmeno().equals(letajici)) {
                             pomSl = sl;
                         }
@@ -459,7 +459,7 @@ public class PlanovaniBean implements Serializable {
         this.columns = columns;
     }
 
-    private List<PomSDClass> dejPoradiSluzbodnu(List<Slouzici> seznamSlouzicich) {
+    private List<PomSDClass> dejPoradiSluzbodnu(List<SlouziciPuvodni> seznamSlouzicich) {
         //System.out.println("Nacitam poradi sluzbodnu...");
         List<PomSDClass> vratka = new ArrayList<>();
         for (GregorianCalendar gc : dejPoradiDnu()) {
@@ -505,7 +505,7 @@ public class PlanovaniBean implements Serializable {
                 }
                 //System.out.println("Moznych slouzicich: "+mozny_slouzici.size());
                 for (Object pom : mozny_slouzici) {
-                    int intpom = seznamSlouzicich.indexOf(new Slouzici((String) pom, "", ""));
+                    int intpom = seznamSlouzicich.indexOf(new SlouziciPuvodni((String) pom, "", ""));
                     long volneDny = seznamSlouzicich.get(intpom).getPlneVolneDny();
                     if (((long) Math.pow(2, den) & volneDny) == 0) {
                         volnych++;
@@ -579,7 +579,7 @@ public class PlanovaniBean implements Serializable {
         return poradiDnu;
     }
 
-    private void uzavriDB() {
+    /*private void uzavriDB() {
         GregorianCalendar pomGC = new GregorianCalendar();
         pomGC.set(Calendar.DAY_OF_MONTH, 1);
         pomGC.add(Calendar.MONTH, 2);
@@ -595,7 +595,7 @@ public class PlanovaniBean implements Serializable {
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }*/
 
     private List<String> dejPoradiLetajicich(String typ_sluzby, int den, String dojizdeni) {
         List<String> vratka = new ArrayList<>();
@@ -757,8 +757,8 @@ public class PlanovaniBean implements Serializable {
         }
     }
 
-    private List<Slouzici> nactiSlouzici() {
-        List<Slouzici> vratka = new ArrayList<>();
+    private List<SlouziciPuvodni> nactiSlouzici() {
+        List<SlouziciPuvodni> vratka = new ArrayList<>();
         List<String> poradiSluzeb = dejPoradiSluzeb();
 
         GregorianCalendar gc = new GregorianCalendar();
@@ -779,7 +779,7 @@ public class PlanovaniBean implements Serializable {
             if (!poradiSluzeb.contains(sluzba)) {
                 continue;
             }
-            Slouzici pom = new Slouzici(letajici, sluzba, dojizdeni);
+            SlouziciPuvodni pom = new SlouziciPuvodni(letajici, sluzba, dojizdeni);
             if (vratka.contains(pom)) {
                 vratka.get(vratka.indexOf(pom)).pridejSluzbuDoSkupiny(sluzba);
             } else {
@@ -787,7 +787,7 @@ public class PlanovaniBean implements Serializable {
             }
         }
         //nacteni plnych volnych dnu
-        for (Slouzici slouzici : vratka) {
+        for (SlouziciPuvodni slouzici : vratka) {
             String letajici = slouzici.getJmeno();
             Query q5 = em.createNativeQuery("SELECT pozadavek, datum FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici=? AND pozadavek NOT IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces) ORDER BY datum");
             q5.setParameter(1, gc, TemporalType.DATE);
@@ -827,7 +827,7 @@ public class PlanovaniBean implements Serializable {
         //vytvoreni skupin letajicich podle moznych sluzeb
         List<SkupinaSluzeb> skupiny = new ArrayList<>();
         int nepresunutelnePlanovanych = 0;
-        for (Slouzici slouzici : vratka) {
+        for (SlouziciPuvodni slouzici : vratka) {
             Query q6 = em.createNativeQuery("SELECT CAST(count(*) AS int) FROM pozadavky WHERE datum BETWEEN ? AND ?  AND letajici = ? AND pozadavek IN (SELECT pozadavek FROM typy_pozadavku WHERE NOT useracces)");
             q6.setParameter(1, gc, TemporalType.DATE);
             q6.setParameter(2, gc1, TemporalType.DATE);
@@ -923,7 +923,7 @@ public class PlanovaniBean implements Serializable {
             }
         }
         //zapis do letajicich
-        for (Slouzici letajici : vratka) {
+        for (SlouziciPuvodni letajici : vratka) {
             for (SkupinaSluzeb sksl : skupiny) {
                 if (letajici.getSkupina().equals(sksl.jmenoSkupiny)) {
                     float kUlozeni = (sksl.hodnotaChlivu() * (dnuVmesici - letajici.getPocetPlnychDnu())) > MAX_PLANOVAT ? MAX_PLANOVAT : (sksl.hodnotaChlivu() * (dnuVmesici - letajici.getPocetPlnychDnu()));
@@ -937,8 +937,8 @@ public class PlanovaniBean implements Serializable {
         return vratka;
     }
 
-    private List<Slouzici> nactiNeplanovane() {
-        List<Slouzici> vratka = new ArrayList<>();
+    private List<SlouziciPuvodni> nactiNeplanovane() {
+        List<SlouziciPuvodni> vratka = new ArrayList<>();
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
@@ -953,7 +953,7 @@ public class PlanovaniBean implements Serializable {
         for (Object lt : qLast.getResultList()) {
             String jmeno = (String) lt;
             q2.setParameter(1, jmeno);
-            vratka.add(new Slouzici(jmeno, "", (String) q2.getSingleResult()));
+            vratka.add(new SlouziciPuvodni(jmeno, "", (String) q2.getSingleResult()));
         }
         text += String.format("...%d", vratka.size());
         return vratka;
@@ -994,8 +994,8 @@ public class PlanovaniBean implements Serializable {
         }
     }
 
-    private void vypisKolik(SluzboDenPuvodni vysledek, List<Slouzici> seznamSlouzicich) {
-        for (Slouzici ss : seznamSlouzicich) {
+    private void vypisKolik(SluzboDenPuvodni vysledek, List<SlouziciPuvodni> seznamSlouzicich) {
+        for (SlouziciPuvodni ss : seznamSlouzicich) {
             int[] pom = pocetSluzeb(ss.getJmeno(), vysledek);
             float zmena = ss.getPlanujSluzeb() - pom[0] - pom[1];
             if (Math.abs(pom[0] + pom[1] - ss.getPlanujSluzeb()) >= 1) {
@@ -1177,14 +1177,14 @@ public class PlanovaniBean implements Serializable {
             Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+/*
     private List<Sluzby> nactiMinulyMesic(GregorianCalendar gc) {
         Query q = em.createNamedQuery("Sluzby.konecMesice");
         q.setMaxResults(6);
         q.setParameter("datum", gc, TemporalType.DATE);
         text += "done";
         return q.getResultList();
-    }
+    }*/
 
     static public class ColumnModelvII implements Serializable {
 
@@ -1323,7 +1323,7 @@ public class PlanovaniBean implements Serializable {
             }
         }
 
-        void addLetajici(Slouzici sl, int dnuVmesici, int nepresunutelne) {
+        void addLetajici(SlouziciPuvodni sl, int dnuVmesici, int nepresunutelne) {
             if (!sl.getSkupina().equals(jmenoSkupiny)) {
                 throw new IllegalArgumentException(String.format("spatne jmeno skupiny > %s / %s", sl.getJmeno(), sl.getSkupina()));
             }

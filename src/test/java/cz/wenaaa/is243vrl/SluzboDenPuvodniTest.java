@@ -6,7 +6,7 @@
 package cz.wenaaa.is243vrl;
 
 import cz.wenaaa.is243vrl.SluzboDenPuvodni;
-import cz.wenaaa.is243vrl.Slouzici;
+import cz.wenaaa.is243vrl.SlouziciPuvodni;
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.wenaaa.is243vrl.entityClasses.Sluzby;
 import java.text.SimpleDateFormat;
@@ -39,9 +39,9 @@ public class SluzboDenPuvodniTest {
     private static final String ON = "ON";
     private SluzboDenPuvodni instance;
     @Mock
-    private Slouzici slouzici;
+    private SlouziciPuvodni slouzici;
     @Mock
-    private Slouzici slCizi;
+    private SlouziciPuvodni slCizi;
     @Mock
     private Sluzby sluzbaVlastni;
     @Mock
@@ -103,12 +103,12 @@ public class SluzboDenPuvodniTest {
      */
     @Test
     public void testGetSetSlouzici() {
-        Slouzici sl = new Slouzici(JA, LK, LK);
+        SlouziciPuvodni sl = new SlouziciPuvodni(JA, LK, LK);
         instance = new SluzboDenPuvodni(1, LK, null, sl);
-        Slouzici expResult = sl;
-        Slouzici result = instance.getSlouzici();
+        SlouziciPuvodni expResult = sl;
+        SlouziciPuvodni result = instance.getSlouzici();
         assertEquals(expResult, result);
-        sl = new Slouzici(JA + "on", LK, LK);
+        sl = new SlouziciPuvodni(JA + "on", LK, LK);
         instance.setSlouzici(sl);
         expResult = sl;
         result = instance.getSlouzici();

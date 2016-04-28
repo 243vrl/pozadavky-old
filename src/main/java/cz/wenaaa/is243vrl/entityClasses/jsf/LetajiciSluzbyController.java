@@ -4,6 +4,7 @@ import cz.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade;
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
+import cz.wenaaa.is243vrl.planovani.Slouzici;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -112,6 +113,16 @@ public class LetajiciSluzbyController implements Serializable  {
             vratka.add((String)pom);
         }
         return vratka;
+    }
+    
+    public List<Slouzici> getSlouziciPalubari(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findClassSlouziciPalubari", Slouzici.class);
+        return q.getResultList();
+    }
+    
+    public List<Slouzici> getSlouziciPiloti(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findClassSlouziciPiloti", Slouzici.class);
+        return q.getResultList();
     }
     
     public List<String> getPalubari(){

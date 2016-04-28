@@ -9,6 +9,7 @@ import cz.wenaaa.utils.AI.LowestValueSearchTree;
 import cz.wenaaa.utils.AI.ProcessInfo;
 import cz.wenaaa.utils.AI.NodeItemFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import org.junit.After;
@@ -17,7 +18,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Matchers;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
@@ -109,27 +113,27 @@ public class LowestValueSearchTreeTest {
         nextsF.add(J);
 
         when(nf.getInitialNodes()).thenReturn(initials);
-        when(nf.getNexts(A)).thenReturn(nextsA);
-        when(nf.getNexts(B)).thenReturn(nextsB);
-        when(nf.getNexts(C)).thenReturn(nextsC);
-        when(nf.getNexts(D)).thenReturn(new ArrayList());
-        when(nf.getNexts(E)).thenReturn(nextsE);
-        when(nf.getNexts(F)).thenReturn(nextsF);
-        when(nf.getNexts(G)).thenReturn(new ArrayList());
-        when(nf.getNexts(H)).thenReturn(new ArrayList());
-        when(nf.getNexts(I)).thenReturn(new ArrayList());
-        when(nf.getNexts(J)).thenReturn(new ArrayList());
+        when(nf.getNexts(Arrays.asList(A))).thenReturn(nextsA);
+        when(nf.getNexts(Arrays.asList(B))).thenReturn(nextsB);
+        when(nf.getNexts(Arrays.asList(A,C))).thenReturn(nextsC);
+        when(nf.getNexts(Arrays.asList(A,D))).thenReturn(new ArrayList());
+        when(nf.getNexts(Arrays.asList(B,E))).thenReturn(nextsE);
+        when(nf.getNexts(Arrays.asList(A,C,F))).thenReturn(nextsF);
+        when(nf.getNexts(Arrays.asList(B,E,G))).thenReturn(new ArrayList());
+        when(nf.getNexts(Arrays.asList(B,E,H))).thenReturn(new ArrayList());
+        when(nf.getNexts(Arrays.asList(B,E,I))).thenReturn(new ArrayList());
+        when(nf.getNexts(Arrays.asList(A,C,F,J))).thenReturn(new ArrayList());
 
-        when(nf.isAim(A)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(B)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(C)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(D)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(E)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(F)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(G)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(H)).thenReturn(Boolean.TRUE);
-        when(nf.isAim(I)).thenReturn(Boolean.FALSE);
-        when(nf.isAim(J)).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(A))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(B))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(A,C))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(A,D))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(B,E))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(A,C,F))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(B,E,G))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(B,E,H))).thenReturn(Boolean.TRUE);
+        when(nf.isAim(Arrays.asList(B,E,I))).thenReturn(Boolean.FALSE);
+        when(nf.isAim(Arrays.asList(A,C,F,J))).thenReturn(Boolean.FALSE);
 
         when(pi.getLock()).thenReturn(lock);
         Mockito.doAnswer(new Answer() {
@@ -141,23 +145,7 @@ public class LowestValueSearchTreeTest {
                 return null;
             }
         }).when(pi).setActualNodeItem(any());
-        /*
-         Mockito.doAnswer(new Answer() {
-         @Override
-         public Object answer(InvocationOnMock invocation) throws Throwable {
-         Object[] args = invocation.getArguments();
-         System.out.println(args[0]);
-         return null;
-         }
-         }).when(pi).setLeafsCount(anyLong());
-         Mockito.doAnswer(new Answer() {
-         @Override
-         public Object answer(InvocationOnMock invocation) throws Throwable {
-         Object[] args = invocation.getArguments();
-         System.out.println(args[0]);
-         return null;
-         }
-         }).when(pi).setLeafsEvolved(anyLong());*/
+        
 
         when(A.toString()).thenReturn("A");
         when(B.toString()).thenReturn("B");
@@ -185,7 +173,7 @@ public class LowestValueSearchTreeTest {
     @Test
     public void testCallBreadthFirstSameNodeValue() throws Exception {
 
-         when(nf.getNodeItemValue(any())).thenReturn(new Double(0));
+         when(nf.getPathValue(any())).thenReturn(new Double(0));
 
         LowestValueSearchTree instance = new LowestValueSearchTree(nf, BREADTH_FIRST);
         instance.setProcessInfo(pi);
@@ -217,7 +205,7 @@ public class LowestValueSearchTreeTest {
     @Test
     public void testCallDepthFirstSameNodeValue() throws Exception {
 
-        when(nf.getNodeItemValue(any())).thenReturn(new Double(0));
+        when(nf.getPathValue(any())).thenReturn(new Double(0));
 
         LowestValueSearchTree instance = new LowestValueSearchTree(nf, DEPTH_FIRST);
         instance.setProcessInfo(pi);
@@ -250,19 +238,19 @@ public class LowestValueSearchTreeTest {
     @Test
     public void testCallBreadthFirstDifferentNodeValue() throws Exception {
 
-        when(nf.getNodeItemValue(B)).thenReturn(new Double(0));
+        when(nf.getPathValue(Arrays.asList(B))).thenReturn(new Double(0));
         
-        when(nf.getNodeItemValue(A)).thenReturn(new Double(1));
-        when(nf.getNodeItemValue(D)).thenReturn(new Double(1));
-        when(nf.getNodeItemValue(E)).thenReturn(new Double(1));
+        when(nf.getPathValue(Arrays.asList(A))).thenReturn(new Double(1));
+        when(nf.getPathValue(Arrays.asList(A,D))).thenReturn(new Double(1));
+        when(nf.getPathValue(Arrays.asList(B,E))).thenReturn(new Double(1));
         
-        when(nf.getNodeItemValue(C)).thenReturn(new Double(2));
-        when(nf.getNodeItemValue(F)).thenReturn(new Double(2));
-        when(nf.getNodeItemValue(I)).thenReturn(new Double(2));
+        when(nf.getPathValue(Arrays.asList(A,C))).thenReturn(new Double(2));
+        when(nf.getPathValue(Arrays.asList(A,C,F))).thenReturn(new Double(2));
+        when(nf.getPathValue(Arrays.asList(B,E,I))).thenReturn(new Double(2));
         
-        when(nf.getNodeItemValue(G)).thenReturn(new Double(3));
-        when(nf.getNodeItemValue(H)).thenReturn(new Double(3));
-        when(nf.getNodeItemValue(J)).thenReturn(new Double(3));
+        when(nf.getPathValue(Arrays.asList(B,E,G))).thenReturn(new Double(3));
+        when(nf.getPathValue(Arrays.asList(B,E,H))).thenReturn(new Double(3));
+        when(nf.getPathValue(Arrays.asList(A,C,F,J))).thenReturn(new Double(3));
 
         LowestValueSearchTree instance = new LowestValueSearchTree(nf, BREADTH_FIRST);
         instance.setProcessInfo(pi);
@@ -295,19 +283,19 @@ public class LowestValueSearchTreeTest {
     @Test
     public void testCallDepthFirstDifferentNodeValue() throws Exception {
         
-        when(nf.getNodeItemValue(B)).thenReturn(new Double(0));
+        when(nf.getPathValue(Arrays.asList(B))).thenReturn(new Double(0));
         
-        when(nf.getNodeItemValue(A)).thenReturn(new Double(1));
-        when(nf.getNodeItemValue(D)).thenReturn(new Double(1));
-        when(nf.getNodeItemValue(E)).thenReturn(new Double(1));
+        when(nf.getPathValue(Arrays.asList(A))).thenReturn(new Double(1));
+        when(nf.getPathValue(Arrays.asList(A,D))).thenReturn(new Double(1));
+        when(nf.getPathValue(Arrays.asList(B,E))).thenReturn(new Double(1));
         
-        when(nf.getNodeItemValue(C)).thenReturn(new Double(2));
-        when(nf.getNodeItemValue(F)).thenReturn(new Double(2));
-        when(nf.getNodeItemValue(I)).thenReturn(new Double(2));
+        when(nf.getPathValue(Arrays.asList(A,C))).thenReturn(new Double(2));
+        when(nf.getPathValue(Arrays.asList(A,C,F))).thenReturn(new Double(2));
+        when(nf.getPathValue(Arrays.asList(B,E,I))).thenReturn(new Double(2));
         
-        when(nf.getNodeItemValue(G)).thenReturn(new Double(3));
-        when(nf.getNodeItemValue(H)).thenReturn(new Double(3));
-        when(nf.getNodeItemValue(J)).thenReturn(new Double(3));
+        when(nf.getPathValue(Arrays.asList(B,E,G))).thenReturn(new Double(3));
+        when(nf.getPathValue(Arrays.asList(B,E,H))).thenReturn(new Double(3));
+        when(nf.getPathValue(Arrays.asList(A,C,F,J))).thenReturn(new Double(3));
         
         LowestValueSearchTree instance = new LowestValueSearchTree(nf, DEPTH_FIRST);
         instance.setProcessInfo(pi);

@@ -254,6 +254,13 @@ public class SluzbyController implements Serializable, MyValueChangeListener, My
     public List<List<String>> getSluzbyPodlePalubaru() {
         return sluzbyPodlePalubaru;
     }*/
+    public List<Sluzby> nactiMinulyMesic(GregorianCalendar gc) {
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        Query q = getFacade().getEntityManager().createNamedQuery("Sluzby.konecMesice");
+        q.setMaxResults(6);
+        q.setParameter("datum", gc, TemporalType.DATE);
+        return q.getResultList();
+    }
     
     public void setSelected(Sluzby selected) {
         

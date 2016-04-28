@@ -13,7 +13,7 @@ import java.util.Objects;
  *
  * @author vena
  */
-public class Slouzici {
+public class SlouziciPuvodni {
     private final String jmeno;
     private long plneVolneDny;//pro binarni operace plny 1, volny 0
     private float maxPocetSluzeb;
@@ -40,7 +40,7 @@ public class Slouzici {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Slouzici other = (Slouzici) obj;
+        final SlouziciPuvodni other = (SlouziciPuvodni) obj;
         return Objects.equals(this.jmeno, other.jmeno);
     }
     
@@ -59,7 +59,7 @@ public class Slouzici {
         return vratka;
     }
     
-    public Slouzici(String jmeno, String skupina, String dojizdeni){
+    public SlouziciPuvodni(String jmeno, String skupina, String dojizdeni){
         this.jmeno = jmeno;
         this.skupina = skupina;
         this.dojizdeni = dojizdeni;
