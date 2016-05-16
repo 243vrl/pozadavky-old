@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
     @NamedQuery(name = "Users.findByPasswd", query = "SELECT u FROM Users u WHERE u.passwd = :passwd")})
 public class Users implements Serializable {
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
+    private LetajiciSluzby2 letajiciSluzby2;
     /*@OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
     private LetajiciSluzby2 letajiciSluzby2;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "users")
@@ -124,4 +126,12 @@ public class Users implements Serializable {
         this.letajiciSluzby2 = letajiciSluzby2;
     }
 */
+
+    public LetajiciSluzby2 getLetajiciSluzby2() {
+        return letajiciSluzby2;
+    }
+
+    public void setLetajiciSluzby2(LetajiciSluzby2 letajiciSluzby2) {
+        this.letajiciSluzby2 = letajiciSluzby2;
+    }
 }

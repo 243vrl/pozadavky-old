@@ -18,6 +18,7 @@ public class ProcessInfo<N> {
     private N actualNodeItem;
     private long leafsCount;
     private long leafsEvolved;
+    private long aktDepth;
     
     private Lock lock = new ReentrantLock();
 
@@ -43,6 +44,14 @@ public class ProcessInfo<N> {
         return leafsEvolved;
     }
 
+    public long getAktDepth() {
+        return aktDepth;
+    }
+
+    public void setAktDepth(long aktDepth) {
+        this.aktDepth = aktDepth;
+    }
+
     public void setActualNodeItem(N actualNodeItem) {
         this.actualNodeItem = actualNodeItem;
     }
@@ -58,6 +67,13 @@ public class ProcessInfo<N> {
     public Lock getLock() {
         return lock;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessInfo{" + "leafsCount=" + leafsCount + ", leafsEvolved=" + leafsEvolved + ", aktDepth=" + aktDepth + '}';
+    }
+
+    
     
     
     

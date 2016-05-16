@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TypyLetadel.findAll", query = "SELECT t FROM TypyLetadel t"),
     @NamedQuery(name = "TypyLetadel.findById", query = "SELECT t FROM TypyLetadel t WHERE t.id = :id")})
 public class TypyLetadel implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "typLetadla")
+    private Collection<PovoleniSluzeb> povoleniSluzebCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -78,6 +80,15 @@ public class TypyLetadel implements Serializable {
     @Override
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.TypyLetadel[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<PovoleniSluzeb> getPovoleniSluzebCollection() {
+        return povoleniSluzebCollection;
+    }
+
+    public void setPovoleniSluzebCollection(Collection<PovoleniSluzeb> povoleniSluzebCollection) {
+        this.povoleniSluzebCollection = povoleniSluzebCollection;
     }
 
 }

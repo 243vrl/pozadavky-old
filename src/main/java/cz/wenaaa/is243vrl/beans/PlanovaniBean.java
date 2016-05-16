@@ -13,7 +13,7 @@ import static cz.wenaaa.is243vrl.TypyDne.PATEK;
 import static cz.wenaaa.is243vrl.TypyDne.SOBOTA;
 import static cz.wenaaa.is243vrl.TypyDne.VSEDNI_SVATEK;
 import cz.wenaaa.is243vrl.entityClasses.Sluzby;
-import cz.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
+import cz.wenaaa.is243vrl.controllers.LetajiciSluzbyController;
 import cz.wenaaa.utils.Kalendar;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -251,7 +251,7 @@ public class PlanovaniBean implements Serializable {
         navrhSluzeb = null;
         text = String.format("Uzaviram db...");
         //uzavriDB();
-        text = text + String.format("\nNačítám seznam sloužících...")
+        text = text + String.format("\nNačítám seznam sloužících...");
         List<SlouziciPuvodni> neplanovani = nactiNeplanovane();
         List<SlouziciPuvodni> seznamSlouzicich = nactiSlouzici();
         try {

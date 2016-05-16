@@ -1,14 +1,11 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
-import cz.wenaaa.is243vrl.beans.LoggedBean;
-import cz.wenaaa.is243vrl.entityClasses.Zpravy;
+import cz.wenaaa.is243vrl.entityClasses.Roles;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.ZpravyFacade;
+import cz.wenaaa.is243vrl.beans.entityClasses.RolesFacade;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -21,29 +18,24 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.inject.Inject;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
 
-@Named("zpravyController")
+@Named("rolesController")
 @SessionScoped
-public class ZpravyController implements Serializable {
+public class RolesController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.ZpravyFacade ejbFacade;
-    private List<Zpravy> items = null;
-    private Zpravy selected;
-    @Inject
-    LoggedBean lb;
+    private cz.wenaaa.is243vrl.beans.entityClasses.RolesFacade ejbFacade;
+    private List<Roles> items = null;
+    private Roles selected;
 
-    public ZpravyController() {
+    public RolesController() {
     }
 
-    public Zpravy getSelected() {
+    public Roles getSelected() {
         return selected;
     }
 
-    public void setSelected(Zpravy selected) {
+    public void setSelected(Roles selected) {
         this.selected = selected;
     }
 
@@ -53,60 +45,42 @@ public class ZpravyController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private ZpravyFacade getFacade() {
+    private RolesFacade getFacade() {
         return ejbFacade;
     }
 
-    public Zpravy prepareCreate() {
-        selected = new Zpravy();
+    public Roles prepareCreate() {
+        selected = new Roles();
         initializeEmbeddableKey();
-        selected.setPodal(lb.getLoginName());
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/ZpravyBundle").getString("ZpravyCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("RolesCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/ZpravyBundle").getString("ZpravyUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("RolesUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/ZpravyBundle").getString("ZpravyDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("RolesDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<Zpravy> getItems() {
+    public List<Roles> getItems() {
         if (items == null) {
-            Query q = getFacade().getEntityManager().createNamedQuery("Zpravy.findAll");
-            items = q.getResultList();
+            items = getFacade().findAll();
         }
         return items;
     }
-    
-    public List<Zpravy> getNaMesic(GregorianCalendar gc){
-        List<Zpravy> vratka;
-        GregorianCalendar pomgc = new GregorianCalendar();
-        GregorianCalendar pomgc2 = new GregorianCalendar();
-        pomgc.set(Calendar.DAY_OF_MONTH, 1);
-        pomgc2.set(Calendar.DAY_OF_MONTH, 1);
-        pomgc.set(Calendar.MONTH, gc.get(Calendar.MONTH));
-        pomgc2.set(Calendar.MONTH, gc.get(Calendar.MONTH));
-        pomgc2.add(Calendar.MONTH, 1);
-        pomgc2.add(Calendar.DAY_OF_MONTH, -1);
-        Query q = getFacade().getEntityManager().createNamedQuery("Zpravy.naMesic");
-        q.setParameter("od", pomgc, TemporalType.DATE);
-        q.setParameter("do", pomgc2, TemporalType.DATE);
-        vratka = q.getResultList();
-        return vratka;
-    }
+
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
             setEmbeddableKeys();
@@ -126,38 +100,38 @@ public class ZpravyController implements Serializable {
                 if (msg.length() > 0) {
                     JsfUtil.addErrorMessage(msg);
                 } else {
-                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/ZpravyBundle").getString("PersistenceErrorOccured"));
+                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
                 }
             } catch (Exception ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/ZpravyBundle").getString("PersistenceErrorOccured"));
+                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             }
         }
     }
 
-    public Zpravy getZpravy(java.lang.Integer id) {
+    public Roles getRoles(java.lang.Integer id) {
         return getFacade().find(id);
     }
 
-    public List<Zpravy> getItemsAvailableSelectMany() {
+    public List<Roles> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<Zpravy> getItemsAvailableSelectOne() {
+    public List<Roles> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = Zpravy.class)
-    public static class ZpravyControllerConverter implements Converter {
+    @FacesConverter(forClass = Roles.class)
+    public static class RolesControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            ZpravyController controller = (ZpravyController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "zpravyController");
-            return controller.getZpravy(getKey(value));
+            RolesController controller = (RolesController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "rolesController");
+            return controller.getRoles(getKey(value));
         }
 
         java.lang.Integer getKey(String value) {
@@ -177,11 +151,11 @@ public class ZpravyController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Zpravy) {
-                Zpravy o = (Zpravy) object;
-                return getStringKey(o.getId());
+            if (object instanceof Roles) {
+                Roles o = (Roles) object;
+                return getStringKey(o.getIdRoles());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Zpravy.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Roles.class.getName()});
                 return null;
             }
         }

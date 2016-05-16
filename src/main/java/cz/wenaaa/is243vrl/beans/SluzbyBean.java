@@ -6,7 +6,7 @@
 package cz.wenaaa.is243vrl.beans;
 
 import cz.wenaaa.is243vrl.entityClasses.Sluzby;
-import cz.wenaaa.is243vrl.entityClasses.jsf.SluzbyController;
+import cz.wenaaa.is243vrl.controllers.SluzbyController;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;

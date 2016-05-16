@@ -6,9 +6,11 @@
 package cz.wenaaa.is243vrl.beans.entityClasses;
 
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,4 +30,12 @@ public class LetajiciSluzby2Facade extends AbstractFacade<LetajiciSluzby2> {
         super(LetajiciSluzby2.class);
     }
     
+    public List<LetajiciSluzby2> getPiloti(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findPiloti");
+        return q.getResultList();
+    }
+    public List<LetajiciSluzby2> getPalubaci(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findPalubari");
+        return q.getResultList();
+    }
 }

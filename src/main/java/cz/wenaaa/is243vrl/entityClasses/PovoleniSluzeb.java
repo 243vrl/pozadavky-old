@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "PovoleniSluzeb.findAll", query = "SELECT p FROM PovoleniSluzeb p"),
-    @NamedQuery(name = "PovoleniSluzeb.findByLetajici", query = "SELECT p FROM PovoleniSluzeb p WHERE p.letajici = :letajici"),
+    @NamedQuery(name = "PovoleniSluzeb.findByJmeno", query = "SELECT p FROM PovoleniSluzeb p WHERE p.letajici.letajici = :jmeno AND p.povoleno = :povoleno"),
     @NamedQuery(name = "PovoleniSluzeb.findByPovoleno", query = "SELECT p FROM PovoleniSluzeb p WHERE p.povoleno = :povoleno"),
     @NamedQuery(name = "PovoleniSluzeb.findByIdPovoleniSluzeb", query = "SELECT p FROM PovoleniSluzeb p WHERE p.idPovoleniSluzeb = :idPovoleniSluzeb")})
 public class PovoleniSluzeb implements Serializable {
@@ -43,12 +43,15 @@ public class PovoleniSluzeb implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_povoleni_sluzeb")
     private Integer idPovoleniSluzeb;
-    @Column(name = "letajici")
-    private String letajici;
-    @Column(name = "typ_letadla")
-    private String typLetadla;
-    @Column(name = "typ_sluzby")
-    private String typSluzby;
+    @JoinColumn(name = "letajici", referencedColumnName = "letajici")
+    @ManyToOne(optional = false)
+    private LetajiciSluzby2 letajici;
+    @JoinColumn(name = "typ_letadla", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private TypyLetadel typLetadla;
+    @JoinColumn(name = "typ_sluzby", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private TypySluzeb typSluzby;
 
     public PovoleniSluzeb() {
     }
@@ -78,27 +81,27 @@ public class PovoleniSluzeb implements Serializable {
         this.idPovoleniSluzeb = idPovoleniSluzeb;
     }
 
-    public String getLetajici() {
+    public LetajiciSluzby2 getLetajici() {
         return letajici;
     }
 
-    public void setLetajici(String letajici) {
+    public void setLetajici(LetajiciSluzby2 letajici) {
         this.letajici = letajici;
     }
 
-    public String getTypLetadla() {
+    public TypyLetadel getTypLetadla() {
         return typLetadla;
     }
 
-    public void setTypLetadla(String typLetadla) {
+    public void setTypLetadla(TypyLetadel typLetadla) {
         this.typLetadla = typLetadla;
     }
 
-    public String getTypSluzby() {
+    public TypySluzeb getTypSluzby() {
         return typSluzby;
     }
 
-    public void setTypSluzby(String typSluzby) {
+    public void setTypSluzby(TypySluzeb typSluzby) {
         this.typSluzby = typSluzby;
     }
 
@@ -124,7 +127,7 @@ public class PovoleniSluzeb implements Serializable {
 
     @Override
     public String toString() {
-        return "cz.seznam.wenaaa.is243vrl.entityClasses.PovoleniSluzeb[ idPovoleniSluzeb=" + idPovoleniSluzeb + " ]";
+        return "cz.wenaaa.is243vrl.entityClasses.PovoleniSluzeb[ idPovoleniSluzeb=" + idPovoleniSluzeb + " ]";
     }
     
 }

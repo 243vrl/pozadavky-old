@@ -5,7 +5,7 @@
  */
 package cz.wenaaa.is243vrl.beans;
 
-import cz.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
+import cz.wenaaa.is243vrl.controllers.LetajiciSluzbyController;
 import cz.wenaaa.utils.HashedPasswordGenerator;
 import java.io.IOException;
 import java.io.Serializable;

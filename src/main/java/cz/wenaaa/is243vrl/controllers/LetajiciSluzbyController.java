@@ -1,4 +1,4 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
 import cz.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade;
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
@@ -115,15 +115,7 @@ public class LetajiciSluzbyController implements Serializable  {
         return vratka;
     }
     
-    public List<Slouzici> getSlouziciPalubari(){
-        Query q = em.createNamedQuery("LetajiciSluzby.findClassSlouziciPalubari", Slouzici.class);
-        return q.getResultList();
-    }
     
-    public List<Slouzici> getSlouziciPiloti(){
-        Query q = em.createNamedQuery("LetajiciSluzby.findClassSlouziciPiloti", Slouzici.class);
-        return q.getResultList();
-    }
     
     public List<String> getPalubari(){
         List<String> vratka = new ArrayList<>();

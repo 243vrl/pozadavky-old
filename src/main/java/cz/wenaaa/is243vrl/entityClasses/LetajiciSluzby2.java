@@ -21,6 +21,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import cz.wenaaa.is243vrl.planovani.Slouzici;
+import java.util.Collection;
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 /**
  *
  * @author vena
@@ -29,8 +33,6 @@ import cz.wenaaa.is243vrl.planovani.Slouzici;
 @Table(name = "letajici_sluzby2")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "LetajiciSluzby.findClassSlouziciPalubari", query = "SELECT new Slouzici(l.letajici, l.dojizdeni) FROM LetajiciSluzby2 l  WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.poradi ASC"),
-    @NamedQuery(name = "LetajiciSluzby.findClassSlouziciPiloti", query = "SELECT new Slouzici(l.letajici, l.dojizdeni) FROM LetajiciSluzby2 l  WHERE l.poradi < 1000 ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findAll", query = "SELECT l FROM LetajiciSluzby2 l  ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findPiloti", query = "SELECT l FROM LetajiciSluzby2 l WHERE l.poradi < 1000 ORDER BY l.poradi ASC"),
     @NamedQuery(name = "LetajiciSluzby.findPalubari", query = "SELECT l FROM LetajiciSluzby2 l WHERE l.poradi > 1000 AND l.poradi < 10000 ORDER BY l.poradi ASC"),
@@ -45,6 +47,8 @@ import cz.wenaaa.is243vrl.planovani.Slouzici;
     @NamedQuery(name = "LetajiciSluzby.findByPocetPatku", query = "SELECT l FROM LetajiciSluzby2 l WHERE l.pocetPatku = :pocetPatku"),
     @NamedQuery(name = "LetajiciSluzby.findByDoLiniSvozem", query = "SELECT l FROM LetajiciSluzby2 l WHERE l.doLiniSvozem = :doLiniSvozem")})
 public class LetajiciSluzby2 implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "letajici")
+    private Collection<PovoleniSluzeb> povoleniSluzebCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -271,6 +275,15 @@ public class LetajiciSluzby2 implements Serializable {
     public String toString() {
         //return "cz.seznam.wenaaa.is243vrl.entityClasses.LetajiciSluzby2[ letajici=" + letajici + " ]";
         return letajici;
+    }
+
+    @XmlTransient
+    public Collection<PovoleniSluzeb> getPovoleniSluzebCollection() {
+        return povoleniSluzebCollection;
+    }
+
+    public void setPovoleniSluzebCollection(Collection<PovoleniSluzeb> povoleniSluzebCollection) {
+        this.povoleniSluzebCollection = povoleniSluzebCollection;
     }
     
 }

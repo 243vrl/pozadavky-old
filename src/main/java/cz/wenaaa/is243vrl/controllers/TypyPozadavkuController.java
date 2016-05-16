@@ -1,9 +1,9 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
-import cz.wenaaa.is243vrl.entityClasses.Roles;
+import cz.wenaaa.is243vrl.entityClasses.TypyPozadavku;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.RolesFacade;
+import cz.wenaaa.is243vrl.beans.entityClasses.TypyPozadavkuFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,23 +19,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@Named("rolesController")
+@Named("typyPozadavkuController")
 @SessionScoped
-public class RolesController implements Serializable {
+public class TypyPozadavkuController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.RolesFacade ejbFacade;
-    private List<Roles> items = null;
-    private Roles selected;
+    private cz.wenaaa.is243vrl.beans.entityClasses.TypyPozadavkuFacade ejbFacade;
+    private List<TypyPozadavku> items = null;
+    private TypyPozadavku selected;
 
-    public RolesController() {
+    public TypyPozadavkuController() {
     }
 
-    public Roles getSelected() {
+    public TypyPozadavku getSelected() {
         return selected;
     }
 
-    public void setSelected(Roles selected) {
+    public void setSelected(TypyPozadavku selected) {
         this.selected = selected;
     }
 
@@ -45,36 +45,36 @@ public class RolesController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private RolesFacade getFacade() {
+    private TypyPozadavkuFacade getFacade() {
         return ejbFacade;
     }
 
-    public Roles prepareCreate() {
-        selected = new Roles();
+    public TypyPozadavku prepareCreate() {
+        selected = new TypyPozadavku();
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("RolesCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("TypyPozadavkuCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("RolesUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("TypyPozadavkuUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("RolesDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("TypyPozadavkuDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<Roles> getItems() {
+    public List<TypyPozadavku> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -109,38 +109,38 @@ public class RolesController implements Serializable {
         }
     }
 
-    public Roles getRoles(java.lang.Integer id) {
+    public TypyPozadavku getTypyPozadavku(java.lang.String id) {
         return getFacade().find(id);
     }
 
-    public List<Roles> getItemsAvailableSelectMany() {
+    public List<TypyPozadavku> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<Roles> getItemsAvailableSelectOne() {
+    public List<TypyPozadavku> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = Roles.class)
-    public static class RolesControllerConverter implements Converter {
+    @FacesConverter(forClass = TypyPozadavku.class)
+    public static class TypyPozadavkuControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            RolesController controller = (RolesController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "rolesController");
-            return controller.getRoles(getKey(value));
+            TypyPozadavkuController controller = (TypyPozadavkuController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "typyPozadavkuController");
+            return controller.getTypyPozadavku(getKey(value));
         }
 
-        java.lang.Integer getKey(String value) {
-            java.lang.Integer key;
-            key = Integer.valueOf(value);
+        java.lang.String getKey(String value) {
+            java.lang.String key;
+            key = value;
             return key;
         }
 
-        String getStringKey(java.lang.Integer value) {
+        String getStringKey(java.lang.String value) {
             StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
@@ -151,11 +151,11 @@ public class RolesController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Roles) {
-                Roles o = (Roles) object;
-                return getStringKey(o.getIdRoles());
+            if (object instanceof TypyPozadavku) {
+                TypyPozadavku o = (TypyPozadavku) object;
+                return getStringKey(o.getPozadavek());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Roles.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), TypyPozadavku.class.getName()});
                 return null;
             }
         }

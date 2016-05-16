@@ -1,9 +1,10 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
-import cz.wenaaa.is243vrl.entityClasses.TypyRoles;
+import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.TypyRolesFacade;
+import cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade;
+import cz.wenaaa.utils.Kalendar;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,23 +20,26 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@Named("typyRolesController")
+
+@Named("pozadavkyController")
 @SessionScoped
-public class TypyRolesController implements Serializable {
+public class PozadavkyController implements Serializable {
 
-    @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.TypyRolesFacade ejbFacade;
-    private List<TypyRoles> items = null;
-    private TypyRoles selected;
 
-    public TypyRolesController() {
+    @EJB private cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade ejbFacade;
+    private List<Pozadavky> items = null;
+    private Pozadavky selected;
+    
+    
+
+    public PozadavkyController() {
     }
 
-    public TypyRoles getSelected() {
+    public Pozadavky getSelected() {
         return selected;
     }
 
-    public void setSelected(TypyRoles selected) {
+    public void setSelected(Pozadavky selected) {
         this.selected = selected;
     }
 
@@ -45,40 +49,44 @@ public class TypyRolesController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private TypyRolesFacade getFacade() {
+    private PozadavkyFacade getFacade() {
         return ejbFacade;
     }
 
-    public TypyRoles prepareCreate() {
-        selected = new TypyRoles();
+    public Pozadavky prepareCreate() {
+        selected = new Pozadavky();
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("TypyRolesCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("PozadavkyCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("TypyRolesUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("PozadavkyUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("TypyRolesDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("PozadavkyDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<TypyRoles> getItems() {
+    public List<Pozadavky> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
         return items;
+    }
+    
+    public int dnuVmesici(int rok, int mesic){
+        return Kalendar.dnuVMesici(rok, mesic);
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -109,38 +117,38 @@ public class TypyRolesController implements Serializable {
         }
     }
 
-    public TypyRoles getTypyRoles(java.lang.String id) {
+    public Pozadavky getPozadavky(java.lang.Integer id) {
         return getFacade().find(id);
     }
 
-    public List<TypyRoles> getItemsAvailableSelectMany() {
+    public List<Pozadavky> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<TypyRoles> getItemsAvailableSelectOne() {
+    public List<Pozadavky> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = TypyRoles.class)
-    public static class TypyRolesControllerConverter implements Converter {
+    @FacesConverter(forClass=Pozadavky.class)
+    public static class PozadavkyControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            TypyRolesController controller = (TypyRolesController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "typyRolesController");
-            return controller.getTypyRoles(getKey(value));
+            PozadavkyController controller = (PozadavkyController)facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "pozadavkyController");
+            return controller.getPozadavky(getKey(value));
         }
 
-        java.lang.String getKey(String value) {
-            java.lang.String key;
-            key = value;
+        java.lang.Integer getKey(String value) {
+            java.lang.Integer key;
+            key = Integer.valueOf(value);
             return key;
         }
 
-        String getStringKey(java.lang.String value) {
+        String getStringKey(java.lang.Integer value) {
             StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
@@ -151,11 +159,11 @@ public class TypyRolesController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof TypyRoles) {
-                TypyRoles o = (TypyRoles) object;
-                return getStringKey(o.getId());
+            if (object instanceof Pozadavky) {
+                Pozadavky o = (Pozadavky) object;
+                return getStringKey(o.getIdPozadavky());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), TypyRoles.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Pozadavky.class.getName()});
                 return null;
             }
         }

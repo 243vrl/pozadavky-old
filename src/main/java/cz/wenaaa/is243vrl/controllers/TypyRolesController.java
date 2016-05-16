@@ -1,9 +1,9 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
-import cz.wenaaa.is243vrl.entityClasses.PovoleniSluzeb;
+import cz.wenaaa.is243vrl.entityClasses.TypyRoles;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade;
+import cz.wenaaa.is243vrl.beans.entityClasses.TypyRolesFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,23 +19,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@Named("povoleniSluzebController")
+@Named("typyRolesController")
 @SessionScoped
-public class PovoleniSluzebController implements Serializable {
+public class TypyRolesController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade ejbFacade;
-    private List<PovoleniSluzeb> items = null;
-    private PovoleniSluzeb selected;
+    private cz.wenaaa.is243vrl.beans.entityClasses.TypyRolesFacade ejbFacade;
+    private List<TypyRoles> items = null;
+    private TypyRoles selected;
 
-    public PovoleniSluzebController() {
+    public TypyRolesController() {
     }
 
-    public PovoleniSluzeb getSelected() {
+    public TypyRoles getSelected() {
         return selected;
     }
 
-    public void setSelected(PovoleniSluzeb selected) {
+    public void setSelected(TypyRoles selected) {
         this.selected = selected;
     }
 
@@ -45,36 +45,36 @@ public class PovoleniSluzebController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private PovoleniSluzebFacade getFacade() {
+    private TypyRolesFacade getFacade() {
         return ejbFacade;
     }
 
-    public PovoleniSluzeb prepareCreate() {
-        selected = new PovoleniSluzeb();
+    public TypyRoles prepareCreate() {
+        selected = new TypyRoles();
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("PovoleniSluzebCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("TypyRolesCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("PovoleniSluzebUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("TypyRolesUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("PovoleniSluzebDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("TypyRolesDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<PovoleniSluzeb> getItems() {
+    public List<TypyRoles> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -109,38 +109,38 @@ public class PovoleniSluzebController implements Serializable {
         }
     }
 
-    public PovoleniSluzeb getPovoleniSluzeb(java.lang.Integer id) {
+    public TypyRoles getTypyRoles(java.lang.String id) {
         return getFacade().find(id);
     }
 
-    public List<PovoleniSluzeb> getItemsAvailableSelectMany() {
+    public List<TypyRoles> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<PovoleniSluzeb> getItemsAvailableSelectOne() {
+    public List<TypyRoles> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = PovoleniSluzeb.class)
-    public static class PovoleniSluzebControllerConverter implements Converter {
+    @FacesConverter(forClass = TypyRoles.class)
+    public static class TypyRolesControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            PovoleniSluzebController controller = (PovoleniSluzebController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "povoleniSluzebController");
-            return controller.getPovoleniSluzeb(getKey(value));
+            TypyRolesController controller = (TypyRolesController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "typyRolesController");
+            return controller.getTypyRoles(getKey(value));
         }
 
-        java.lang.Integer getKey(String value) {
-            java.lang.Integer key;
-            key = Integer.valueOf(value);
+        java.lang.String getKey(String value) {
+            java.lang.String key;
+            key = value;
             return key;
         }
 
-        String getStringKey(java.lang.Integer value) {
+        String getStringKey(java.lang.String value) {
             StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
@@ -151,11 +151,11 @@ public class PovoleniSluzebController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof PovoleniSluzeb) {
-                PovoleniSluzeb o = (PovoleniSluzeb) object;
-                return getStringKey(o.getIdPovoleniSluzeb());
+            if (object instanceof TypyRoles) {
+                TypyRoles o = (TypyRoles) object;
+                return getStringKey(o.getId());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), PovoleniSluzeb.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), TypyRoles.class.getName()});
                 return null;
             }
         }

@@ -6,9 +6,14 @@
 package cz.wenaaa.is243vrl.beans.entityClasses;
 
 import cz.wenaaa.is243vrl.entityClasses.Sluzby;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -28,4 +33,11 @@ public class SluzbyFacade extends AbstractFacade<Sluzby> {
         super(Sluzby.class);
     }
     
+    public List<Sluzby> nactiMinulyMesic(GregorianCalendar gc) {
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        Query q = getEntityManager().createNamedQuery("Sluzby.konecMesice");
+        q.setMaxResults(6);
+        q.setParameter("datum", gc, TemporalType.DATE);
+        return q.getResultList();
+    }
 }

@@ -6,9 +6,14 @@
 package cz.wenaaa.is243vrl.beans.entityClasses;
 
 import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -28,4 +33,29 @@ public class PozadavkyFacade extends AbstractFacade<Pozadavky> {
         super(Pozadavky.class);
     }
     
+    public List<Pozadavky> pozadavkyNaMesic(String letajici, GregorianCalendar gc){
+        Query q = getEntityManager().createNamedQuery("Pozadavky.naMesicProLetajiciho");
+        q.setParameter("letajici", letajici);
+        q.setParameter("ua", true);
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        GregorianCalendar pomgc = (GregorianCalendar)gc.clone();
+        pomgc.add(Calendar.MONTH, 1);
+        pomgc.add(Calendar.DAY_OF_MONTH, -1);
+        q.setParameter("od", gc, TemporalType.DATE);
+        q.setParameter("do", pomgc, TemporalType.DATE);
+        return q.getResultList();
+    }
+    
+    public List<Pozadavky> pozadavkyNaDen(GregorianCalendar gc){
+        Query q = getEntityManager().createNamedQuery("Pozadavky.findByDatum");
+        q.setParameter("datum", gc, TemporalType.DATE);
+        return q.getResultList();
+    }
+    
+    public List<Pozadavky> findByDenTyp(GregorianCalendar gc, String pozadavek){
+        Query q = getEntityManager().createNamedQuery("Pozadavky.findByDatumAndPozadavek");
+        q.setParameter("datum", gc, TemporalType.DATE);
+        q.setParameter("pozadavek", pozadavek);
+        return q.getResultList();
+    }
 }

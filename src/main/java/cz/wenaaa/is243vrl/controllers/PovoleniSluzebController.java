@@ -1,10 +1,9 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
-import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
+import cz.wenaaa.is243vrl.entityClasses.PovoleniSluzeb;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade;
-import cz.wenaaa.utils.Kalendar;
+import cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,26 +19,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-
-@Named("pozadavkyController")
+@Named("povoleniSluzebController")
 @SessionScoped
-public class PozadavkyController implements Serializable {
+public class PovoleniSluzebController implements Serializable {
 
+    @EJB
+    private cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade ejbFacade;
+    private List<PovoleniSluzeb> items = null;
+    private PovoleniSluzeb selected;
 
-    @EJB private cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade ejbFacade;
-    private List<Pozadavky> items = null;
-    private Pozadavky selected;
-    
-    
-
-    public PozadavkyController() {
+    public PovoleniSluzebController() {
     }
 
-    public Pozadavky getSelected() {
+    public PovoleniSluzeb getSelected() {
         return selected;
     }
 
-    public void setSelected(Pozadavky selected) {
+    public void setSelected(PovoleniSluzeb selected) {
         this.selected = selected;
     }
 
@@ -49,44 +45,40 @@ public class PozadavkyController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private PozadavkyFacade getFacade() {
+    private PovoleniSluzebFacade getFacade() {
         return ejbFacade;
     }
 
-    public Pozadavky prepareCreate() {
-        selected = new Pozadavky();
+    public PovoleniSluzeb prepareCreate() {
+        selected = new PovoleniSluzeb();
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("PozadavkyCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("PovoleniSluzebCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("PozadavkyUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("PovoleniSluzebUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("PozadavkyDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("PovoleniSluzebDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<Pozadavky> getItems() {
+    public List<PovoleniSluzeb> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
         return items;
-    }
-    
-    public int dnuVmesici(int rok, int mesic){
-        return Kalendar.dnuVMesici(rok, mesic);
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -117,29 +109,29 @@ public class PozadavkyController implements Serializable {
         }
     }
 
-    public Pozadavky getPozadavky(java.lang.Integer id) {
+    public PovoleniSluzeb getPovoleniSluzeb(java.lang.Integer id) {
         return getFacade().find(id);
     }
 
-    public List<Pozadavky> getItemsAvailableSelectMany() {
+    public List<PovoleniSluzeb> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<Pozadavky> getItemsAvailableSelectOne() {
+    public List<PovoleniSluzeb> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass=Pozadavky.class)
-    public static class PozadavkyControllerConverter implements Converter {
+    @FacesConverter(forClass = PovoleniSluzeb.class)
+    public static class PovoleniSluzebControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            PozadavkyController controller = (PozadavkyController)facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "pozadavkyController");
-            return controller.getPozadavky(getKey(value));
+            PovoleniSluzebController controller = (PovoleniSluzebController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "povoleniSluzebController");
+            return controller.getPovoleniSluzeb(getKey(value));
         }
 
         java.lang.Integer getKey(String value) {
@@ -159,11 +151,11 @@ public class PozadavkyController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Pozadavky) {
-                Pozadavky o = (Pozadavky) object;
-                return getStringKey(o.getIdPozadavky());
+            if (object instanceof PovoleniSluzeb) {
+                PovoleniSluzeb o = (PovoleniSluzeb) object;
+                return getStringKey(o.getIdPovoleniSluzeb());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Pozadavky.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), PovoleniSluzeb.class.getName()});
                 return null;
             }
         }

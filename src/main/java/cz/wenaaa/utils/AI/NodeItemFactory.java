@@ -21,4 +21,8 @@ public interface NodeItemFactory<N> {
     boolean isAim(List<N> actualPath);
     
     double getPathValue(List<N> actualPath);
+    
+    double getPathValueForReducing(ComparatorTypes ct, List<N> path);
+    
+    double getRefValueForReducing(ComparatorTypes ct);
 }

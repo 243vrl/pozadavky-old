@@ -1,4 +1,4 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
 import cz.wenaaa.is243vrl.beans.MyActionEvent;
 import cz.wenaaa.is243vrl.beans.MyActionListener;

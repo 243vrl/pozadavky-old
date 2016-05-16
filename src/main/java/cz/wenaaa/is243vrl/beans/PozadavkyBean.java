@@ -6,8 +6,8 @@
 package cz.wenaaa.is243vrl.beans;
 
 import cz.wenaaa.is243vrl.entityClasses.Zpravy;
-import cz.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
-import cz.wenaaa.is243vrl.entityClasses.jsf.ZpravyController;
+import cz.wenaaa.is243vrl.controllers.LetajiciSluzbyController;
+import cz.wenaaa.is243vrl.controllers.ZpravyController;
 import cz.wenaaa.utils.Kalendar;
 import java.io.IOException;
 import java.io.Serializable;

@@ -6,7 +6,7 @@
 package cz.wenaaa.is243vrl;
 
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
-import cz.wenaaa.is243vrl.entityClasses.jsf.LetajiciSluzbyController;
+import cz.wenaaa.is243vrl.controllers.LetajiciSluzbyController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.component.UIComponent;

@@ -1,4 +1,4 @@
-package cz.wenaaa.is243vrl.entityClasses.jsf;
+package cz.wenaaa.is243vrl.controllers;
 
 import cz.wenaaa.is243vrl.entityClasses.SchemataDojizdeni;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
