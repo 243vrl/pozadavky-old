@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
-import cz.wenaaa.is243vrl.entityClasses.PrumeryH120;
+import cz.wenaaa.is243vrl.entityClasses.Roles;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author vena
  */
 @Stateless
-public class PrumeryH120Facade extends AbstractFacade<PrumeryH120> {
+public class RolesFacade extends AbstractFacade<Roles> {
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
 
@@ -24,8 +24,8 @@ public class PrumeryH120Facade extends AbstractFacade<PrumeryH120> {
         return em;
     }
 
-    public PrumeryH120Facade() {
-        super(PrumeryH120.class);
+    public RolesFacade() {
+        super(Roles.class);
     }
     
 }

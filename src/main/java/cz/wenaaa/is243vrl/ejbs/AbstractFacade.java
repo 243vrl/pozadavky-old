@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
 import java.util.List;
 import javax.persistence.EntityManager;

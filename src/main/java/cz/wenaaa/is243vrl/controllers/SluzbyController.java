@@ -1,5 +1,6 @@
 package cz.wenaaa.is243vrl.controllers;
 
+import cz.wenaaa.is243vrl.TypySluzby;
 import cz.wenaaa.is243vrl.beans.MyActionEvent;
 import cz.wenaaa.is243vrl.beans.MyActionListener;
 import cz.wenaaa.is243vrl.beans.PlanovaniBean;
@@ -8,7 +9,7 @@ import cz.wenaaa.is243vrl.beans.ViewListenerFactory;
 import cz.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade;
+import cz.wenaaa.is243vrl.ejbs.SluzbyFacade;
 import cz.wenaaa.is243vrl.entityClasses.ModelListenerFactory;
 import cz.wenaaa.is243vrl.entityClasses.MyValueChangeEvent;
 import cz.wenaaa.is243vrl.entityClasses.MyValueChangeListener;
@@ -37,6 +38,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import org.primefaces.event.SelectEvent;
@@ -47,7 +51,7 @@ import org.primefaces.event.UnselectEvent;
 public class SluzbyController implements Serializable, MyValueChangeListener, MyActionListener {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.SluzbyFacade ejbFacade;
     private Sluzby selected;
     private GregorianCalendar gc;
     private List<Sluzby> naMesic;
@@ -228,7 +232,7 @@ public class SluzbyController implements Serializable, MyValueChangeListener, My
                 System.out.println("spatny typ sluzby.");
                 return;
         }
-        pb.ulozSluzbu(pomGC, typSluzby, newVal);
+        ejbFacade.ulozSluzbu(pomGC, TypySluzby.valueOf(typSluzby), newVal);
         zmeny += String.format("%d. %s %s: %s -> %s\n", pomGC.get(Calendar.DAY_OF_MONTH), proMesic(), typSluzby, oldVal, newVal);
         svche = null;
         nactiNaMesic();
@@ -238,7 +242,7 @@ public class SluzbyController implements Serializable, MyValueChangeListener, My
     public Sluzby getSelected() {
         return selected;
     }
-
+    
     public void setZmeny(String zmeny) {
         this.zmeny = zmeny;
     }

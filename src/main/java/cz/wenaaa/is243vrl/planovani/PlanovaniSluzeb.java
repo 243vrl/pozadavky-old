@@ -7,10 +7,11 @@ package cz.wenaaa.is243vrl.planovani;
 
 import cz.wenaaa.is243vrl.TypyDne;
 import cz.wenaaa.is243vrl.TypySluzby;
-import cz.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade;
-import cz.wenaaa.is243vrl.beans.entityClasses.PomtabFacade;
-import cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade;
-import cz.wenaaa.is243vrl.beans.entityClasses.SluzbyFacade;
+import cz.wenaaa.is243vrl.beans.PlanovaniBean;
+import cz.wenaaa.is243vrl.ejbs.LetajiciSluzby2Facade;
+import cz.wenaaa.is243vrl.ejbs.PomtabFacade;
+import cz.wenaaa.is243vrl.ejbs.PozadavkyFacade;
+import cz.wenaaa.is243vrl.ejbs.SluzbyFacade;
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.wenaaa.is243vrl.entityClasses.Pomtab;
 import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
@@ -35,6 +36,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -121,6 +126,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
             public void run() {
                 pInfo = new ProcessInfo();
                 planuji = true;
+                naplanovano = false;
                 dnySvozu = dnysvozu;
                 maxHloubka = 0;
                 textInfo[TI_ZACATEK] = "Plánuji ...";
@@ -161,6 +167,10 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
                             setridVysledek();
                             printVysledek();
                             vytiskniSlouzici();
+                            planuji = false;
+                            naplanovano = true;
+                            chyba = false;
+                            prerusit = false;
                         } catch (InterruptedException | ExecutionException ex) {
                             textInfo[TI_ERROR] = "Warning: " + ex.getMessage();
                             chyba = true;
@@ -197,7 +207,13 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
             Logger.getLogger(PlanovaniSluzeb.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    public String getText(){
+        String vratka = "";
+        for(String pol:textInfo){
+            vratka += pol+"\n";
+        }
+        return vratka;
+    }
     private void setridVysledek() {
         poradiSluzeb.sort(new Comparator() {
 
@@ -229,6 +245,55 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
         for(Slouzici sl:listSlouzici){
             System.out.println(sl);
         }
+    }
+
+    public String getNaplanovanaSluzba(String jmeno, int den) {
+        String vratka = "";
+        for(SluzboDen pol:poradiSluzeb){
+            if(jmeno.equals(pol.getSlouzici().getJmeno())&&den==pol.getDatum().get(Calendar.DAY_OF_MONTH)){
+                vratka += pol.getTypsluzby().getsTypSluzby();
+            }
+        }
+        return vratka;
+    }
+    
+    public void setNaplanovanaSluzba(String sluzba, String jmeno, int den){
+        Slouzici slouzici = null;
+        for(Slouzici sl:listSlouzici){
+            if(jmeno.equals(sl.getJmeno())){
+                slouzici = sl;
+                break;
+            }
+        }
+        for(SluzboDen pol:poradiSluzeb){
+            if(sluzba.equals(pol.getTypsluzby().getsTypSluzby())&&den==pol.getDatum().get(Calendar.DAY_OF_MONTH)){
+                pol.setSlouzici(slouzici);
+            }
+        }
+    }
+    
+    public void ulozNaplanovane(){
+        if (naplanovano) {
+            for(SluzboDen sl:poradiSluzeb) {
+                sf.ulozSluzbu(sl.datum, sl.getTypsluzby(), sl.getSlouzici().getJmeno());
+            }
+        }
+    }
+    
+    public int[] pocetSluzeb(String letajici){
+        int[] vratka = new int[2];
+        vratka[0] = 0;
+        vratka[1] = 0;
+        for(SluzboDen pol:poradiSluzeb){
+            if (pol.getSlouzici().getJmeno().equals(letajici)) {
+                if (pol.getTypsluzby().getsTypSluzby().startsWith("L")) {
+                    vratka[0]++;
+                } else {
+                    vratka[1]++;
+                }
+            }
+        }
+        return vratka;
     }
     
     public boolean isPlanuji() {
@@ -635,4 +700,6 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
             super(zprava);
         }
     }
+    
+    
 }

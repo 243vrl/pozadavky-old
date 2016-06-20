@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.SchemataDojizdeni;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.PaginationHelper;
-import cz.wenaaa.is243vrl.beans.entityClasses.SchemataDojizdeniFacade;
+import cz.wenaaa.is243vrl.ejbs.SchemataDojizdeniFacade;
 
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -25,7 +25,7 @@ public class SchemataDojizdeniController implements Serializable {
     private SchemataDojizdeni current;
     private DataModel items = null;
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.SchemataDojizdeniFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.SchemataDojizdeniFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 

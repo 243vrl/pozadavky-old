@@ -4,7 +4,7 @@ import cz.wenaaa.is243vrl.beans.LoggedBean;
 import cz.wenaaa.is243vrl.entityClasses.Zpravy;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.ZpravyFacade;
+import cz.wenaaa.is243vrl.ejbs.ZpravyFacade;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -30,7 +30,7 @@ import javax.persistence.TemporalType;
 public class ZpravyController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.ZpravyFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.ZpravyFacade ejbFacade;
     private List<Zpravy> items = null;
     private Zpravy selected;
     @Inject

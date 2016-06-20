@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
 import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
 import java.util.Calendar;

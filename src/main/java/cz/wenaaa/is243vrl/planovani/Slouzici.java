@@ -5,8 +5,8 @@
  */
 package cz.wenaaa.is243vrl.planovani;
 
-import cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade;
-import cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade;
+import cz.wenaaa.is243vrl.ejbs.PovoleniSluzebFacade;
+import cz.wenaaa.is243vrl.ejbs.PozadavkyFacade;
 import cz.wenaaa.is243vrl.entityClasses.PovoleniSluzeb;
 import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.wenaaa.is243vrl.entityClasses.Sluzby;

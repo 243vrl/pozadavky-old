@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
-import cz.wenaaa.is243vrl.entityClasses.TypyRoles;
+import cz.wenaaa.is243vrl.entityClasses.SchemataDojizdeni;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author vena
  */
 @Stateless
-public class TypyRolesFacade extends AbstractFacade<TypyRoles> {
+public class SchemataDojizdeniFacade extends AbstractFacade<SchemataDojizdeni> {
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
 
@@ -24,8 +24,8 @@ public class TypyRolesFacade extends AbstractFacade<TypyRoles> {
         return em;
     }
 
-    public TypyRolesFacade() {
-        super(TypyRoles.class);
+    public SchemataDojizdeniFacade() {
+        super(SchemataDojizdeni.class);
     }
     
 }

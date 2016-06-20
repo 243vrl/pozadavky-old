@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
-import cz.wenaaa.is243vrl.entityClasses.TypyLetadel;
+import cz.wenaaa.is243vrl.entityClasses.TypyRoles;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author vena
  */
 @Stateless
-public class TypyLetadelFacade extends AbstractFacade<TypyLetadel> {
+public class TypyRolesFacade extends AbstractFacade<TypyRoles> {
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
 
@@ -24,8 +24,8 @@ public class TypyLetadelFacade extends AbstractFacade<TypyLetadel> {
         return em;
     }
 
-    public TypyLetadelFacade() {
-        super(TypyLetadel.class);
+    public TypyRolesFacade() {
+        super(TypyRoles.class);
     }
     
 }

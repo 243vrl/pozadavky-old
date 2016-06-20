@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.TypyPozadavku;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.TypyPozadavkuFacade;
+import cz.wenaaa.is243vrl.ejbs.TypyPozadavkuFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import javax.faces.convert.FacesConverter;
 public class TypyPozadavkuController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.TypyPozadavkuFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.TypyPozadavkuFacade ejbFacade;
     private List<TypyPozadavku> items = null;
     private TypyPozadavku selected;
 

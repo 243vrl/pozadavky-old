@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.Pozadavky;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade;
+import cz.wenaaa.is243vrl.ejbs.PozadavkyFacade;
 import cz.wenaaa.utils.Kalendar;
 
 import java.io.Serializable;
@@ -26,7 +26,7 @@ import javax.faces.convert.FacesConverter;
 public class PozadavkyController implements Serializable {
 
 
-    @EJB private cz.wenaaa.is243vrl.beans.entityClasses.PozadavkyFacade ejbFacade;
+    @EJB private cz.wenaaa.is243vrl.ejbs.PozadavkyFacade ejbFacade;
     private List<Pozadavky> items = null;
     private Pozadavky selected;
     

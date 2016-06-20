@@ -14,7 +14,26 @@
         </ui:define>
 
         <ui:define name="body">
-            
+            <p:dialog position="center" widgetVar="dlg"
+                      header="Plánuji..."
+                      resizable="true"
+                      closable="false"
+                      draggable="true"
+                      modal="false"
+                      visible="#{planovaniBean.isvPlanovani()?'true':'false'}">
+                <h:form>
+                    <p:inputTextarea  id="txt_area" rows="25" cols="70" disabled="true" value="#{planovaniBean.text}"
+                                      style=" background-color: #ffffff; color: #000000" autoResize="false"/>
+                    <br/>
+                    <p:button id="tlacitko" disabled="#{planovaniBean.naplanovano?'False':'True'}" value="Kontrola"
+                             onclick="PF('dlg').hide()" outcome="/scheduler/pozadavky/kontrola"
+                             actionListener="#{planovaniBean.setvPlanovani(false)}"/>
+                    <p:commandButton id="tlacitko1" disabled="#{planovaniBean.nenaplanovano?'False':'True'}" value="OK"
+                             onclick="PF('dlg').hide()"/>
+                    <p:poll interval="1"  update="txt_area tlacitko tlacitko1" async="True" global="false"/>
+                </h:form>
+                
+            </p:dialog>
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
                 <p:dataTable id="zpravy" value="#{pozadavkyBean.zpravyNaMesic}" var="item">
                     <p:column style="width:70px;">

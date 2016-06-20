@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.Users;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.UsersFacade;
+import cz.wenaaa.is243vrl.ejbs.UsersFacade;
 import cz.wenaaa.is243vrl.entityClasses.ModelListenerFactory;
 import cz.wenaaa.is243vrl.entityClasses.MyValueChangeEvent;
 import cz.wenaaa.is243vrl.entityClasses.MyValueChangeListener;
@@ -39,7 +39,7 @@ import javax.transaction.UserTransaction;
 public class UsersController implements Serializable, MyValueChangeListener {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.UsersFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.UsersFacade ejbFacade;
     private List<Users> items = null;
     private Users selected;
     @Inject

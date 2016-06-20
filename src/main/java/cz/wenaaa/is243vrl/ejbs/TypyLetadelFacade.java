@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
-import cz.wenaaa.is243vrl.entityClasses.Pomtab;
+import cz.wenaaa.is243vrl.entityClasses.TypyLetadel;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author vena
  */
 @Stateless
-public class PomtabFacade extends AbstractFacade<Pomtab> {
+public class TypyLetadelFacade extends AbstractFacade<TypyLetadel> {
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
 
@@ -24,9 +24,8 @@ public class PomtabFacade extends AbstractFacade<Pomtab> {
         return em;
     }
 
-    public PomtabFacade() {
-        super(Pomtab.class);
+    public TypyLetadelFacade() {
+        super(TypyLetadel.class);
     }
-    
     
 }

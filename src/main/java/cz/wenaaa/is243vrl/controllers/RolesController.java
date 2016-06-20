@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.Roles;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.RolesFacade;
+import cz.wenaaa.is243vrl.ejbs.RolesFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import javax.faces.convert.FacesConverter;
 public class RolesController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.RolesFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.RolesFacade ejbFacade;
     private List<Roles> items = null;
     private Roles selected;
 

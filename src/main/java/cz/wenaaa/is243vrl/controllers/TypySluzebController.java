@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.TypySluzeb;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.TypySluzebFacade;
+import cz.wenaaa.is243vrl.ejbs.TypySluzebFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import javax.faces.convert.FacesConverter;
 public class TypySluzebController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.TypySluzebFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.TypySluzebFacade ejbFacade;
     private List<TypySluzeb> items = null;
     private TypySluzeb selected;
 

@@ -3,7 +3,7 @@ package cz.wenaaa.is243vrl.controllers;
 import cz.wenaaa.is243vrl.entityClasses.PovoleniSluzeb;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
-import cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade;
+import cz.wenaaa.is243vrl.ejbs.PovoleniSluzebFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import javax.faces.convert.FacesConverter;
 public class PovoleniSluzebController implements Serializable {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.PovoleniSluzebFacade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.PovoleniSluzebFacade ejbFacade;
     private List<PovoleniSluzeb> items = null;
     private PovoleniSluzeb selected;
 

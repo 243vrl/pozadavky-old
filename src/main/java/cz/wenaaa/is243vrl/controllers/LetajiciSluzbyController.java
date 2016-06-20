@@ -1,6 +1,6 @@
 package cz.wenaaa.is243vrl.controllers;
 
-import cz.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade;
+import cz.wenaaa.is243vrl.ejbs.LetajiciSluzby2Facade;
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil;
 import cz.wenaaa.is243vrl.entityClasses.jsf.util.JsfUtil.PersistAction;
@@ -25,7 +25,7 @@ import javax.persistence.Query;
 public class LetajiciSluzbyController implements Serializable  {
 
     @EJB
-    private cz.wenaaa.is243vrl.beans.entityClasses.LetajiciSluzby2Facade ejbFacade;
+    private cz.wenaaa.is243vrl.ejbs.LetajiciSluzby2Facade ejbFacade;
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
     private List<LetajiciSluzby2> items = null;
@@ -114,8 +114,6 @@ public class LetajiciSluzbyController implements Serializable  {
         }
         return vratka;
     }
-    
-    
     
     public List<String> getPalubari(){
         List<String> vratka = new ArrayList<>();

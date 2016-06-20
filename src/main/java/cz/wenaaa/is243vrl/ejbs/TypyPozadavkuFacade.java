@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.wenaaa.is243vrl.beans.entityClasses;
+package cz.wenaaa.is243vrl.ejbs;
 
-import cz.wenaaa.is243vrl.entityClasses.TypySluzeb;
+import cz.wenaaa.is243vrl.entityClasses.TypyPozadavku;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author vena
  */
 @Stateless
-public class TypySluzebFacade extends AbstractFacade<TypySluzeb> {
+public class TypyPozadavkuFacade extends AbstractFacade<TypyPozadavku> {
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
 
@@ -24,8 +24,8 @@ public class TypySluzebFacade extends AbstractFacade<TypySluzeb> {
         return em;
     }
 
-    public TypySluzebFacade() {
-        super(TypySluzeb.class);
+    public TypyPozadavkuFacade() {
+        super(TypyPozadavku.class);
     }
     
 }
