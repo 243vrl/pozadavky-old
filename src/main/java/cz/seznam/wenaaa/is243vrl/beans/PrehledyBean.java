@@ -157,6 +157,8 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
                 return false;
         if (str.equals("L"))
                 return false;
+        if (str.equals("B"))
+                return false;
         return true;
     }
     public void ppXLSsPozadavkysZvyraznenim(Object document){
@@ -527,6 +529,11 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
                             case 9:
                                 pl.set(den, "\u271C");
                                 break;
+                            case 10:
+                            case 11:
+                            case 12:
+                                pl.set(den, "B");
+                                break;
                         }
                     }
                 }
@@ -547,6 +554,11 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
                             case 8:
                             case 9:
                                 pl.set(den, "\u271C");
+                                break;
+                            case 10:
+                            case 11:
+                            case 12:
+                                pl.set(den, "B");
                                 break;
                         }
                     }

@@ -43,6 +43,15 @@ public class Sluzby implements Serializable {
     @JoinColumn(name = "hp", referencedColumnName = "letajici")
     @ManyToOne
     private LetajiciSluzby2 hp;
+    @JoinColumn(name = "bd", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby2 bd;
+    @JoinColumn(name = "bk", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby2 bk;
+    @JoinColumn(name = "bp", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby2 bp;
     @JoinColumn(name = "ld", referencedColumnName = "letajici")
     @ManyToOne
     private LetajiciSluzby2 ld;
@@ -211,6 +220,38 @@ public class Sluzby implements Serializable {
         fireValueChanged("SP", stary);
     }
     
+        public LetajiciSluzby2 getBd() {
+        return bd;
+    }
+
+    public void setBd(LetajiciSluzby2 bd) {
+        if(bd == this.bd) return;
+        String stary = this.bd == null?"":this.bd.getLetajici();
+        this.bd = bd;
+        fireValueChanged("BD", stary);
+    }
+
+    public LetajiciSluzby2 getBk() {
+        return bk;
+    }
+
+    public void setBk(LetajiciSluzby2 bk) {
+        if(bk == this.bk) return;
+        String stary = this.bk == null?"":this.bk.getLetajici();
+        this.bk = bk;
+        fireValueChanged("BK", stary);
+    }
+
+    public LetajiciSluzby2 getBp() {
+        return bp;
+    }
+
+    public void setBp(LetajiciSluzby2 bp) {
+       if(bp == this.bp) return;
+        String stary = this.bp == null?"":this.bp.getLetajici();
+        this.bp = bp;
+        fireValueChanged("BP", stary);
+    }
     public void fireValueChanged(String typSluzby, String starySlouzici){
         SluzbyValueChangeEvent svche = new SluzbyValueChangeEvent(this, typSluzby, starySlouzici);
         ModelListenerFactory.valueChanged(svche);

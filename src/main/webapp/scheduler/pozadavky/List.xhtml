@@ -68,6 +68,9 @@
                     <p:menuitem value="ŘD" actionListener="#{pozadavkyBean.ulozPozadavky('ŘD')}" update="datalist"/>
                     <p:menuitem value="SC" actionListener="#{pozadavkyBean.ulozPozadavky('SC')}" update="datalist"/>
                     <p:menuitem value="SV" actionListener="#{pozadavkyBean.ulozPozadavky('SV')}" update="datalist"/>
+                    <p:menuitem value="BK" actionListener="#{pozadavkyBean.ulozPozadavky('BK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="BD" actionListener="#{pozadavkyBean.ulozPozadavky('BD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="BP" actionListener="#{pozadavkyBean.ulozPozadavky('BP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
                     <p:menuitem value="LK" actionListener="#{pozadavkyBean.ulozPozadavky('LK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
                     <p:menuitem value="LD" actionListener="#{pozadavkyBean.ulozPozadavky('LD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
                     <p:menuitem value="SK" actionListener="#{pozadavkyBean.ulozPozadavky('SK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>

@@ -96,20 +96,24 @@ public class PlanovaniBean implements Serializable{
     }
     public String proLastColumn(String letajici){
         int[] pom = pocetSluzeb(letajici, navrhSluzeb);
-        return String.format("%d: %d+%d", pom[0]+pom[1],pom[0],pom[1]);
+        return String.format("%d: %d+%d+%d", pom[0]+pom[1]+pom[2],pom[0],pom[1],pom[2]);
     }
     public int[] pocetSluzeb(String letajici, SluzboDen sd){
         SluzboDen pom = sd;
-        int[] vratka = new int[2];
+        int[] vratka = new int[3];
         vratka[0] = 0;
         vratka[1] = 0;
+        vratka[2] = 0;
         while(pom != null){
             if(pom.getSlouzici().getJmeno().equals(letajici)){
                 if(pom.getTypsluzby().startsWith("L")){
                     vratka[0]++;
                 }
-                else{
+                if(pom.getTypsluzby().startsWith("S")){
                     vratka[1]++;
+                }
+                if(pom.getTypsluzby().startsWith("B")){
+                    vratka[2]++;
                 }
             }
             pom = pom.getNahoru();
@@ -500,12 +504,15 @@ public class PlanovaniBean implements Serializable{
     private List<String> dejPoradiSluzeb(){
         List<String> vratka = new ArrayList<>();
         if(lb.isLoggedAsMedved()){
+            vratka.add("BP");
             vratka.add("LP");
             vratka.add("SP");
         }
         else{
+            vratka.add("BD");
             vratka.add("LD");
             vratka.add("SD");
+            vratka.add("BK");
             vratka.add("LK");
             vratka.add("SK");
         }
@@ -956,6 +963,12 @@ public class PlanovaniBean implements Serializable{
         }
         if(typSluzby.equals("SK")){
             pomS = "SD";
+        }
+        if(typSluzby.equals("BD")){
+            pomS = "BK";
+        }
+        if(typSluzby.equals("BK")){
+            pomS = "BD";
         }
         SluzboDen pom = sd;
         String letajici = "";
