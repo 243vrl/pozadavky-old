@@ -7,7 +7,6 @@ package cz.wenaaa.is243vrl.planovani;
 
 import cz.wenaaa.is243vrl.TypyDne;
 import cz.wenaaa.is243vrl.TypySluzby;
-import cz.wenaaa.is243vrl.beans.PlanovaniBean;
 import cz.wenaaa.is243vrl.ejbs.LetajiciSluzby2Facade;
 import cz.wenaaa.is243vrl.ejbs.PomtabFacade;
 import cz.wenaaa.is243vrl.ejbs.PozadavkyFacade;
@@ -36,10 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -68,7 +63,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
         }
     }
 
-    public static PlanovaniSluzeb getInstance(boolean proPalubare) {
+    public static synchronized PlanovaniSluzeb getInstance(boolean proPalubare) {
         if (proPalubare) {
             if (palubariThis == null) {
                 palubariThis = new PlanovaniSluzeb(proPalubare);
