@@ -310,8 +310,7 @@ public class SluzboDen {
         SluzboDen pom = this.nahoru;
         long slouzi = 0;
         while (pom != null) {
-            if (this.slouzici.equals(pom.slouzici) &&
-                    !pom.typsluzby.startsWith("B")) {
+            if (this.slouzici.equals(pom.slouzici)) {
                 slouzi += (long) Math.pow(2, pom.datum.get(Calendar.DAY_OF_MONTH));
             }
             pom = pom.nahoru;

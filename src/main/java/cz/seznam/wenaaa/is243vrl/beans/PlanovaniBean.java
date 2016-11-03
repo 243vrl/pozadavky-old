@@ -304,6 +304,7 @@ public class PlanovaniBean implements Serializable{
             mezPresMiru = vysledek.getMaxsluzebpresmiru();
         }
         
+        vysledek = nactiBechyni(vysledek);
         
         vypisKolik(vysledek,seznamSlouzicich);
         navrhSluzeb = vysledek;
@@ -504,15 +505,15 @@ public class PlanovaniBean implements Serializable{
     private List<String> dejPoradiSluzeb(){
         List<String> vratka = new ArrayList<>();
         if(lb.isLoggedAsMedved()){
-            vratka.add("BP");
+            //vratka.add("BP");
             vratka.add("LP");
             vratka.add("SP");
         }
         else{
-            vratka.add("BD");
+            //vratka.add("BD");
             vratka.add("LD");
             vratka.add("SD");
-            vratka.add("BK");
+            //vratka.add("BK");
             vratka.add("LK");
             vratka.add("SK");
         }
@@ -1165,6 +1166,31 @@ public class PlanovaniBean implements Serializable{
         text += "done";
         return q.getResultList();
     }
+
+    private SluzboDen nactiBechyni(SluzboDen vysledek) {
+        SluzboDen fin = vysledek;
+        String[] bSluzby;
+        if(lb.isLoggedAsMedved()){
+            bSluzby = new String[]{"BP"};
+        }else{
+            bSluzby = new String[]{"BK","BD"};
+        }
+        for(String sl : bSluzby){
+            Query q = em.createNativeQuery("SELECT * FROM pozadavky WHERE pozadavek = "+sl);
+            for(Object res : q.getResultList()){
+                Object[] pom = (Object[])res;
+                GregorianCalendar pomgc = new GregorianCalendar();
+                pomgc.setTime((Date) pom[0]);
+                String pomLet = (String) pom[1];
+                String pomSlu = (String) pom[2];
+                SluzboDen pomsd = new SluzboDen(pomgc.get(Calendar.DAY_OF_MONTH), pomSlu, fin, new Slouzici(pomLet, "", ""));
+                fin = pomsd;
+            }
+        }
+        return fin;
+    }
+    
+    
     static public class ColumnModelvII implements Serializable {
         private final String header;
         private final String property;
