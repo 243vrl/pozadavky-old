@@ -205,9 +205,6 @@ public class SluzboDen {
     public boolean isValid() {
         //System.out.println("kontrola isValid...");
         //System.out.print(this);
-        if(this.typsluzby.startsWith("B")){
-            return true;
-        }
         long nemuze = slouzici.getPlneVolneDny();
         long novaSluzba = (long) Math.pow(2, datum.get(Calendar.DAY_OF_MONTH));
         if ((novaSluzba & nemuze) != 0) {
@@ -313,7 +310,8 @@ public class SluzboDen {
         SluzboDen pom = this.nahoru;
         long slouzi = 0;
         while (pom != null) {
-            if (this.slouzici.equals(pom.slouzici)) {
+            if (this.slouzici.equals(pom.slouzici) &&
+                    !pom.typsluzby.startsWith("B")) {
                 slouzi += (long) Math.pow(2, pom.datum.get(Calendar.DAY_OF_MONTH));
             }
             pom = pom.nahoru;
