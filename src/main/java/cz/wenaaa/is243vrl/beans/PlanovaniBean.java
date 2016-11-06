@@ -16,13 +16,8 @@ import cz.wenaaa.is243vrl.entityClasses.Sluzby;
 import cz.wenaaa.is243vrl.controllers.LetajiciSluzbyController;
 import cz.wenaaa.is243vrl.planovani.PlanovaniSluzeb;
 import cz.wenaaa.utils.Kalendar;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -44,12 +39,6 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 /**
  *
@@ -88,7 +77,15 @@ public class PlanovaniBean implements Serializable {
     public static int getMAX_PLANOVAT() {
         return MAX_PLANOVAT;
     }
+    private volatile boolean castecne;
 
+    public void setPrerusit(boolean prerusit){
+        System.out.println("volano set prerusit");
+        PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).setPrerusit(prerusit);
+    }
+    public boolean isCastecne(){
+        return castecne;
+    }
     /**
      * @return the MIN_PLANOVAT
      */
@@ -97,7 +94,6 @@ public class PlanovaniBean implements Serializable {
     }
 
     public boolean isNaplanovano() {
-        //return naplanovano;
         return PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).isNaplanovano();
     }
 
@@ -192,6 +188,7 @@ public class PlanovaniBean implements Serializable {
         planuj = true;
         naplanovano = false;
         text = "";
+        castecne = false;
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
@@ -239,11 +236,19 @@ public class PlanovaniBean implements Serializable {
         return PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).getNaplanovanaSluzba(slouzici, den);
     }
 
+    public void setCastecne(boolean castecne) {
+        System.out.println("volano setCastecne > "+castecne);
+        this.castecne = castecne;
+    }
+
+    
     public void naplanuj(ActionEvent e) {
+        castecne = false;
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         PlanovaniSluzeb ps = PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved());
+        ps.setMe(this);
         ps.naplanuj(gc, dnySvozu);
         /*if (vPlanovani) {
          text = text + "\nnove volani fce";

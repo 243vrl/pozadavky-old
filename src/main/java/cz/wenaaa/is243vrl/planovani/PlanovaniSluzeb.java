@@ -7,6 +7,7 @@ package cz.wenaaa.is243vrl.planovani;
 
 import cz.wenaaa.is243vrl.TypyDne;
 import cz.wenaaa.is243vrl.TypySluzby;
+import cz.wenaaa.is243vrl.beans.PlanovaniBean;
 import cz.wenaaa.is243vrl.ejbs.LetajiciSluzby2Facade;
 import cz.wenaaa.is243vrl.ejbs.PomtabFacade;
 import cz.wenaaa.is243vrl.ejbs.PozadavkyFacade;
@@ -77,10 +78,12 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
         return pilotiThis;
     }
 
-    private boolean planuji;
-    private boolean naplanovano;
-    private boolean chyba;
-    private boolean prerusit;
+    private PlanovaniBean pb;
+    private volatile boolean castecne;
+    private volatile boolean planuji;
+    private volatile boolean naplanovano;
+    private volatile boolean chyba;
+    private volatile boolean prerusit;
     private boolean proPalubare;
     private int pocetReseni;
     private ProcessInfo<Slouzici> pInfo;
@@ -119,6 +122,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
 
             @Override
             public void run() {
+                pb.setCastecne(false);
                 pInfo = new ProcessInfo();
                 planuji = true;
                 naplanovano = false;
@@ -153,24 +157,18 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
                                 prerusit = false;
                                 naplanovano = false;
                                 chyba = false;
-                                return;
+                                System.out.println("prerusuji");
+                                break;
                             }
                             getInfo();
                         }
-                        try {
-                            ulozVysledek(future.get());
-                            setridVysledek();
-                            printVysledek();
-                            vytiskniSlouzici();
-                            planuji = false;
-                            naplanovano = true;
-                            chyba = false;
-                            prerusit = false;
-                        } catch (InterruptedException | ExecutionException ex) {
-                            textInfo[TI_ERROR] = "Warning: " + ex.getMessage();
-                            chyba = true;
-                            Logger.getLogger(PlanovaniSluzeb.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        setridVysledek();
+                        printVysledek();
+                        vytiskniSlouzici();
+                        planuji = false;
+                        naplanovano = true;
+                        chyba = false;
+                        prerusit = false;
                     } finally {
                         executor.shutdown();
                     }
@@ -187,6 +185,10 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
         planThread.start();
     }
 
+    public void setMe(PlanovaniBean pb){
+        this.pb = pb;
+    }
+
     private void ulozVysledek(List<Slouzici> path) {
         try {
             if (pocetReseni == 0 || (hodnotaPath(path) < hodnotaVysledku())) {
@@ -195,6 +197,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
                 }
                 textInfo[TI_STATUS] = String.format("Naplánováno %d. řešení.", ++pocetReseni);
                 System.out.format("reseni %d > %f", pocetReseni, hodnotaPath(path));
+                pb.setCastecne(true);
             }
         } catch (Exception ex) {
             textInfo[TI_ERROR] = "Warning: " + ex.getMessage();
@@ -500,10 +503,10 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
     @Override
     public boolean isAim(List<Slouzici> actualPath) {
         if (actualPath.size() == poradiSluzeb.size()) {
-              if (jeBlizkeIdealu(actualPath)) {
+            ulozVysledek(actualPath);
+            if (jeBlizkeIdealu(actualPath)) {
                 return true;
             }
-            ulozVysledek(actualPath);
             searchTree.reduceTreeLeafs(ComparatorTypes.GE);
         }
         return false;
@@ -589,6 +592,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
     }
 
     public void setPrerusit(boolean prerusit) {
+        System.out.println("prerusit > "+prerusit);
         this.prerusit = prerusit;
     }
 

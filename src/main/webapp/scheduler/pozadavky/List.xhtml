@@ -30,7 +30,9 @@
                              actionListener="#{planovaniBean.setvPlanovani(false)}"/>
                     <p:commandButton id="tlacitko1" disabled="#{planovaniBean.nenaplanovano?'False':'True'}" value="OK"
                              onclick="PF('dlg').hide()"/>
-                    <p:poll interval="1"  update="txt_area tlacitko tlacitko1" async="True" global="false"/>
+                    <p:commandButton id="tlacitko2" disabled="#{planovaniBean.castecne?'False':'True'}" value="Stop"
+                            actionListener="#{planovaniBean.setPrerusit(true)}"/>
+                    <p:poll interval="1"  update="txt_area tlacitko tlacitko1 tlacitko2" async="True" global="false"/>
                 </h:form>
                 
             </p:dialog>
