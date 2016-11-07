@@ -34,6 +34,15 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Sluzby.konecMesice", query = "SELECT s FROM Sluzby s WHERE s.datum < :datum ORDER BY s.datum DESC "),
     @NamedQuery(name = "Sluzby.naMesic", query = "SELECT s FROM Sluzby s WHERE s.datum BETWEEN :od AND :do ORDER BY s.datum")})
 public class Sluzby implements Serializable {
+    @JoinColumn(name = "bd", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby2 bd;
+    @JoinColumn(name = "bk", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby2 bk;
+    @JoinColumn(name = "bp", referencedColumnName = "letajici")
+    @ManyToOne
+    private LetajiciSluzby2 bp;
     @JoinColumn(name = "hd", referencedColumnName = "letajici")
     @ManyToOne
     private LetajiciSluzby2 hd;
@@ -109,6 +118,38 @@ public class Sluzby implements Serializable {
     @Override
     public String toString() {
         return "cz.seznam.wenaaa.is243vrl.entityClasses.Sluzby[ datum=" + datum + " ]";
+    }
+    public LetajiciSluzby2 getBd() {
+        return bd;
+    }
+
+    public void setBd(LetajiciSluzby2 bd) {
+        if(bd == this.bd) return;
+        String stary = this.bd == null?"":this.bd.getLetajici();
+        this.bd = bd;
+        fireValueChanged("BD", stary);
+    }
+
+    public LetajiciSluzby2 getBk() {
+        return bk;
+    }
+
+    public void setBk(LetajiciSluzby2 bk) {
+        if(bk == this.bk) return;
+        String stary = this.bk == null?"":this.bk.getLetajici();
+        this.bk = bk;
+        fireValueChanged("BK", stary);
+    }
+
+    public LetajiciSluzby2 getBp() {
+        return bp;
+    }
+
+    public void setBp(LetajiciSluzby2 bp) {
+        if(bp == this.bp) return;
+        String stary = this.bp == null?"":this.bp.getLetajici();
+        this.bp = bp;
+        fireValueChanged("BP", stary);
     }
 
     public LetajiciSluzby2 getHd() {

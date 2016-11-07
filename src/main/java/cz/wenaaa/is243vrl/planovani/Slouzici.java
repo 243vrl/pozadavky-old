@@ -147,11 +147,25 @@ public class Slouzici {
             pomGC.setTime((Date) pol.getDatum());
             int den = pomGC.get(Calendar.DAY_OF_MONTH);
             if (pol.getPozadavek().startsWith("X") || (den == 1)) {
-                plneVolneDny += (long) Math.pow(2, den);
+                if ((plneVolneDny & (long) Math.pow(2, den)) == 0) {
+                    plneVolneDny += (long) Math.pow(2, den);
+                }
+                if (pol.getPozadavek().startsWith("B")){
+                    if ((plneVolneDny & (long) Math.pow(2, den + 1)) == 0) {
+                        plneVolneDny += (long) Math.pow(2, den + 1);
+                    }
+                }
             } else {
-                plneVolneDny += (long) Math.pow(2, den);
+                if ((plneVolneDny & (long) Math.pow(2, den)) == 0) {
+                    plneVolneDny += (long) Math.pow(2, den);
+                }
                 if ((plneVolneDny & (long) Math.pow(2, den - 1)) == 0) {
                     plneVolneDny += (long) Math.pow(2, den - 1);
+                }
+                if (pol.getPozadavek().startsWith("B")){
+                    if ((plneVolneDny & (long) Math.pow(2, den + 1)) == 0) {
+                        plneVolneDny += (long) Math.pow(2, den + 1);
+                    }
                 }
             }
             System.out.println("\t> "+den+" / "+pol.getPozadavek());
