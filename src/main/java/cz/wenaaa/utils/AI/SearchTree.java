@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  *
  * @author vena
  */
-public abstract class SearchTree<F extends NodeItemFactory, N> implements Callable {
+public abstract class SearchTree<F extends NodeItemFactory, N> implements Callable, Runnable {
     protected final F nodeFactory;
     protected ProcessInfo<N> processInfo;
     protected ArrayList<Node> leafs;
@@ -30,6 +30,21 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
         this.comparator = getComparator();
     }
 
+    public boolean isRunning(){
+        return running;
+    }
+    
+    public List<Node> getResult(){
+        return running ? null : leafs;    
+    }
+    
+    @Override
+    public void run() {
+        
+        
+    }
+
+    
     public void setProcessInfo(ProcessInfo<N> processInfo) {
         this.processInfo = processInfo;
     }
@@ -43,17 +58,21 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
         if (running) {
             throw new Exception("Duplicitní volání funkce.");
         }
+        System.out.println("vstupuji do call");
         running = true;
         leafs = new ArrayList<>();
         List<N> vratka = null;
         long leafsEvolved = 0L;
         List<N> uvodniUzly = nodeFactory.getInitialNodes();
+        System.out.println("nacteny initial nodes");
         leafs.addAll(nodeItemsToNodes(uvodniUzly, null));
         while (true) {
             if (interrupted()) {
+                System.out.println("prerusuji na interupted");
                 break;
             }
             if (leafs.isEmpty()) {
+                System.out.println("prerusuji na leafs is empty");
                 break;
             }
             leafs.sort(comparator);
@@ -64,10 +83,15 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
             }
             if (nodeFactory.isAim(rozvijeny.getPath())) {
                 vratka = rozvijeny.getPath();
+                System.out.println("prerusuji na leafs is aim");
                 break;
+            }
+            if(nodeFactory.shouldReduceTreeLeafs(rozvijeny.getPath())){
+                reduceTreeLeafs(nodeFactory.getCTforReduce());
             }
             List<N> noveUzly = nodeFactory.getNexts(rozvijeny.getPath());
             leafs.addAll(nodeItemsToNodes(noveUzly, rozvijeny));
+            System.out.println("Stale v call");
         }
         running = false;
         return vratka;
@@ -75,7 +99,7 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
 
     protected abstract Comparator<Node> getComparator();
 
-    public void reduceTreeLeafs(ComparatorTypes ct) {
+    private void reduceTreeLeafs(ComparatorTypes ct) {
         double refValue;
         refValue = nodeFactory.getRefValueForReducing(ct);
         leafs.removeIf(new Predicate<Node>() {
@@ -106,7 +130,7 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
                 processInfo.setLeafsCount(leafs.size());
                 processInfo.setLeafsEvolved(leafsEvolved);
                 processInfo.setAktDepth(rozvijeny.getDepth());
-                System.out.println(processInfo);
+                //System.out.println(processInfo);
             } finally {
                 processInfo.getLock().unlock();
             }

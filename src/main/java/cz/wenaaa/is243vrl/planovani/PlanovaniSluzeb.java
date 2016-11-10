@@ -28,9 +28,11 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,8 +111,8 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
     private static final int TI_PROCESS_INFO = 4;
     private static final int TI_STATUS = 5;
     private static final int TI_ERROR = 6;
-
-    SearchTreeFirstDepthThenValue<NodeItemFactory, Slouzici> searchTree;
+    private SearchTreeFirstDepthThenValue<NodeItemFactory, Slouzici> searchTree;
+    
 
     public void naplanuj(GregorianCalendar gc, boolean[] dnysvozu) {
         //zamezeni dvojiteho volani
@@ -122,12 +124,15 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
 
             @Override
             public void run() {
+                
                 pb.setCastecne(false);
                 pInfo = new ProcessInfo();
                 planuji = true;
+                prerusit = false;
                 naplanovano = false;
                 dnySvozu = dnysvozu;
                 maxHloubka = 0;
+                textInfo = new String[TI_ERROR + 1];
                 textInfo[TI_ZACATEK] = "Plánuji ...";
                 try {
                     uzavriDB(gc);
@@ -141,18 +146,15 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
                     minulyMesic = sf.nactiMinulyMesic(gc);
                     //System.out.println("nacitam pocty typu dne..................");
                     //nactiPoctyTypuDne(gc);
-                    System.out.println("searchTree.setProcessInfo(pInfo);...........");
+                    System.out.println("searchTree.setProcessInfo(pInfo);..........."+searchTree);
                     searchTree.setProcessInfo(pInfo);
-                    System.out.println("ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);.................");
-                    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-
-                    Future<List<Slouzici>> future;
+                    Thread searchThread = new Thread(searchTree);
                     try {
                         System.out.println("spoustim vypocet.....................");
-                        future = executor.submit(searchTree);
-                        while (!future.isDone()) {
+                        searchThread.start();
+                        while (searchTree.isRunning()) {
                             if (prerusit) {
-                                executor.shutdownNow();
+                                searchThread.interrupt();
                                 planuji = false;
                                 prerusit = false;
                                 naplanovano = false;
@@ -161,6 +163,87 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
                                 break;
                             }
                             getInfo();
+                            System.out.println("stale v while (!future.isDone()) {");
+                        }
+                        setridVysledek();
+                        printVysledek();
+                        vytiskniSlouzici();
+                        planuji = false;
+                        naplanovano = true;
+                        chyba = false;
+                        prerusit = false;
+                    } finally {
+                        
+                    }
+
+                } catch (VicJakJedenSlouziciException | NikdoNemuzeException | SpatnyPocetSluzboDnuException ex) {
+                    textInfo[TI_ERROR] = "Warning: " + ex.getMessage();
+                    chyba = true;
+                    Logger.getLogger(PlanovaniSluzeb.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        });
+
+        planThread.start();
+    }
+
+    public void naplanuj2(GregorianCalendar gc, boolean[] dnysvozu) {
+        //zamezeni dvojiteho volani
+        if (planuji) {
+            return;
+        }
+        PlanovaniSluzeb instance = this;
+        Thread planThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                SearchTreeFirstDepthThenValue<NodeItemFactory, Slouzici> searchTree;
+                searchTree = new SearchTreeFirstDepthThenValue(instance);
+                pb.setCastecne(false);
+                pInfo = new ProcessInfo();
+                planuji = true;
+                prerusit = false;
+                naplanovano = false;
+                dnySvozu = dnysvozu;
+                maxHloubka = 0;
+                textInfo = new String[TI_ERROR + 1];
+                textInfo[TI_ZACATEK] = "Plánuji ...";
+                try {
+                    uzavriDB(gc);
+                    System.out.println("nacitam slouzici............");
+                    listSlouzici = nactiSlouzici(gc);
+                    System.out.println("nacitam typy sluzeb...................");
+                    sluzbyKNaplanovani = nactiSluzbyKNaplanovani();
+                    System.out.println("nacitam sluzbodny....................");
+                    poradiSluzeb = nactiPoradiSluzeb(gc);
+                    System.out.println("nacitam minuly mesic................");
+                    minulyMesic = sf.nactiMinulyMesic(gc);
+                    //System.out.println("nacitam pocty typu dne..................");
+                    //nactiPoctyTypuDne(gc);
+                    System.out.println("searchTree.setProcessInfo(pInfo);..........."+searchTree);
+                    searchTree.setProcessInfo(pInfo);
+                    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+                    System.out.println("ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);................."+executor);
+                    
+                    Future<List<Slouzici>> future;
+                    try {
+                        System.out.println("spoustim vypocet.....................");
+                        future = executor.submit((Callable<List<Slouzici>>)searchTree);
+                        System.out.println("future is done......"+future.isDone());
+                        while (!future.isDone()) {
+                            if (prerusit) {
+                                //executor.shutdownNow();
+                                planuji = false;
+                                prerusit = false;
+                                naplanovano = false;
+                                chyba = false;
+                                System.out.println("prerusuji");
+                                break;
+                            }
+                            getInfo();
+                            System.out.println("stale v while (!future.isDone()) {");
+                            System.out.println("future is done......"+future.isDone());
                         }
                         setridVysledek();
                         printVysledek();
@@ -184,7 +267,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
 
         planThread.start();
     }
-
+    
     public void setMe(PlanovaniBean pb){
         this.pb = pb;
     }
@@ -226,7 +309,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
     }
 
     private void printVysledek(){
-        String.format("--- Vysledek --------------------\n");
+        System.out.println("--- Vysledek --------------------\n");
         Iterator<SluzboDen> it = poradiSluzeb.iterator();
         int i = 0;
         while(it.hasNext()){
@@ -300,7 +383,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
 
     private void getInfo() {
         try {
-            System.out.println("jdu spinkat");
+            //System.out.println("jdu spinkat");
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
 
@@ -313,7 +396,7 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
                 maxHloubka = (int) (ad > maxHloubka ? ad : maxHloubka);
                 textInfo[TI_PROCESS_INFO] = String.format("Počet listů stromu řešení: %d Počet rozvitých listů: %d Akt. hloubka: %d Max. hloubka: %d Cíl. hloubka: %d", lc, le, ad, maxHloubka, poradiSluzeb.size());
 
-                System.out.println("vstavam");
+                //System.out.println("vstavam");
             } finally {
                 pInfo.getLock().unlock();
             }
@@ -507,7 +590,6 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
             if (jeBlizkeIdealu(actualPath)) {
                 return true;
             }
-            searchTree.reduceTreeLeafs(ComparatorTypes.GE);
         }
         return false;
     }
@@ -677,6 +759,16 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
         double vratka = getRefValueForReducing(ComparatorTypes.GR);
         vratka += hodnotaOdchylkyPoctuSluzeb();
         return vratka;
+    }
+
+    @Override
+    public boolean shouldReduceTreeLeafs(List<Slouzici> actualPath) {
+        return actualPath.size() == poradiSluzeb.size();
+    }
+
+    @Override
+    public ComparatorTypes getCTforReduce() {
+        return ComparatorTypes.GE;
     }
 
     private static class VicJakJedenSlouziciException extends Exception {

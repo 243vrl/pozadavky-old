@@ -107,21 +107,6 @@ public class PlanovaniBean implements Serializable {
     }
 
     public int[] pocetSluzeb(String letajici, SluzboDenPuvodni sd) {
-        /*SluzboDenPuvodni pom = sd;
-         int[] vratka = new int[2];
-         vratka[0] = 0;
-         vratka[1] = 0;
-         while (pom != null) {
-         if (pom.getSlouzici().getJmeno().equals(letajici)) {
-         if (pom.getTypsluzby().startsWith("L")) {
-         vratka[0]++;
-         } else {
-         vratka[1]++;
-         }
-         }
-         pom = pom.getNahoru();
-         }
-         return vratka;*/
         return PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).pocetSluzeb(letajici);
     }
 

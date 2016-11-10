@@ -25,4 +25,8 @@ public interface NodeItemFactory<N> {
     double getPathValueForReducing(ComparatorTypes ct, List<N> path);
     
     double getRefValueForReducing(ComparatorTypes ct);
+    
+    boolean shouldReduceTreeLeafs(List<N> actualPath);
+    
+    ComparatorTypes getCTforReduce();
 }
