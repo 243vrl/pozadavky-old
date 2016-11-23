@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,6 +24,7 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
     protected ArrayList<Node> leafs;
     protected final Comparator<Node> comparator;
     protected boolean running;
+    private volatile boolean prerusit;
 
     public SearchTree(F nodeFactory) {
         this.nodeFactory = nodeFactory;
@@ -33,15 +36,25 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
     public boolean isRunning(){
         return running;
     }
-    
-    public List<Node> getResult(){
-        return running ? null : leafs;    
+
+    public boolean isPrerusit() {
+        return prerusit;
     }
+
+    public void setPrerusit(boolean prerusit) {
+        this.prerusit = prerusit;
+    }
+    
+    
     
     @Override
     public void run() {
         
-        
+        try {
+            call();
+        } catch (Exception ex) {
+            Logger.getLogger(SearchTree.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     
@@ -73,6 +86,10 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
             }
             if (leafs.isEmpty()) {
                 System.out.println("prerusuji na leafs is empty");
+                break;
+            }
+            if(prerusit){
+                System.out.println("prerusuji na prerusit");
                 break;
             }
             leafs.sort(comparator);

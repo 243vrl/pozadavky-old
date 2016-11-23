@@ -20,6 +20,9 @@ public enum TypySluzby {
     SK("SK",false,"S"),
     SD("SD",false,"S"),
     SP("SP",true,"S"),
+    BK("BK",false,"B"),
+    BD("BD",false,"B"),
+    BP("BP",true,"B"),
     HK("HK",false,"H"),
     HD("HD",false,"H"),
     HP("HP",true,"H");

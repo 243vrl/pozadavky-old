@@ -6,6 +6,7 @@
 package cz.wenaaa.is243vrl.ejbs;
 
 import cz.wenaaa.is243vrl.entityClasses.LetajiciSluzby2;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -37,5 +38,15 @@ public class LetajiciSluzby2Facade extends AbstractFacade<LetajiciSluzby2> {
     public List<LetajiciSluzby2> getPalubaci(){
         Query q = em.createNamedQuery("LetajiciSluzby.findPalubari");
         return q.getResultList();
+    }
+    public LetajiciSluzby2 getPri(){
+        Query q = em.createNamedQuery("LetajiciSluzby.findAll");
+        for (Iterator it = q.getResultList().iterator(); it.hasNext();) {
+            LetajiciSluzby2 l = (LetajiciSluzby2) it.next();
+            if(l.getLetajici().equals("PŘI")){
+                return l;
+            }
+        }
+        return null;
     }
 }

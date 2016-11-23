@@ -24,7 +24,8 @@ class SluzboDen {
     private final int kolikLidiMuze;
 
     public SluzboDen(GregorianCalendar datum, TypySluzby typsluzby, int kolikLidiMuze) {
-        this.datum = datum;
+        this.datum = new GregorianCalendar();
+        this.datum.setTime(datum.getTime());
         this.typsluzby = typsluzby;
         this.kolikLidiMuze = kolikLidiMuze;
         slouzici = null;

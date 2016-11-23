@@ -101,9 +101,13 @@ public class PlanovaniBean implements Serializable {
         return nenaplanovano;
     }
 
+    public void setNenaplanovano(boolean nenaplanovano){
+        this.nenaplanovano = nenaplanovano;
+    }
+    
     public String proLastColumn(String letajici) {
         int[] pom = pocetSluzeb(letajici, navrhSluzeb);
-        return String.format("%d: %d+%d", pom[0] + pom[1], pom[0], pom[1]);
+        return String.format("%d: %d+%d+%d", pom[0] + pom[1] + pom[2], pom[0], pom[1], pom[2]);
     }
 
     public int[] pocetSluzeb(String letajici, SluzboDenPuvodni sd) {
@@ -114,8 +118,9 @@ public class PlanovaniBean implements Serializable {
         return PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).getText();
     }
 
-    public void setvPlanovani(boolean vPlanovani) {
-        this.vPlanovani = vPlanovani;
+    public void prechodKontrola(ActionEvent e) {
+        System.out.println("prechod kontrola 1");
+        PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).prechodKontrola();
     }
 
     public boolean isvPlanovani() {
@@ -232,7 +237,7 @@ public class PlanovaniBean implements Serializable {
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
-        PlanovaniSluzeb ps = PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved());
+        PlanovaniSluzeb ps = PlanovaniSluzeb.createInstance(lb.isLoggedAsMedved());
         ps.setMe(this);
         ps.naplanuj(gc, dnySvozu);
         /*if (vPlanovani) {
