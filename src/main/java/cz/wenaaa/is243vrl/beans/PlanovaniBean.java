@@ -80,7 +80,7 @@ public class PlanovaniBean implements Serializable {
     private volatile boolean castecne;
 
     public void setPrerusit(boolean prerusit){
-        System.out.println("volano set prerusit");
+        //System.out.println("volano set prerusit");
         PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).setPrerusit(prerusit);
     }
     public boolean isCastecne(){
@@ -119,7 +119,7 @@ public class PlanovaniBean implements Serializable {
     }
 
     public void prechodKontrola(ActionEvent e) {
-        System.out.println("prechod kontrola 1");
+        //System.out.println("prechod kontrola 1");
         PlanovaniSluzeb.getInstance(lb.isLoggedAsMedved()).prechodKontrola();
     }
 
@@ -227,7 +227,7 @@ public class PlanovaniBean implements Serializable {
     }
 
     public void setCastecne(boolean castecne) {
-        System.out.println("volano setCastecne > "+castecne);
+        //System.out.println("volano setCastecne > "+castecne);
         this.castecne = castecne;
     }
 
@@ -533,7 +533,7 @@ public class PlanovaniBean implements Serializable {
         text = text + String.format("%d...done", vratka.size());
         /*
          for(PomSDClass sd : vratka){
-         System.out.println(sd);
+         //System.out.println(sd);
          }*/
         return vratka;
     }
@@ -571,11 +571,11 @@ public class PlanovaniBean implements Serializable {
 
         });
         /*
-         System.out.println("   dejPoradiDnu() > ");
+         //System.out.println("   dejPoradiDnu() > ");
          for (GregorianCalendar den : poradiDnu) {
-         System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(den.getTime()));
+         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(den.getTime()));
          }
-         System.out.println("-------------------------------------------------");
+         //System.out.println("-------------------------------------------------");
          */
         return poradiDnu;
     }
@@ -869,7 +869,7 @@ public class PlanovaniBean implements Serializable {
         float idealPrumer = ((float) pocetSl - (nepresunutelneVsech - nepresunutelnePlanovanych)) / ((float) volnychChlivu);
         //vyrovnavani
         /*for(SkupinaSluzeb pppp:skupiny){
-         System.out.print(pppp);
+         //System.out.print(pppp);
          }*/
         while (true) {
             float ctverecChyb = 0;
@@ -919,7 +919,7 @@ public class PlanovaniBean implements Serializable {
             try {
                 skupiny.get(odkud).predejSluzbu(skupiny.get(kam));
                 /*for(SkupinaSluzeb pppp:skupiny){
-                 System.out.print(pppp);
+                 //System.out.print(pppp);
                  }*/
             } catch (NoResultException ex) {
                 Logger.getLogger(PlanovaniBean.class.getName()).log(Level.SEVERE, null, ex);

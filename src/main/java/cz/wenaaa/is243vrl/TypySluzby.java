@@ -30,7 +30,7 @@ public enum TypySluzby {
     public static List<TypySluzby> getFEPlan() {
         List<TypySluzby> vratka = new ArrayList<>();
         for(TypySluzby pol:getFlightEngineersTypySluzby()){
-            if(pol.compareTo(SP)>0){
+            if(pol.compareTo(LP)>0){
                 continue;
             }
             vratka.add(pol);
@@ -41,7 +41,7 @@ public enum TypySluzby {
     public static List<TypySluzby> getPPlan() {
         List<TypySluzby> vratka = new ArrayList<>();
         for(TypySluzby pol:getPilotsTypySluzby()){
-            if(pol.compareTo(SP)>0){
+            if(pol.compareTo(LP)>0){
                 continue;
             }
             vratka.add(pol);

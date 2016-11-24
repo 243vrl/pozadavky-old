@@ -52,7 +52,7 @@ public class TypyDneTest {
      */
     @Test
     public void testValues() {
-        System.out.println("values");
+        //System.out.println("values");
         TypyDne[] expResult = {VSEDNI_DVOJSVATEK, VSEDNI_SVATEK, SOBOTA, NEDELE, PATEK, VSEDNI};
         TypyDne[] result = TypyDne.values();
         assertArrayEquals(expResult, result);

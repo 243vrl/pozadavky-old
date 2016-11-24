@@ -54,8 +54,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 @Named(value = "prehledyBean")
 @SessionScoped
-public class PrehledyBean implements Serializable, MyValueChangeListener{
-    
+public class PrehledyBean implements Serializable, MyValueChangeListener {
+
     @PersistenceContext(unitName = "pozadavky_PU")
     private EntityManager em;
     @Inject
@@ -75,21 +75,19 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     private List<PrumerySluzeb> prumeryLS = null;
     private List<Zpravy> zpravyNaMesic;
 
-    
-    
     public List<Zpravy> getZpravyNaMesic() {
         return zpravyNaMesic;
     }
-    
-    
+
     /**
      * Creates a new instance of PrehledyBean
      */
     public PrehledyBean() {
         gc = new GregorianCalendar();
     }
+
     @PostConstruct
-    private void uvodniNacteni(){
+    private void uvodniNacteni() {
         ModelListenerFactory.registerListener(this, Sluzby.class.getName());
         gc.set(Calendar.DAY_OF_MONTH, 1);
         populateColumns();
@@ -98,28 +96,30 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         nactiSluzbyNaMesic();
         nactiZpravyNaMesic();
     }
+
     @PreDestroy
-    private void predKoncem(){
+    private void predKoncem() {
         ModelListenerFactory.unregisterListener(this);
     }
-    private void nactiSluzbyNaMesic(){
+
+    private void nactiSluzbyNaMesic() {
         sluzbyPodlePilotu = new ArrayList<>();
         sluzbyPodlePalubaru = new ArrayList<>();
         //System.out.print("postconstruct nacitam pozadavky");
         List<String> letajici = lsc.getLetajici();
-        for(String l: letajici){
+        for (String l : letajici) {
             List<String> pom = new ArrayList<>();
             pom.add(l);
-            for(int i = 0; i < Kalendar.dnuVMesici(gc);i++){
+            for (int i = 0; i < Kalendar.dnuVMesici(gc); i++) {
                 pom.add("");
             }
             sluzbyPodlePilotu.add(pom);
         }
         List<String> palubari = lsc.getPalubari();
-        for(String l: palubari){
+        for (String l : palubari) {
             List<String> pom = new ArrayList<>();
             pom.add(l);
-            for(int i = 0; i < Kalendar.dnuVMesici(gc);i++){
+            for (int i = 0; i < Kalendar.dnuVMesici(gc); i++) {
                 pom.add("");
             }
             sluzbyPodlePalubaru.add(pom);
@@ -129,52 +129,67 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         //System.out.format("prehledy, nacteno");
         populateColumns();
     }
-    public void uberM(){
-        gc.set(Calendar.DAY_OF_MONTH,1);
+
+    public void uberM() {
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, -1);
         //populateColumns();
         nactiSluzbyNaMesic();
         nactiZpravyNaMesic();
     }
-    public void pridejM(){
-        gc.set(Calendar.DAY_OF_MONTH,1);
+
+    public void pridejM() {
+        gc.set(Calendar.DAY_OF_MONTH, 1);
         gc.add(Calendar.MONTH, 1);
         //populateColumns();
         nactiSluzbyNaMesic();
         nactiZpravyNaMesic();
     }
-    private void populateColumns(){
+
+    private void populateColumns() {
         columns = new ArrayList<>();
-        columns.add(new PrehledyBean.ColumnModelIII("","letajici"));
-        for(int i = 1; i <= Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH)+1);i++) {
+        columns.add(new PrehledyBean.ColumnModelIII("", "letajici"));
+        for (int i = 1; i <= Kalendar.dnuVMesici(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH) + 1); i++) {
             columns.add(new PrehledyBean.ColumnModelIII(String.format("%d", i), String.format("%d", i)));
         }
     }
-    public boolean jePozadavek(String str){
-        if (str.equals("\u271C"))
-                return false;
-        if (str.equals("\u26AB"))
-                return false;
-        if (str.equals("L"))
-                return false;
+
+    public boolean jePozadavek(String str) {
+        if (str.equals("\u271C")) {
+            return false;
+        }
+        if (str.equals("\u26AB")) {
+            return false;
+        }
+        if (str.equals("L")) {
+            return false;
+        }
+        if (str.equals("B")) {
+            return false;
+        }
         return true;
     }
-    public void ppXLSsPozadavkysZvyraznenim(Object document){
+
+    public void ppXLSsPozadavkysZvyraznenim(Object document) {
         postProcessXLS(document, true, true);
     }
-    public void ppXLSsPozadavky(Object document){
+
+    public void ppXLSsPozadavky(Object document) {
         postProcessXLS(document, true, false);
     }
-    public void ppXLSsZvyraznenim(Object document){
+
+    public void ppXLSsZvyraznenim(Object document) {
         postProcessXLS(document, false, true);
     }
-    public void ppXLS(Object document){
+
+    public void ppXLS(Object document) {
         postProcessXLS(document, false, false);
     }
+
     private void postProcessXLS(Object document, boolean sPozadavky, boolean seZvyraznenim) {
         XSSFWorkbook wb = (XSSFWorkbook) document;
         XSSFSheet sheet = wb.getSheetAt(0);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, sheet.getRow(4).getLastCellNum()-1));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, sheet.getRow(4).getLastCellNum() - 1));
         //nadpis style
         XSSFFont fontNadpis = wb.createFont();
         fontNadpis.setFontHeightInPoints((short) 20);
@@ -187,7 +202,7 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         sheet.createRow(1);
         sheet.createRow(2);
         sheet.createRow(3);
-        for(int i = 1; i < sheet.getRow(4).getLastCellNum();i++){
+        for (int i = 1; i < sheet.getRow(4).getLastCellNum(); i++) {
             sheet.getRow(1).createCell(i).setCellValue("wii");
         }
         sheet.getRow(1).setZeroHeight(true);
@@ -200,7 +215,7 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         XSSFCellStyle styleDny = wb.createCellStyle();
         styleDny.setFont(fontDny);
         styleDny.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleDny.setFillForegroundColor(new XSSFColor(new java.awt.Color(223,239,252)));
+        styleDny.setFillForegroundColor(new XSSFColor(new java.awt.Color(223, 239, 252)));
         styleDny.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // jmena style
         XSSFFont fontJmena = wb.createFont();
@@ -227,87 +242,86 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         XSSFCellStyle styleZvyraznenyJmena = wb.createCellStyle();
         styleZvyraznenyJmena.setFont(fontJmena);
         styleZvyraznenyJmena.setAlignment(XSSFCellStyle.ALIGN_LEFT);
-        styleZvyraznenyJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(151,254,152)));
+        styleZvyraznenyJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(151, 254, 152)));
         styleZvyraznenyJmena.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // ZvyraznenyPozadavky
         XSSFCellStyle styleZvyraznenyPozadavky = wb.createCellStyle();
         styleZvyraznenyPozadavky.setFont(fontPozadavky);
         styleZvyraznenyPozadavky.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleZvyraznenyPozadavky.setFillForegroundColor(new XSSFColor(new java.awt.Color(151,254,152)));
+        styleZvyraznenyPozadavky.setFillForegroundColor(new XSSFColor(new java.awt.Color(151, 254, 152)));
         styleZvyraznenyPozadavky.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // ZvyraznenySluzby
         XSSFCellStyle styleZvyraznenySluzby = wb.createCellStyle();
         styleZvyraznenySluzby.setFont(fontSluzby);
         styleZvyraznenySluzby.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleZvyraznenySluzby.setFillForegroundColor(new XSSFColor(new java.awt.Color(151,254,152)));
+        styleZvyraznenySluzby.setFillForegroundColor(new XSSFColor(new java.awt.Color(151, 254, 152)));
         styleZvyraznenySluzby.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SvatekPozadavky
         XSSFCellStyle styleSvatekPozadavky = wb.createCellStyle();
         styleSvatekPozadavky.setFont(fontPozadavky);
         styleSvatekPozadavky.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSvatekPozadavky.setFillForegroundColor(new XSSFColor(new java.awt.Color(254,165,165)));
+        styleSvatekPozadavky.setFillForegroundColor(new XSSFColor(new java.awt.Color(254, 165, 165)));
         styleSvatekPozadavky.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SvatekSluzby
         XSSFCellStyle styleSvatekSluzby = wb.createCellStyle();
         styleSvatekSluzby.setFont(fontSluzby);
         styleSvatekSluzby.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSvatekSluzby.setFillForegroundColor(new XSSFColor(new java.awt.Color(254,165,165)));
+        styleSvatekSluzby.setFillForegroundColor(new XSSFColor(new java.awt.Color(254, 165, 165)));
         styleSvatekSluzby.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SobotaPozadavky
         XSSFCellStyle styleSobotaPozadavky = wb.createCellStyle();
         styleSobotaPozadavky.setFont(fontPozadavky);
         styleSobotaPozadavky.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSobotaPozadavky.setFillForegroundColor(new XSSFColor(new java.awt.Color(254,255,127)));
+        styleSobotaPozadavky.setFillForegroundColor(new XSSFColor(new java.awt.Color(254, 255, 127)));
         styleSobotaPozadavky.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SobotaSluzby
         XSSFCellStyle styleSobotaSluzby = wb.createCellStyle();
         styleSobotaSluzby.setFont(fontSluzby);
         styleSobotaSluzby.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSobotaSluzby.setFillForegroundColor(new XSSFColor(new java.awt.Color(254,255,127)));
+        styleSobotaSluzby.setFillForegroundColor(new XSSFColor(new java.awt.Color(254, 255, 127)));
         styleSobotaSluzby.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SvatekZvyraznenyPozadavek
         XSSFCellStyle styleSvatekZvyraznenyPozadavek = wb.createCellStyle();
         styleSvatekZvyraznenyPozadavek.setFont(fontPozadavky);
         styleSvatekZvyraznenyPozadavek.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSvatekZvyraznenyPozadavek.setFillForegroundColor(new XSSFColor(new java.awt.Color(187,165,99)));
+        styleSvatekZvyraznenyPozadavek.setFillForegroundColor(new XSSFColor(new java.awt.Color(187, 165, 99)));
         styleSvatekZvyraznenyPozadavek.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SvatekZvyraznenySluzba
         XSSFCellStyle styleSvatekZvyraznenySluzba = wb.createCellStyle();
         styleSvatekZvyraznenySluzba.setFont(fontSluzby);
         styleSvatekZvyraznenySluzba.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSvatekZvyraznenySluzba.setFillForegroundColor(new XSSFColor(new java.awt.Color(187,165,99)));
+        styleSvatekZvyraznenySluzba.setFillForegroundColor(new XSSFColor(new java.awt.Color(187, 165, 99)));
         styleSvatekZvyraznenySluzba.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SobotaZvyraznenyPozadavek
         XSSFCellStyle styleSobotaZvyraznenyPozadavek = wb.createCellStyle();
         styleSobotaZvyraznenyPozadavek.setFont(fontPozadavky);
         styleSobotaZvyraznenyPozadavek.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSobotaZvyraznenyPozadavek.setFillForegroundColor(new XSSFColor(new java.awt.Color(203,255,76)));
+        styleSobotaZvyraznenyPozadavek.setFillForegroundColor(new XSSFColor(new java.awt.Color(203, 255, 76)));
         styleSobotaZvyraznenyPozadavek.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SobotaZvyraznenySluzba
         XSSFCellStyle styleSobotaZvyraznenySluzba = wb.createCellStyle();
         styleSobotaZvyraznenySluzba.setFont(fontSluzby);
         styleSobotaZvyraznenySluzba.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSobotaZvyraznenySluzba.setFillForegroundColor(new XSSFColor(new java.awt.Color(203,255,76)));
+        styleSobotaZvyraznenySluzba.setFillForegroundColor(new XSSFColor(new java.awt.Color(203, 255, 76)));
         styleSobotaZvyraznenySluzba.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        
+
         for (Row row : sheet) {
             for (Cell cell : row) {
-                try{
-                    if(row.getCell(1).getStringCellValue().equals("1")){
+                try {
+                    if (row.getCell(1).getStringCellValue().equals("1")) {
                         cell.setCellStyle(styleDny);
                         continue;
                     }
-                    
-                    if(row.getRowNum()>1 && !row.getCell(0).getStringCellValue().isEmpty()){
-                        if(cell.getColumnIndex()==0){
-                            if(seZvyraznenim && cell.getStringCellValue().equals(lb.getLoginName())){
+
+                    if (row.getRowNum() > 1 && !row.getCell(0).getStringCellValue().isEmpty()) {
+                        if (cell.getColumnIndex() == 0) {
+                            if (seZvyraznenim && cell.getStringCellValue().equals(lb.getLoginName())) {
                                 cell.setCellStyle(styleZvyraznenyJmena);
                                 continue;
                             }
                             cell.setCellStyle(styleJmena);
-                        }
-                        else{
-                            if(!sPozadavky && jePozadavek(cell.getStringCellValue())){
+                        } else {
+                            if (!sPozadavky && jePozadavek(cell.getStringCellValue())) {
                                 cell.setCellValue("");
                             }
                             XSSFCellStyle stSluzby;
@@ -316,45 +330,48 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
                             gc.set(Calendar.DAY_OF_MONTH, cell.getColumnIndex());
                             boolean jeSvatek = Kalendar.jeSvatek(gc);
                             boolean jeVikend = false;
-                            if(gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || gc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+                            if (gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || gc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                                 jeVikend = true;
                             }
                             gc.set(Calendar.DAY_OF_MONTH, den);
-                            
-                            if(seZvyraznenim && row.getCell(0).getStringCellValue().equals(lb.getLoginName())){
-                                stSluzby = jeSvatek?styleSvatekZvyraznenySluzba:(jeVikend?styleSobotaZvyraznenySluzba:styleZvyraznenySluzby);
-                                stPoz = jeSvatek?styleSvatekZvyraznenyPozadavek:(jeVikend?styleSobotaZvyraznenyPozadavek:styleZvyraznenyPozadavky);
-                            }else{
-                                stSluzby = jeSvatek?styleSvatekSluzby:(jeVikend?styleSobotaSluzby:styleSluzby);
-                                stPoz = jeSvatek?styleSvatekPozadavky:(jeVikend?styleSobotaPozadavky:stylePozadavky);
+
+                            if (seZvyraznenim && row.getCell(0).getStringCellValue().equals(lb.getLoginName())) {
+                                stSluzby = jeSvatek ? styleSvatekZvyraznenySluzba : (jeVikend ? styleSobotaZvyraznenySluzba : styleZvyraznenySluzby);
+                                stPoz = jeSvatek ? styleSvatekZvyraznenyPozadavek : (jeVikend ? styleSobotaZvyraznenyPozadavek : styleZvyraznenyPozadavky);
+                            } else {
+                                stSluzby = jeSvatek ? styleSvatekSluzby : (jeVikend ? styleSobotaSluzby : styleSluzby);
+                                stPoz = jeSvatek ? styleSvatekPozadavky : (jeVikend ? styleSobotaPozadavky : stylePozadavky);
                             }
-                            if(jePozadavek(cell.getStringCellValue())){
+                            if (jePozadavek(cell.getStringCellValue())) {
                                 cell.setCellStyle(stPoz);
-                            }else{
+                            } else {
                                 cell.setCellStyle(stSluzby);
                             }
                         }
                     }
-                } catch(NullPointerException ex){
+                } catch (NullPointerException ex) {
                     //nic
                 }
             }
         }
     }
-    public void ppXLSDny(Object document){
+
+    public void ppXLSDny(Object document) {
         postProcessXLSPodleDnu(document, false);
     }
-    public void ppXLSDnySeZvyraznenim(Object document){
+
+    public void ppXLSDnySeZvyraznenim(Object document) {
         postProcessXLSPodleDnu(document, true);
     }
+
     private void postProcessXLSPodleDnu(Object document, boolean seZvyraznenim) {
         XSSFWorkbook wb = (XSSFWorkbook) document;
         XSSFSheet sheet = wb.getSheetAt(0);
         sheet.getPrintSetup().setLandscape(false);
         sheet.removeMergedRegion(0);
         sheet.getRow(4).getCell(0).setCellValue("");
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, sheet.getRow(10).getLastCellNum()-1));
-        
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, sheet.getRow(10).getLastCellNum() - 1));
+
         //nadpis style
         XSSFFont fontNadpis = wb.createFont();
         fontNadpis.setFontHeightInPoints((short) 20);
@@ -367,8 +384,8 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         sheet.createRow(1);
         sheet.createRow(2);
         sheet.createRow(3);
-        for(int i = 0; i < sheet.getRow(10).getLastCellNum();i++){
-            if(i == 0){
+        for (int i = 0; i < sheet.getRow(10).getLastCellNum(); i++) {
+            if (i == 0) {
                 sheet.getRow(1).createCell(i).setCellValue("111");
                 continue;
             }
@@ -386,7 +403,7 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         XSSFCellStyle styleDny = wb.createCellStyle();
         styleDny.setFont(fontDny);
         styleDny.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleDny.setFillForegroundColor(new XSSFColor(new java.awt.Color(223,239,252)));
+        styleDny.setFillForegroundColor(new XSSFColor(new java.awt.Color(223, 239, 252)));
         styleDny.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // jmena style
         XSSFFont fontJmena = wb.createFont();
@@ -399,93 +416,93 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         XSSFCellStyle styleZvyraznenyJmena = wb.createCellStyle();
         styleZvyraznenyJmena.setFont(fontJmena);
         styleZvyraznenyJmena.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleZvyraznenyJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(151,254,152)));
+        styleZvyraznenyJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(151, 254, 152)));
         styleZvyraznenyJmena.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SvatekJmena
         XSSFCellStyle styleSvatekJmena = wb.createCellStyle();
         styleSvatekJmena.setFont(fontJmena);
         styleSvatekJmena.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSvatekJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(254,165,165)));
+        styleSvatekJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(254, 165, 165)));
         styleSvatekJmena.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         // SobotaJmena
         XSSFCellStyle styleSobotaJmena = wb.createCellStyle();
         styleSobotaJmena.setFont(fontJmena);
         styleSobotaJmena.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        styleSobotaJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(254,255,127)));
+        styleSobotaJmena.setFillForegroundColor(new XSSFColor(new java.awt.Color(254, 255, 127)));
         styleSobotaJmena.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         for (Row row : sheet) {
-            if(row.getRowNum() < 5) continue;
-            XSSFCellStyle normStyle = styleJmena;
-            if(row.getRowNum() == 5 || row.getRowNum() == 6){
-                normStyle =  styleDny;
+            if (row.getRowNum() < 5) {
+                continue;
             }
-            else{
-                try{
+            XSSFCellStyle normStyle = styleJmena;
+            if (row.getRowNum() == 5 || row.getRowNum() == 6) {
+                normStyle = styleDny;
+            } else {
+                try {
                     int den = Integer.parseInt(row.getCell(0).getStringCellValue());
                     int pomden = gc.get(Calendar.DAY_OF_MONTH);
                     gc.set(Calendar.DAY_OF_MONTH, den);
                     boolean jeSvatek = Kalendar.jeSvatek(gc);
                     boolean jeVikend = false;
-                    if(gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || gc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+                    if (gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || gc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                         jeVikend = true;
-                        }
+                    }
                     gc.set(Calendar.DAY_OF_MONTH, pomden);
-                    if(jeSvatek){
+                    if (jeSvatek) {
                         normStyle = styleSvatekJmena;
-                    }else{
-                        if(jeVikend){
+                    } else {
+                        if (jeVikend) {
                             normStyle = styleSobotaJmena;
                         }
                     }
-                }
-                catch(NumberFormatException | NullPointerException ex){
+                } catch (NumberFormatException | NullPointerException ex) {
                     // nic
                 }
                 //nic
 
             }
             for (Cell cell : row) {
-                try{
-                    if(cell == null){
+                try {
+                    if (cell == null) {
                         continue;
                     }
-                    if(seZvyraznenim && cell.getStringCellValue().equals(lb.getLoginName())){
+                    if (seZvyraznenim && cell.getStringCellValue().equals(lb.getLoginName())) {
                         cell.setCellStyle(styleZvyraznenyJmena);
-                    }
-                    else{
+                    } else {
                         cell.setCellStyle(normStyle);
                     }
-                } catch(NullPointerException ex){
+                } catch (NullPointerException ex) {
                     //nic
                 }
             }
         }
     }
+
     private List<List<String>> nactiSluzby_interni(List<List<String>> podlePilotu, List<List<String>> podlePalubaru) {
         List<List<String>> vratka = new ArrayList<>();
         GregorianCalendar gc2 = new GregorianCalendar();
         gc2.set(Calendar.DAY_OF_MONTH, 1);
         gc2.set(Calendar.MONTH, gc.get(Calendar.MONTH));
         gc2.set(Calendar.YEAR, gc.get(Calendar.YEAR));
-        gc2.add(Calendar.MONTH,1);
+        gc2.add(Calendar.MONTH, 1);
         gc2.add(Calendar.DAY_OF_MONTH, -1);
         Query q1 = em.createNamedQuery("Pozadavky.naMesic");
         q1.setParameter("od", gc, TemporalType.DATE);
         q1.setParameter("do", gc2, TemporalType.DATE);
         q1.setParameter("ua", true);
         List<Pozadavky> pom = q1.getResultList();
-        for(Pozadavky poz: pom){
+        for (Pozadavky poz : pom) {
             String jmeno = poz.getLetajici();
             GregorianCalendar pomgc = new GregorianCalendar();
             pomgc.setTime(poz.getDatum());
             int den = pomgc.get(Calendar.DAY_OF_MONTH);
-            for(List<String> pl: podlePilotu){
-                if(jmeno.equals(pl.get(0))){
+            for (List<String> pl : podlePilotu) {
+                if (jmeno.equals(pl.get(0))) {
                     pl.set(den, poz.getPozadavek());
                 }
             }
-            for(List<String> pl: podlePalubaru){
-                if(jmeno.equals(pl.get(0))){
+            for (List<String> pl : podlePalubaru) {
+                if (jmeno.equals(pl.get(0))) {
                     pl.set(den, poz.getPozadavek());
                 }
             }
@@ -496,22 +513,22 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         //System.out.format("nacitam sluzby od %s do %s", new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()), new SimpleDateFormat("yy/MMMM/dd").format(gc2.getTime()));
         List<Object[]> qResult = q.getResultList();
         //System.out.format("vysledku %d", qResult.size());
-        for(Object[] sl: qResult){
+        for (Object[] sl : qResult) {
             List<String> pomVratka = new ArrayList<>();
             GregorianCalendar pomGC = new GregorianCalendar();
             pomGC.setTime((Date) sl[0]);
             int den = pomGC.get(Calendar.DAY_OF_MONTH);
             pomVratka.add(String.valueOf(den));
-            for(int j = 1; j < sl.length; j++){
+            for (int j = 1; j < sl.length; j++) {
                 String jmeno = (String) sl[j];
-                if(jmeno == null){
+                if (jmeno == null) {
                     pomVratka.add("");
                     continue;
                 }
                 pomVratka.add(jmeno);
-                for(List<String> pl: podlePilotu){
-                    if(jmeno.equals(pl.get(0))){
-                        switch(j){
+                for (List<String> pl : podlePilotu) {
+                    if (jmeno.equals(pl.get(0))) {
+                        switch (j) {
                             case 1:
                             case 2:
                             case 3:
@@ -526,13 +543,18 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
                             case 8:
                             case 9:
                                 pl.set(den, "\u271C");
+                                break;
+                            case 10:
+                            case 11:
+                            case 12:
+                                pl.set(den, "B");
                                 break;
                         }
                     }
                 }
-                for(List<String> pl: podlePalubaru){
-                    if(jmeno.equals(pl.get(0))){
-                        switch(j){
+                for (List<String> pl : podlePalubaru) {
+                    if (jmeno.equals(pl.get(0))) {
+                        switch (j) {
                             case 1:
                             case 2:
                             case 3:
@@ -547,6 +569,11 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
                             case 8:
                             case 9:
                                 pl.set(den, "\u271C");
+                                break;
+                            case 10:
+                            case 11:
+                            case 12:
+                                pl.set(den, "B");
                                 break;
                         }
                     }
@@ -556,7 +583,8 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         }
         return vratka;
     }
-    public String proMesic(){
+
+    public String proMesic() {
         Map m = new HashMap();
         m.put(0, "Leden");
         m.put(1, "Únor");
@@ -570,37 +598,53 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
         m.put(9, "Říjen");
         m.put(10, "Listopad");
         m.put(11, "Prosinec");
-        return (String)m.get(gc.get(Calendar.MONTH))+" "+new SimpleDateFormat("yyyy").format(gc.getTime());
+        return (String) m.get(gc.get(Calendar.MONTH)) + " " + new SimpleDateFormat("yyyy").format(gc.getTime());
     }
-    public String proMesic_yy_MM(){
+
+    public String proMesic_yy_MM() {
         return new SimpleDateFormat("yy-MM").format(gc.getTime());
     }
-    public String cellColor(int den){
+
+    public String cellColor(int den) {
         String vratka = "#ffffff";
-        if (den == 0) return vratka;
+        if (den == 0) {
+            return vratka;
+        }
         //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         //System.out.println(den);
         gc.set(Calendar.DAY_OF_MONTH, den);
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
-        if(Kalendar.jeSvatek(gc)) vratka = "#D20005";
-        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka="#ffd700";
+        if (Kalendar.jeSvatek(gc)) {
+            vratka = "#D20005";
+        }
+        if ((gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (gc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
+            vratka = "#ffd700";
+        }
         gc.set(Calendar.DAY_OF_MONTH, 1);
         //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         return vratka;
     }
-    public String getStyle(int den){
-        if (den == 0) return "null";
+
+    public String getStyle(int den) {
+        if (den == 0) {
+            return "null";
+        }
         //System.out.println("vstup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         //System.out.println(den);
         gc.set(Calendar.DAY_OF_MONTH, den);
-        String vratka ="null";
+        String vratka = "null";
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
-        if(Kalendar.jeSvatek(gc)) vratka = "svatek";
-        if((gc.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(gc.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)) vratka="vikend";
+        if (Kalendar.jeSvatek(gc)) {
+            vratka = "svatek";
+        }
+        if ((gc.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (gc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
+            vratka = "vikend";
+        }
         gc.set(Calendar.DAY_OF_MONTH, 1);
         //System.out.println("vystup  "+new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         return vratka;
     }
+
     public List<List<String>> getSluzbyPodleDni() {
         return sluzbyPodleDni;
     }
@@ -612,49 +656,51 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     public List<List<String>> getSluzbyPodlePalubaru() {
         return sluzbyPodlePalubaru;
     }
-    
+
     private void nactiPrumeryH120() {
         Query q = em.createNativeQuery("SELECT * FROM prumery_h120 WHERE pocet_sluzeb_h120 > 1 ORDER BY p_volne DESC");
         h120 = new ArrayList<>();
-        for(Object obj: q.getResultList()){
+        for (Object obj : q.getResultList()) {
             Object[] pole = (Object[]) obj;
-            String letajici = (String)pole[0];
-            int pocetSluzeb = (int)pole[1]-1;
-            int pocetVsednichSvatku = (int)pole[2];
-            double pSv = (double)pole[3];
-            int pocetSobot = (int)pole[4];
-            double pSo = (double)pole[5];
-            int pocetNedeli = (int)pole[6];
-            double pNe = (double)pole[7];
-            int pocetPatku = (int)pole[8];
-            double pPa = (double)pole[9];
-            int volneDny = (int)pole[10];
-            double pVolne = (double)pole[11];
-            h120.add(new PrumeryH120(letajici,pocetSluzeb, pocetVsednichSvatku, pSv, pocetSobot,
-            pSo, pocetNedeli, pNe, pocetPatku, pPa, volneDny, pVolne));
+            String letajici = (String) pole[0];
+            int pocetSluzeb = (int) pole[1] - 1;
+            int pocetVsednichSvatku = (int) pole[2];
+            double pSv = (double) pole[3];
+            int pocetSobot = (int) pole[4];
+            double pSo = (double) pole[5];
+            int pocetNedeli = (int) pole[6];
+            double pNe = (double) pole[7];
+            int pocetPatku = (int) pole[8];
+            double pPa = (double) pole[9];
+            int volneDny = (int) pole[10];
+            double pVolne = (double) pole[11];
+            h120.add(new PrumeryH120(letajici, pocetSluzeb, pocetVsednichSvatku, pSv, pocetSobot,
+                    pSo, pocetNedeli, pNe, pocetPatku, pPa, volneDny, pVolne));
         }
     }
+
     private void nactiPrumerySluzeb() {
         Query q = em.createNativeQuery("SELECT * FROM prumery_sluzeb WHERE pocet_sluzeb > 1 ORDER BY p_volne DESC");
         prumeryLS = new ArrayList<>();
-        for(Object obj: q.getResultList()){
+        for (Object obj : q.getResultList()) {
             Object[] pole = (Object[]) obj;
-            String letajici = (String)pole[0];
-            int pocetSluzeb = (int)pole[1]-1;
-            int pocetVsednichSvatku = (int)pole[2];
-            double pSv = (double)pole[3];
-            int pocetSobot = (int)pole[4];
-            double pSo = (double)pole[5];
-            int pocetNedeli = (int)pole[6];
-            double pNe = (double)pole[7];
-            int pocetPatku = (int)pole[8];
-            double pPa = (double)pole[9];
-            int volneDny = (int)pole[10];
-            double pVolne = (double)pole[11];
-            prumeryLS.add(new PrumerySluzeb(letajici,pocetSluzeb, pocetVsednichSvatku, pSv, pocetSobot,
-            pSo, pocetNedeli, pNe, pocetPatku, pPa, volneDny, pVolne));
+            String letajici = (String) pole[0];
+            int pocetSluzeb = (int) pole[1] - 1;
+            int pocetVsednichSvatku = (int) pole[2];
+            double pSv = (double) pole[3];
+            int pocetSobot = (int) pole[4];
+            double pSo = (double) pole[5];
+            int pocetNedeli = (int) pole[6];
+            double pNe = (double) pole[7];
+            int pocetPatku = (int) pole[8];
+            double pPa = (double) pole[9];
+            int volneDny = (int) pole[10];
+            double pVolne = (double) pole[11];
+            prumeryLS.add(new PrumerySluzeb(letajici, pocetSluzeb, pocetVsednichSvatku, pSv, pocetSobot,
+                    pSo, pocetNedeli, pNe, pocetPatku, pPa, volneDny, pVolne));
         }
     }
+
     public List<PrumeryH120> getH120() {
         return h120;
     }
@@ -662,7 +708,6 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     public List<PrumerySluzeb> getPrumeryLS() {
         return prumeryLS;
     }
-    
 
     public List<ColumnModelIII> getColumns() {
         return columns;
@@ -676,17 +721,21 @@ public class PrehledyBean implements Serializable, MyValueChangeListener{
     private void nactiZpravyNaMesic() {
         zpravyNaMesic = zc.getNaMesic(gc);
     }
-    
+
     static public class ColumnModelIII implements Serializable {
+
         private String header;
         private String property;
+
         public ColumnModelIII(String header, String property) {
             this.header = header;
             this.property = property;
         }
+
         public String getHeader() {
             return header;
         }
+
         public String getProperty() {
             return property;
         }

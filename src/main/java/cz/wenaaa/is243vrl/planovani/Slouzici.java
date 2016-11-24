@@ -139,7 +139,7 @@ public class Slouzici {
     }
 
     private void setPlneVolneDny(GregorianCalendar gc) {
-        System.out.println("pozadavky pro "+jmeno);
+        //System.out.println("pozadavky pro "+jmeno);
         List<Pozadavky> pozadavkyNaMesic = pf.pozadavkyNaMesic(jmeno, gc);
         plneVolneDny = 0L;
         GregorianCalendar pomGC = new GregorianCalendar();
@@ -168,9 +168,9 @@ public class Slouzici {
                     }
                 }
             }
-            System.out.println("\t> "+den+" / "+pol.getPozadavek());
+            //System.out.println("\t> "+den+" / "+pol.getPozadavek());
         }
-        System.out.println("plne volne dny > "+plneVolneDny);
+        //System.out.println("plne volne dny > "+plneVolneDny);
     }
 
     int getFGVRozdil() {

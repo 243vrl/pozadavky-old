@@ -26,7 +26,7 @@ public class HashedPasswordGenerator {
             md.update(password.getBytes("UTF-8"));
             return ((new HexBinaryAdapter()).marshal(md.digest())).toLowerCase();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-            System.out.println(ex.getMessage());
+            //System.out.println(ex.getMessage());
             return "";
         }
     }

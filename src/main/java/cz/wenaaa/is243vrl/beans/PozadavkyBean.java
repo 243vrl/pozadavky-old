@@ -244,8 +244,12 @@ public class PozadavkyBean implements Serializable{
         pomGC.setTime((Date) q1.getSingleResult());
         //System.out.println("prenastav mesic");
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
-        if(pomGC.get(Calendar.MONTH)>gc.get(Calendar.MONTH)){
+        /*if(pomGC.get(Calendar.MONTH)>gc.get(Calendar.MONTH)){
             gc.set(Calendar.MONTH, pomGC.get(Calendar.MONTH));
+        }*/
+        if(pomGC.after(gc)){
+            pomGC.set(Calendar.DAY_OF_MONTH, 1);
+           gc = pomGC;
         }
         //System.out.println(new SimpleDateFormat("yy/MMMM/dd").format(gc.getTime()));
         populateColumns();
@@ -257,7 +261,8 @@ public class PozadavkyBean implements Serializable{
         Query q1 = em.createNativeQuery("SELECT max(pozadavkyod"+prip+") FROM pomtab");
         GregorianCalendar pomGC = new GregorianCalendar();
         pomGC.setTime((Date) q1.getSingleResult());
-        return this.gc.get(Calendar.MONTH)>pomGC.get(Calendar.MONTH);
+        //return this.gc.get(Calendar.MONTH)>pomGC.get(Calendar.MONTH);
+        return gc.after(pomGC);
     }
     public String renderedCellvII(int sloupec, String hodnota, int typ){
         if("".equals(hodnota) && typ == 2 && sloupec != 0) return "true";

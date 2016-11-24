@@ -71,25 +71,25 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
         if (running) {
             throw new Exception("Duplicitní volání funkce.");
         }
-        System.out.println("vstupuji do call");
+        //System.out.println("vstupuji do call");
         running = true;
         leafs = new ArrayList<>();
         List<N> vratka = null;
         long leafsEvolved = 0L;
         List<N> uvodniUzly = nodeFactory.getInitialNodes();
-        System.out.println("nacteny initial nodes");
+        //System.out.println("nacteny initial nodes");
         leafs.addAll(nodeItemsToNodes(uvodniUzly, null));
         while (true) {
             if (interrupted()) {
-                System.out.println("prerusuji na interupted");
+                //System.out.println("prerusuji na interupted");
                 break;
             }
             if (leafs.isEmpty()) {
-                System.out.println("prerusuji na leafs is empty");
+                //System.out.println("prerusuji na leafs is empty");
                 break;
             }
             if(prerusit){
-                System.out.println("prerusuji na prerusit");
+                //System.out.println("prerusuji na prerusit");
                 break;
             }
             leafs.sort(comparator);
@@ -100,7 +100,7 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
             }
             if (nodeFactory.isAim(rozvijeny.getPath())) {
                 vratka = rozvijeny.getPath();
-                System.out.println("prerusuji na leafs is aim");
+                //System.out.println("prerusuji na leafs is aim");
                 break;
             }
             if(nodeFactory.shouldReduceTreeLeafs(rozvijeny.getPath())){
@@ -108,7 +108,7 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
             }
             List<N> noveUzly = nodeFactory.getNexts(rozvijeny.getPath());
             leafs.addAll(nodeItemsToNodes(noveUzly, rozvijeny));
-            System.out.println("Stale v call");
+            //System.out.println("Stale v call");
         }
         running = false;
         return vratka;
@@ -152,7 +152,7 @@ public abstract class SearchTree<F extends NodeItemFactory, N> implements Callab
                 processInfo.getLock().unlock();
             }
         } else {
-            System.out.println("LWST neobdrzel lock nemuzu passinfo");
+            //System.out.println("LWST neobdrzel lock nemuzu passinfo");
         }
     }
 

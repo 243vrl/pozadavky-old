@@ -228,8 +228,17 @@ public class SluzbyController implements Serializable, MyValueChangeListener, My
             case "HP":
                 newVal = sluzba.getHp().getLetajici();
                 break;
+            case "BK":
+                newVal = sluzba.getBk().getLetajici();
+                break;
+            case "BD":
+                newVal = sluzba.getBd().getLetajici();
+                break;
+            case "BP":
+                newVal = sluzba.getBp().getLetajici();
+                break;
             default:
-                System.out.println("spatny typ sluzby.");
+                //System.out.println("spatny typ sluzby.");
                 return;
         }
         ejbFacade.ulozSluzbu(pomGC, TypySluzby.valueOf(typSluzby), newVal);
