@@ -153,18 +153,6 @@ public class PrehledyBean implements Serializable, MyValueChangeListener {
             columns.add(new PrehledyBean.ColumnModelIII(String.format("%d", i), String.format("%d", i)));
         }
     }
-<<<<<<< HEAD:src/main/java/cz/seznam/wenaaa/is243vrl/beans/PrehledyBean.java
-    public boolean jePozadavek(String str){
-        if (str.equals("\u271C"))
-                return false;
-        if (str.equals("\u26AB"))
-                return false;
-        if (str.equals("L"))
-                return false;
-        if (str.equals("B"))
-                return false;
-=======
-
     public boolean jePozadavek(String str) {
         if (str.equals("\u271C")) {
             return false;
@@ -178,7 +166,6 @@ public class PrehledyBean implements Serializable, MyValueChangeListener {
         if (str.equals("B")) {
             return false;
         }
->>>>>>> novyAlgoritmusPlanovani:src/main/java/cz/wenaaa/is243vrl/beans/PrehledyBean.java
         return true;
     }
 
