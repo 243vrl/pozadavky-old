@@ -166,8 +166,12 @@
                                     <p:column colspan="3" headerText="LZS Plzeň" />
                                     <p:column colspan="3" headerText="SAR Kbely" />
                                     <p:column colspan="3" headerText="H 120" />
+                                    <p:column colspan="3" headerText="LZS Bechyně" />
                                 </p:row>
                                 <p:row>
+                                    <p:column headerText="KV"/>
+                                    <p:column headerText="PL"/>
+                                    <p:column headerText="PT"/>
                                     <p:column headerText="KV"/>
                                     <p:column headerText="PL"/>
                                     <p:column headerText="PT"/>
@@ -218,6 +222,18 @@
                             <p:column width="10"
                                       styleClass="#{item[9] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
                                 <h:outputText value="#{item[9]}" />
+                            </p:column>
+                            <p:column width="10"
+                                      styleClass="#{item[10] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
+                                <h:outputText value="#{item[10]}" />
+                            </p:column>
+                            <p:column width="10"
+                                      styleClass="#{item[11] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
+                                <h:outputText value="#{item[11]}" />
+                            </p:column>
+                            <p:column width="10"
+                                      styleClass="#{item[12] == loggedBean.loginName?'prihlasen':prehledyBean.getStyle(rowIndex+1)}">
+                                <h:outputText value="#{item[12]}" />
                             </p:column>
                         </p:dataTable>
                     </p:tab>
