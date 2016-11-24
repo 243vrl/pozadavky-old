@@ -88,7 +88,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item[colIndex]}" style="color: #{prehledyBean.jePozadavek(item[colIndex])?'#808080':'#000000'}; #{(item[colIndex] eq 'L')?'font-weight: 900;':''}
+                                <p:outputLabel value="#{item[colIndex]}" style="color: #{prehledyBean.jePozadavek(item[colIndex])?'#808080':'#000000'}; #{(item[colIndex] eq 'L')?'font-weight: 900;':''} #{(item[colIndex] eq 'B')?'font-weight: 900;':''}
                                                #{prehledyBean.jePozadavek(item[colIndex])?'font-size: 120%':''}"/>
                                 <f:facet name="footer">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
@@ -130,7 +130,8 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>
-                                <p:outputLabel value="#{item[colIndex]}"/>
+                                <p:outputLabel value="#{item[colIndex]}" style="color: #{prehledyBean.jePozadavek(item[colIndex])?'#808080':'#000000'}; #{(item[colIndex] eq 'L')?'font-weight: 900;':''} #{(item[colIndex] eq 'B')?'font-weight: 900;':''}
+                                               #{prehledyBean.jePozadavek(item[colIndex])?'font-size: 120%':''}"/>
                                 <f:facet name="footer">
                                     <h:outputText value="#{column.header}" style="color: #{colIndex == 0? '#dfeffc':'#2e6e9e'}; font-size: %92 !important"/>
                                 </f:facet>

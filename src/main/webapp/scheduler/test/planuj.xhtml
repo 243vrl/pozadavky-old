@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/common/index.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPozadavkyTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+
+            <h:form id="TestPlanujForm" style="font-size: 92% !important;">
+                <p:commandButton value="Naplánuj Piloty" actionListener="#{testPlanujBean.planujPiloty}" global="false"/>
+                <p:commandButton value="Naplánuj Palubáře" actionListener="#{testPlanujBean.planujPalubare}" global="false"/>
+                <p:panel id="pPiloti" header="Piloti" style="margin-bottom:20px">
+                    <h:outputText
+                        value="#{testPlanujBean.infoPiloti}" />
+                    <p:poll interval="1"  update="pPiloti" async="True" global="false"/>
+                </p:panel>
+                <p:panel id="pPalubari" header="Palubáři" style="margin-bottom:20px">
+                    <h:outputText
+                        value="#{testPlanujBean.infoPalubari}" />
+                    <p:poll interval="1"  update="pPalubari" async="True" global="false"/>
+                </p:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -14,7 +14,28 @@
         </ui:define>
 
         <ui:define name="body">
-            
+            <p:dialog position="center" widgetVar="dlg"
+                      header="Plánuji..."
+                      resizable="true"
+                      closable="false"
+                      draggable="true"
+                      modal="false"
+                      visible="#{planovaniBean.isvPlanovani()?'true':'false'}">
+                <h:form>
+                    <p:inputTextarea  id="txt_area" rows="25" cols="70" disabled="true" value="#{planovaniBean.text}"
+                                      style=" background-color: #ffffff; color: #000000" autoResize="false"/>
+                    <br/>
+                    <p:commandButton id="tlacitko" disabled="#{planovaniBean.naplanovano?'False':'True'}" value="Kontrola"
+                             onclick="PF('dlg').hide()" action="/scheduler/pozadavky/kontrola"
+                             actionListener="#{planovaniBean.prechodKontrola}"/>
+                    <p:commandButton id="tlacitko1" disabled="#{planovaniBean.nenaplanovano?'False':'True'}" value="OK"
+                             onclick="PF('dlg').hide()"/>
+                    <p:commandButton id="tlacitko2" disabled="#{planovaniBean.castecne?'False':'True'}" value="Stop"
+                            actionListener="#{planovaniBean.setPrerusit(true)}"/>
+                    <p:poll interval="1"  update="txt_area tlacitko tlacitko1 tlacitko2" async="True" global="false"/>
+                </h:form>
+                
+            </p:dialog>
             <h:form id="PozadavkyListForm" style="font-size: 92% !important;">
                 <p:dataTable id="zpravy" value="#{pozadavkyBean.zpravyNaMesic}" var="item">
                     <p:column style="width:70px;">
@@ -75,6 +96,9 @@
                     <p:menuitem value="LD" actionListener="#{pozadavkyBean.ulozPozadavky('LD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
                     <p:menuitem value="SK" actionListener="#{pozadavkyBean.ulozPozadavky('SK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
                     <p:menuitem value="SD" actionListener="#{pozadavkyBean.ulozPozadavky('SD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="BP" actionListener="#{pozadavkyBean.ulozPozadavky('BP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
+                    <p:menuitem value="BK" actionListener="#{pozadavkyBean.ulozPozadavky('BK')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
+                    <p:menuitem value="BD" actionListener="#{pozadavkyBean.ulozPozadavky('BD')}" rendered="#{loggedBean.loggedAsMedved?'false':'true'}" update="datalist"/>
                     <p:menuitem value="LP" actionListener="#{pozadavkyBean.ulozPozadavky('LP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
                     <p:menuitem value="SP" actionListener="#{pozadavkyBean.ulozPozadavky('SP')}" rendered="#{loggedBean.loggedAsMedved?'true':'false'}" update="datalist"/>
                     <p:menuitem value="Vynulovat" actionListener="#{pozadavkyBean.ulozPozadavky('')}" update="datalist"/>
