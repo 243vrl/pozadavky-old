@@ -48,6 +48,9 @@ import javax.faces.convert.FacesConverter;
             if (object == null) {
                 return null;
             }
+            if (object instanceof String){
+                return (String)object;
+            }
             if (object instanceof LetajiciSluzby2) {
                 LetajiciSluzby2 o = (LetajiciSluzby2) object;
                 return getStringKey(o.getLetajici());

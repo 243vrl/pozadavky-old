@@ -20,7 +20,7 @@
                                  rowKey="#{item.datum}"
                                  rowIndexVar="rowIndex"
                                  resizableColumns="true"
-                                 style="table-layout: fixed;  width: 550px; background-image: none"
+                                 style="table-layout: fixed;  width: 590px; background-image: none"
                                  editable="true" editMode="cell"
                                  rowStyleClass="#{sluzbyBean.getStyle(rowIndex+1)}"
                                  >
@@ -43,8 +43,12 @@
                                 <p:column colspan="3" headerText="LZS Plzeň" />
                                 <p:column colspan="3" headerText="SAR Kbely" />
                                 <p:column colspan="3" headerText="H 120" />
+                                <p:column colspan="3" headerText="LZS Bechyně" />
                             </p:row>
                             <p:row>
+                                <p:column headerText="KV"/>
+                                <p:column headerText="PL"/>
+                                <p:column headerText="PT"/>
                                 <p:column headerText="KV"/>
                                 <p:column headerText="PL"/>
                                 <p:column headerText="PT"/>
@@ -185,6 +189,48 @@
                                 <f:facet name="output"><h:outputText value="#{item.hp}"/></f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu value="#{item.hp}" style="width:100%">
+                                        <f:converter converterId="lscConverter" />
+                                        <f:selectItems value="#{letajiciSluzbyController.palubaciByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_hk}"/>
+                            </f:facet>
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.bk}"/></f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{item.bk}" style="width:100%">
+                                        <f:converter converterId="lscConverter" />
+                                        <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_hd}"/>
+                            </f:facet>
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.bd}"/></f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{item.bd}" style="width:100%">
+                                        <f:converter converterId="lscConverter" />
+                                        <f:selectItems value="#{letajiciSluzbyController.pilotiByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSluzbyTitle_hp}"/>
+                            </f:facet>
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.bp}"/></f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{item.bp}" style="width:100%">
                                         <f:converter converterId="lscConverter" />
                                         <f:selectItems value="#{letajiciSluzbyController.palubaciByName}" var="man" itemLabel="#{man}" itemValue="#{man}" />
                                     </h:selectOneMenu>

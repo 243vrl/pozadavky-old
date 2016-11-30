@@ -61,7 +61,7 @@
         </resource-bundle>
         <converter>
             <converter-id>lscConverter</converter-id>
-            <converter-class>cz.seznam.wenaaa.is243vrl.LscConverter</converter-class>
+            <converter-class>cz.wenaaa.is243vrl.LscConverter</converter-class>
         </converter>
         <resource-bundle>
             <base-name>/Bundleknicemu</base-name>
