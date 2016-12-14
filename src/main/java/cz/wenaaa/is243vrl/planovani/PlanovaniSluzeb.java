@@ -62,10 +62,14 @@ public class PlanovaniSluzeb implements NodeItemFactory<Slouzici> {
         pocetReseni = 0;
         this.proPalubare = proPalubare;
         try {
-            pf = (PozadavkyFacade) InitialContext.doLookup("java:global/pozadavky/PozadavkyFacade");
-            pomf = (PomtabFacade) InitialContext.doLookup("java:global/pozadavky/PomtabFacade");
-            sf = (SluzbyFacade) InitialContext.doLookup("java:global/pozadavky/SluzbyFacade");
-            lsf = (LetajiciSluzby2Facade) InitialContext.doLookup("java:global/pozadavky/LetajiciSluzby2Facade");
+            //pf = (PozadavkyFacade) InitialContext.doLookup("java:global/pozadavky/PozadavkyFacade");
+            pf = (PozadavkyFacade) InitialContext.doLookup("java:global/ROOT/PozadavkyFacade");
+            //pomf = (PomtabFacade) InitialContext.doLookup("java:global/pozadavky/PomtabFacade");
+            pomf = (PomtabFacade) InitialContext.doLookup("java:global/ROOT/PomtabFacade");
+            //sf = (SluzbyFacade) InitialContext.doLookup("java:global/pozadavky/SluzbyFacade");
+            sf = (SluzbyFacade) InitialContext.doLookup("java:global/ROOT/SluzbyFacade");
+            //lsf = (LetajiciSluzby2Facade) InitialContext.doLookup("java:global/pozadavky/LetajiciSluzby2Facade");
+            lsf = (LetajiciSluzby2Facade) InitialContext.doLookup("java:global/ROOT/LetajiciSluzby2Facade");
         } catch (NamingException ex) {
             Logger.getLogger(PlanovaniSluzeb.class.getName()).log(Level.SEVERE, null, ex);
         }
