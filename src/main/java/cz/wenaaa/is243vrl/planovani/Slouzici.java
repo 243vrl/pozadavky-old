@@ -59,8 +59,8 @@ public class Slouzici {
         this.sluzeb = 0;
         typySluzeb = new ArrayList<>();
         try {
-            psf = (PovoleniSluzebFacade) InitialContext.doLookup("java:global/pozadavky/PovoleniSluzebFacade");
-            pf = (PozadavkyFacade) InitialContext.doLookup("java:global/pozadavky/PozadavkyFacade");
+            psf = (PovoleniSluzebFacade) InitialContext.doLookup("java:global/ROOT/PovoleniSluzebFacade");
+            pf = (PozadavkyFacade) InitialContext.doLookup("java:global/ROOT/PozadavkyFacade");
         } catch (NamingException ex) {
             Logger.getLogger(Slouzici.class.getName()).log(Level.SEVERE, null, ex);
         }
