@@ -131,32 +131,7 @@
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
-                <datasource jndi-name="java:jboss/datasources/${env.OPENSHIFT_EXAMPLE_DATASOURCE}" pool-name="${env.OPENSHIFT_EXAMPLE_DATASOURCE}" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
-                    <driver>h2</driver>
-                    <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
-                    </security>
-                </datasource>
-                <datasource jndi-name="java:jboss/datasources/${env.OPENSHIFT_MYSQL_DATASOURCE}" enabled="${mysql.enabled}" use-java-context="true" pool-name="${env.OPENSHIFT_MYSQL_DATASOURCE}" use-ccm="true">
-                    <connection-url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/${env.OPENSHIFT_MYSQL_DB_NAME}</connection-url>
-                    <driver>mysql</driver>
-                    <security>
-                      <user-name>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user-name>
-                      <password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
-                    </security>
-                    <validation>
-                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
-                        <background-validation>true</background-validation>
-                        <background-validation-millis>60000</background-validation-millis>
-                        <!--<validate-on-match>true</validate-on-match>-->
-                    </validation>
-                    <pool>
-                        <flush-strategy>IdleConnections</flush-strategy>
-                    </pool>
-                </datasource>
-                <datasource jndi-name="java:jboss/datasources/${env.OPENSHIFT_POSTGRESQL_DATASOURCE}" enabled="${postgresql.enabled}" use-java-context="true" pool-name="${env.OPENSHIFT_POSTGRESQL_DATASOURCE}" use-ccm="true">
+                <!--<datasource jndi-name="java:jboss/datasources/${env.OPENSHIFT_POSTGRESQL_DATASOURCE}" enabled="${postgresql.enabled}" use-java-context="true" pool-name="${env.OPENSHIFT_POSTGRESQL_DATASOURCE}" use-ccm="true">
                     <connection-url>jdbc:postgresql://${env.OPENSHIFT_POSTGRESQL_DB_HOST}:${env.OPENSHIFT_POSTGRESQL_DB_PORT}/${env.OPENSHIFT_POSTGRESQL_DB_NAME}</connection-url>
                     <driver>postgresql</driver>
                     <security>
@@ -168,11 +143,11 @@
                         <background-validation>true</background-validation>
                         <background-validation-millis>60000</background-validation-millis>
                         <!--<validate-on-match>true</validate-on-match>-->
-                    </validation>
+                <!--    </validation>
                     <pool>
                         <flush-strategy>IdleConnections</flush-strategy>
                     </pool>
-                </datasource>
+                </datasource> -->
 				<datasource jndi-name="java:jboss/PozadavkyDS" enabled="true" use-java-context="true" pool-name="pozadavkyDSpool" use-ccm="true">
                     <connection-url>jdbc:postgresql://postgrsql:5432/pozadavky</connection-url>
                     <driver>postgresql</driver>
