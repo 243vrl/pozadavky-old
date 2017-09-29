@@ -132,7 +132,7 @@
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
                 <datasource jndi-name="java:jboss/PozadavkyDS" enabled="true" use-java-context="true" pool-name="pozadavkyDSpool" use-ccm="true">
-                    <connection-url>jdbc:postgresql://postgrsql:5432/pozadavky</connection-url>
+                    <connection-url>jdbc:postgresql://postgresql:5432/pozadavky</connection-url>
                     <driver>postgresql</driver>
                     <security>
                       <user-name>name</user-name>
